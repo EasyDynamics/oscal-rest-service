@@ -1,0 +1,12 @@
+[
+  {
+    "catalogId": "ce0e83ea-39cc-4250-980f-86bf90bd1d0e",
+    "name":  "Catalog 1"},
+  {
+    "catalogId": "16fb2426-00d3-425f-9fd6-66ba62b181e4",
+    "name":  "Catalog 2"},
+  {
+    "catalogId": "06c32b31-ae6d-42e7-bc15-6495f56b57a2",
+    "name": "Catalog 3"
+  }
+]
