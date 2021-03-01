@@ -70,7 +70,7 @@ public interface CatalogsApi {
         method = RequestMethod.GET)
     ResponseEntity<List<OSCALCatalog>> findCatalogsByName(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Terms to search for in catalog names" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "search-string", required = true) String searchString);
 
-
+    //Get specific catalog
     @Operation(summary = "Find an OSCAL control catalog by ID", description = "Returns a single OSCAL control catalog", security = {
         @SecurityRequirement(name = "api_key")    }, tags={ "OSCAL Catalog" })
     @ApiResponses(value = { 
@@ -82,9 +82,9 @@ public interface CatalogsApi {
     @RequestMapping(value = "/catalogs/{catalogId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<OSCALCatalog> getCatalogById(@Parameter(in = ParameterIn.PATH, description = "ID of catalog to return", required=true, schema=@Schema()) @PathVariable("catalogId") Long catalogId);
+    ResponseEntity<OSCALCatalog> getCatalogById(@Parameter(in = ParameterIn.PATH, description = "ID of catalog to return", required=true, schema=@Schema()) @PathVariable("catalogId") String catalogId);
 
-
+    //GET all catalogs
     @Operation(summary = "Retruns all OSCAL control catalogs", description = "", security = {
         @SecurityRequirement(name = "oscal_auth", scopes = {
             ""        })    }, tags={ "OSCAL Catalog" })
