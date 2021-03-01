@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -71,12 +72,13 @@ public class CatalogsApiController implements CatalogsApi {
 
         return new ResponseEntity<List<OSCALCatalog>>(HttpStatus.NOT_IMPLEMENTED);
     }
-
-    public ResponseEntity<OSCALCatalog> getCatalogById(@Parameter(in = ParameterIn.PATH, description = "ID of catalog to return", required=true, schema=@Schema()) @PathVariable("catalogId") Long catalogId) {
+    //Return a specific Catalog
+    public ResponseEntity<OSCALCatalog> getCatalogById(@Parameter(in = ParameterIn.PATH, description = "ID of catalog to return", required=true, schema=@Schema()) @PathVariable("catalogId") String catalogId) {
         String accept = request.getHeader("Accept");
+        //System.out.println(request);
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<OSCALCatalog>(objectMapper.readValue("{ }", OSCALCatalog.class), HttpStatus.NOT_IMPLEMENTED);
+                return new ResponseEntity<OSCALCatalog>(objectMapper.readValue(new File("src/main/resources/CatalogList.json"), OSCALCatalog.class), HttpStatus.NOT_IMPLEMENTED);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<OSCALCatalog>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,11 +88,12 @@ public class CatalogsApiController implements CatalogsApi {
         return new ResponseEntity<OSCALCatalog>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    //Return all Catalogs
     public ResponseEntity<List<OSCALCatalog>> getCatalogs() {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<List<OSCALCatalog>>(objectMapper.readValue("[ { }, { } ]", List.class), HttpStatus.NOT_IMPLEMENTED);
+                return new ResponseEntity<List<OSCALCatalog>>(objectMapper.readValue(new File("src/main/resources/CatalogList.json"), List.class), HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<List<OSCALCatalog>>(HttpStatus.INTERNAL_SERVER_ERROR);
