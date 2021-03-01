@@ -14,6 +14,9 @@ import javax.validation.constraints.*;
 
 public class OSCALCatalog   {
 
+  private String catalogId;
+  private String name;
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
