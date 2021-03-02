@@ -43,7 +43,7 @@ public class CatalogsApiController {
         return repository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
     }
-    @Operation(summary = "Retruns all OSCAL control catalogs", description = "", tags={ "OSCAL Catalog" })
+    @Operation(summary = "Returns all OSCAL control catalogs", description = "", tags={ "OSCAL Catalog" })
     @GetMapping("/catalogs/")
     public Collection<OSCALCatalog> findCatalogs() {
         return repository.getCatalogs();
