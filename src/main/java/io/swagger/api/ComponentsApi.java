@@ -41,7 +41,7 @@ public interface ComponentsApi {
     @RequestMapping(value = "/components/{componentId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<OSCALComponent> getComponentById(@Parameter(in = ParameterIn.PATH, description = "ID of component to return", required=true, schema=@Schema()) @PathVariable("componentId") Long componentId);
+    ResponseEntity<String> getComponentById(@Parameter(in = ParameterIn.PATH, description = "ID of component to return", required=true, schema=@Schema()) @PathVariable("componentId") String componentId);
 
     @CrossOrigin(origins = "http://localhost:3000")
     @Operation(summary = "Retruns all OSCAL components", description = "", security = {
