@@ -58,32 +58,17 @@ public class SspsApiController implements SspsApi {
         this.request = request;
     }
 
-    public ResponseEntity<OSCALSsp> getSspById(@Parameter(in = ParameterIn.PATH, description = "ID of system security plan to return", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<OSCALSsp>(objectMapper.readValue("{ }", OSCALSsp.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<OSCALSsp>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    public ResponseEntity<String> getSspById(@Parameter(in = ParameterIn.PATH, description = "ID of system security plan to return", required=true, schema=@Schema()) @PathVariable("sspId") String sspId) {
+        if (sspId.contains("66c2a1c8-5830-48bd-8fdd-55a1c3a52888")){
+            return new ResponseEntity<String>(sspFromUrl, HttpStatus.OK);
         }
-
-        return new ResponseEntity<OSCALSsp>(HttpStatus.NOT_IMPLEMENTED);
+        else {
+            return new ResponseEntity<String>("Ssp not found", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    public ResponseEntity<List<OSCALSsp>> getSsps() {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<OSCALSsp>>(objectMapper.readValue("[ { }, { } ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<OSCALSsp>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<List<OSCALSsp>>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<String> getSsps() {
+        return new ResponseEntity<String>(sspFromUrl, HttpStatus.OK);
     }
 
     /*
