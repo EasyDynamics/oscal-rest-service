@@ -42,7 +42,7 @@ public interface SspsApi {
     @RequestMapping(value = "/ssps/{sspId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<OSCALSsp> getSspById(@Parameter(in = ParameterIn.PATH, description = "ID of system security plan to return", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId);
+    ResponseEntity<String> getSspById(@Parameter(in = ParameterIn.PATH, description = "ID of system security plan to return", required=true, schema=@Schema()) @PathVariable("sspId") String sspId);
 
     @CrossOrigin(origins = "http://localhost:3000")
     @Operation(summary = "Retruns all OSCAL system security plans", description = "", security = {
@@ -53,7 +53,7 @@ public interface SspsApi {
     @RequestMapping(value = "/ssps",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<OSCALSsp>> getSsps();
+    ResponseEntity<String> getSsps();
 
 /*
     @Operation(summary = "Update an existing OSCAL system security plan", description = "", security = {
