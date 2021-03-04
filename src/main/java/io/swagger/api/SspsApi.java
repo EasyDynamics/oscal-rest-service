@@ -17,15 +17,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.CookieValue;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -35,7 +28,7 @@ import java.util.Map;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-02-22T21:37:05.909Z[GMT]")
 public interface SspsApi {
 
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @Operation(summary = "Find an OSCAL system security plan by ID", description = "Returns a single OSCAL system security plan", security = {
         @SecurityRequirement(name = "api_key")    }, tags={ "OSCAL System Security Plan" })
     @ApiResponses(value = { 
@@ -44,12 +37,14 @@ public interface SspsApi {
         @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
         
         @ApiResponse(responseCode = "404", description = "System security plan not found") })
+
+
     @RequestMapping(value = "/ssps/{sspId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<OSCALSsp> getSspById(@Parameter(in = ParameterIn.PATH, description = "ID of system security plan to return", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId);
 
-/*
+    @CrossOrigin(origins = "http://localhost:3000")
     @Operation(summary = "Retruns all OSCAL system security plans", description = "", security = {
         @SecurityRequirement(name = "oscal_auth", scopes = {
             ""        })    }, tags={ "OSCAL System Security Plan" })
@@ -60,7 +55,7 @@ public interface SspsApi {
         method = RequestMethod.GET)
     ResponseEntity<List<OSCALSsp>> getSsps();
 
-
+/*
     @Operation(summary = "Update an existing OSCAL system security plan", description = "", security = {
         @SecurityRequirement(name = "oscal_auth", scopes = {
             ""        })    }, tags={ "OSCAL System Security Plan" })
