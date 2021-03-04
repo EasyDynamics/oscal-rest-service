@@ -66,13 +66,16 @@ public class ComponentsApiController implements ComponentsApi {
         }
     }
 
-    public  ResponseEntity<List<OSCALComponent>> getComponents() {
+    public  ResponseEntity<String> getComponents() {
+        return new ResponseEntity<String>(componentFromUrl, HttpStatus.OK);
+
+        /*
         try {
             return new ResponseEntity<List<OSCALComponent>>(objectMapper.readValue("[{},{}]", List.class), HttpStatus.OK);
         }
         catch(IOException e){
             return new ResponseEntity<List<OSCALComponent>>(HttpStatus.NOT_IMPLEMENTED);
-        }
+        }*/
     }
 
 

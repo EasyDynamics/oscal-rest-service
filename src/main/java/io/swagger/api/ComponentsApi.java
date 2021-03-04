@@ -52,7 +52,7 @@ public interface ComponentsApi {
     @RequestMapping(value = "/components",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<OSCALComponent>> getComponents();
+    ResponseEntity<String> getComponents();
 
 /*
     @Operation(summary = "Update an existing OSCAL component", description = "", security = {
