@@ -35,41 +35,6 @@ import java.util.Map;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-02-22T21:37:05.909Z[GMT]")
 public interface SspsApi {
 
-    @Operation(summary = "Add a new OSCAL system security slan", description = "", security = {
-        @SecurityRequirement(name = "oscal_auth", scopes = {
-            ""        })    }, tags={ "OSCAL System Security Plan" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "405", description = "Invalid input") })
-    @RequestMapping(value = "/ssps",
-        consumes = { "application/json" }, 
-        method = RequestMethod.POST)
-    ResponseEntity<Void> addSsp(@Parameter(in = ParameterIn.DEFAULT, description = "OSCAL system security plan object to be added", required=true, schema=@Schema()) @Valid @RequestBody OSCALSsp body);
-
-
-    @Operation(summary = "Deletes an OSCAL system security plan", description = "", security = {
-        @SecurityRequirement(name = "oscal_auth", scopes = {
-            ""        })    }, tags={ "OSCAL System Security Plan" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
-        
-        @ApiResponse(responseCode = "404", description = "System security plan not found") })
-    @RequestMapping(value = "/ssps/{sspId}",
-        method = RequestMethod.DELETE)
-    ResponseEntity<Void> deleteSsp(@Parameter(in = ParameterIn.PATH, description = "System security plan id to delete", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId, @Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey);
-
-
-    @Operation(summary = "Finds OSCAL system security plans by name", description = "", security = {
-        @SecurityRequirement(name = "oscal_auth", scopes = {
-            ""        })    }, tags={ "OSCAL System Security Plan" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OSCALSsp.class)))),
-        
-        @ApiResponse(responseCode = "400", description = "Invalid status value") })
-    @RequestMapping(value = "/ssps/findByName",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<List<OSCALSsp>> findSspsByName(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Terms to search for in system security plan names" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "search-string", required = true) String searchString);
-
 
     @Operation(summary = "Find an OSCAL system security plan by ID", description = "Returns a single OSCAL system security plan", security = {
         @SecurityRequirement(name = "api_key")    }, tags={ "OSCAL System Security Plan" })
@@ -84,7 +49,7 @@ public interface SspsApi {
         method = RequestMethod.GET)
     ResponseEntity<OSCALSsp> getSspById(@Parameter(in = ParameterIn.PATH, description = "ID of system security plan to return", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId);
 
-
+/*
     @Operation(summary = "Retruns all OSCAL system security plans", description = "", security = {
         @SecurityRequirement(name = "oscal_auth", scopes = {
             ""        })    }, tags={ "OSCAL System Security Plan" })
@@ -109,6 +74,43 @@ public interface SspsApi {
         consumes = { "application/json" }, 
         method = RequestMethod.PUT)
     ResponseEntity<Void> updateSsp(@Parameter(in = ParameterIn.DEFAULT, description = "System security plan object to be updated", required=true, schema=@Schema()) @Valid @RequestBody OSCALSsp body);
+
+    @Operation(summary = "Add a new OSCAL system security slan", description = "", security = {
+            @SecurityRequirement(name = "oscal_auth", scopes = {
+                    ""        })    }, tags={ "OSCAL System Security Plan" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "405", description = "Invalid input") })
+    @RequestMapping(value = "/ssps",
+            consumes = { "application/json" },
+            method = RequestMethod.POST)
+    ResponseEntity<Void> addSsp(@Parameter(in = ParameterIn.DEFAULT, description = "OSCAL system security plan object to be added", required=true, schema=@Schema()) @Valid @RequestBody OSCALSsp body);
+
+
+    @Operation(summary = "Deletes an OSCAL system security plan", description = "", security = {
+            @SecurityRequirement(name = "oscal_auth", scopes = {
+                    ""        })    }, tags={ "OSCAL System Security Plan" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
+
+            @ApiResponse(responseCode = "404", description = "System security plan not found") })
+    @RequestMapping(value = "/ssps/{sspId}",
+            method = RequestMethod.DELETE)
+    ResponseEntity<Void> deleteSsp(@Parameter(in = ParameterIn.PATH, description = "System security plan id to delete", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId, @Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey);
+
+
+    @Operation(summary = "Finds OSCAL system security plans by name", description = "", security = {
+            @SecurityRequirement(name = "oscal_auth", scopes = {
+                    ""        })    }, tags={ "OSCAL System Security Plan" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OSCALSsp.class)))),
+
+            @ApiResponse(responseCode = "400", description = "Invalid status value") })
+    @RequestMapping(value = "/ssps/findByName",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<List<OSCALSsp>> findSspsByName(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Terms to search for in system security plan names" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "search-string", required = true) String searchString);
+*/
+
 
 }
 

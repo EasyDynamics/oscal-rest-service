@@ -48,30 +48,6 @@ public class SspsApiController implements SspsApi {
         this.request = request;
     }
 
-    public ResponseEntity<Void> addSsp(@Parameter(in = ParameterIn.DEFAULT, description = "OSCAL system security plan object to be added", required=true, schema=@Schema()) @Valid @RequestBody OSCALSsp body) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    public ResponseEntity<Void> deleteSsp(@Parameter(in = ParameterIn.PATH, description = "System security plan id to delete", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId,@Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    public ResponseEntity<List<OSCALSsp>> findSspsByName(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Terms to search for in system security plan names" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "search-string", required = true) String searchString) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<OSCALSsp>>(objectMapper.readValue("[ { }, { } ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<OSCALSsp>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<List<OSCALSsp>>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
     public ResponseEntity<OSCALSsp> getSspById(@Parameter(in = ParameterIn.PATH, description = "ID of system security plan to return", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
@@ -100,9 +76,34 @@ public class SspsApiController implements SspsApi {
         return new ResponseEntity<List<OSCALSsp>>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    /*
     public ResponseEntity<Void> updateSsp(@Parameter(in = ParameterIn.DEFAULT, description = "System security plan object to be updated", required=true, schema=@Schema()) @Valid @RequestBody OSCALSsp body) {
         String accept = request.getHeader("Accept");
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    public ResponseEntity<Void> addSsp(@Parameter(in = ParameterIn.DEFAULT, description = "OSCAL system security plan object to be added", required=true, schema=@Schema()) @Valid @RequestBody OSCALSsp body) {
+        String accept = request.getHeader("Accept");
+        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    public ResponseEntity<Void> deleteSsp(@Parameter(in = ParameterIn.PATH, description = "System security plan id to delete", required=true, schema=@Schema()) @PathVariable("sspId") Long sspId,@Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey) {
+        String accept = request.getHeader("Accept");
+        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    public ResponseEntity<List<OSCALSsp>> findSspsByName(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Terms to search for in system security plan names" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "search-string", required = true) String searchString) {
+        String accept = request.getHeader("Accept");
+        if (accept != null && accept.contains("application/json")) {
+            try {
+                return new ResponseEntity<List<OSCALSsp>>(objectMapper.readValue("[ { }, { } ]", List.class), HttpStatus.NOT_IMPLEMENTED);
+            } catch (IOException e) {
+                log.error("Couldn't serialize response for content type application/json", e);
+                return new ResponseEntity<List<OSCALSsp>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return new ResponseEntity<List<OSCALSsp>>(HttpStatus.NOT_IMPLEMENTED);
+    }
+    */
 }
