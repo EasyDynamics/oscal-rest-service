@@ -5,25 +5,18 @@
  */
 package io.swagger.api;
 
-import io.swagger.model.OSCALComponent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-02-22T21:37:05.909Z[GMT]")
 public interface ComponentsApi {
@@ -33,7 +26,7 @@ public interface ComponentsApi {
     @Operation(summary = "Find an OSCAL component by ID", description = "Returns a single OSCAL component", security = {
         @SecurityRequirement(name = "api_key")    }, tags={ "OSCAL Component" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = OSCALComponent.class))),
+        @ApiResponse(responseCode = "200", description = "successful operation"),
         
         @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
         
@@ -48,7 +41,7 @@ public interface ComponentsApi {
         @SecurityRequirement(name = "oscal_auth", scopes = {
             ""        })    }, tags={ "OSCAL Component" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OSCALComponent.class)))) })
+        @ApiResponse(responseCode = "200", description = "successful operation") })
     @RequestMapping(value = "/components",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
