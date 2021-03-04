@@ -1,24 +1,13 @@
 package io.swagger.api;
 
-import io.swagger.model.OSCALCatalog;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-02-22T21:37:05.909Z[GMT]")
 public interface CatalogsApi {
@@ -29,7 +18,7 @@ public interface CatalogsApi {
     @Operation(summary = "Find an OSCAL control catalog by ID", description = "Returns a single OSCAL control catalog", security = {
         @SecurityRequirement(name = "api_key")    }, tags={ "OSCAL Catalog" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = OSCALCatalog.class))),
+        @ApiResponse(responseCode = "200", description = "successful operation"),
         
         @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
         
@@ -37,7 +26,7 @@ public interface CatalogsApi {
     @RequestMapping(value = "/catalogs/{catalogId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<String> getCatalogById(@Parameter(in = ParameterIn.PATH, description = "ID of catalog to return", required=true, schema=@Schema()) @PathVariable("catalogId") String catalogId);
+    ResponseEntity<String> getCatalogById(@Parameter(in = ParameterIn.PATH, description = "ID of catalog to return", required=true) @PathVariable("catalogId") String catalogId);
 
     //GET all catalogs
     @CrossOrigin(origins = "http://localhost:3000")
@@ -45,7 +34,7 @@ public interface CatalogsApi {
         @SecurityRequirement(name = "oscal_auth", scopes = {
             ""        })    }, tags={ "OSCAL Catalog" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OSCALCatalog.class)))) })
+        @ApiResponse(responseCode = "200", description = "successful operation") })
     @RequestMapping(value = "/catalogs",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
