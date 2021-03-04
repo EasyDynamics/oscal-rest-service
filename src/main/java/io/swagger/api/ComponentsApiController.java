@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
@@ -42,6 +43,14 @@ public class ComponentsApiController implements ComponentsApi {
     private final ObjectMapper objectMapper;
 
     private final HttpServletRequest request;
+
+    private RestTemplate restTemplate = new RestTemplate();
+
+    //Pre-load OSCAL Component
+    static String urlForComponent = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/examples/component-definition/json/example-component.json";
+    private String componentFromUrl = restTemplate.getForObject(urlForComponent, String.class);
+
+
 
     @Autowired
     public ComponentsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
