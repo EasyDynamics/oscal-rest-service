@@ -51,25 +51,19 @@ public class ComponentsApiController implements ComponentsApi {
     private String componentFromUrl = restTemplate.getForObject(urlForComponent, String.class);
 
 
-
     @Autowired
     public ComponentsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
     }
 
-    public ResponseEntity<OSCALComponent> getComponentById(@Parameter(in = ParameterIn.PATH, description = "ID of component to return", required=true, schema=@Schema()) @PathVariable("componentId") Long componentId) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<OSCALComponent>(objectMapper.readValue("{ }", OSCALComponent.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<OSCALComponent>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    public ResponseEntity<String> getComponentById(@Parameter(in = ParameterIn.PATH, description = "ID of component to return", required=true, schema=@Schema()) @PathVariable("componentId") String componentId) {
+        if (componentId.contains("aabcfa61-c6eb-4979-851f-35b461f6a0ef")){
+            return new ResponseEntity<String>(componentFromUrl, HttpStatus.OK);
         }
-
-        return new ResponseEntity<OSCALComponent>(HttpStatus.NOT_IMPLEMENTED);
+        else {
+            return new ResponseEntity<String>("Component not found", HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<List<OSCALComponent>> getComponents() {
