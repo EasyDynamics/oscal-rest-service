@@ -66,19 +66,16 @@ public class ComponentsApiController implements ComponentsApi {
         }
     }
 
-    public ResponseEntity<List<OSCALComponent>> getComponents() {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<OSCALComponent>>(objectMapper.readValue("[ { }, { } ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<OSCALComponent>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    public  ResponseEntity<List<OSCALComponent>> getComponents() {
+        try {
+            return new ResponseEntity<List<OSCALComponent>>(objectMapper.readValue("[{},{}]", List.class), HttpStatus.OK);
         }
-
-        return new ResponseEntity<List<OSCALComponent>>(HttpStatus.NOT_IMPLEMENTED);
+        catch(IOException e){
+            return new ResponseEntity<List<OSCALComponent>>(HttpStatus.NOT_IMPLEMENTED);
+        }
     }
+
+
     /*
     public ResponseEntity<Void> updateComponent(@Parameter(in = ParameterIn.DEFAULT, description = "Component object to be updated", required=true, schema=@Schema()) @Valid @RequestBody OSCALComponent body) {
         String accept = request.getHeader("Accept");
