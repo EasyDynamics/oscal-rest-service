@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Catalog Controller for OSCAL REST Service
+ * Catalog Controller for OSCAL REST Service.
  */
 
 @RequestMapping(path = "/oscal/v1")
@@ -37,7 +37,7 @@ public class CatalogController {
     if (id.contains("62f21617-b40f-4e89-bf3b-01b04b68f473")) {
       return new ResponseEntity<String>(catalogFromUrl, HttpStatus.OK);
     } else {
-      return new ResponseEntity<String>("Ssp not found", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<String>("Catalog not found", HttpStatus.BAD_REQUEST);
     }
   }
 
