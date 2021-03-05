@@ -53,6 +53,28 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+			   <groupId>org.apache.maven.plugins</groupId>
+			   <artifactId>maven-checkstyle-plugin</artifactId>
+			   <version>3.1.2</version>
+			   <configuration>
+			     <configLocation>google_checks.xml</configLocation>
+			     <encoding>UTF-8</encoding>
+			     <consoleOutput>true</consoleOutput>
+			     <failsOnError>true</failsOnError>
+			     <violationSeverity>warning</violationSeverity>
+			     <linkXRef>false</linkXRef>
+			   </configuration>
+			   <executions>
+			     <execution>
+			       <id>validate</id>
+			       <phase>validate</phase>
+			       <goals>
+			         <goal>check</goal>
+			       </goals>
+			     </execution>
+			   </executions>
+			 </plugin>
 		</plugins>
 	</build>
 

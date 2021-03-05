@@ -13,20 +13,20 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
 @SpringBootTest
 class OscalRestServiceApplicationTests {
-	
-	@Autowired
-	SwaggerResourcesProvider swaggerResourcesProvider;
 
-	@Test
-	void contextLoads() {
-		List<SwaggerResource> resources = swaggerResourcesProvider.get();
-		boolean foundStaticOpenApi = false;
-		for (SwaggerResource swaggerResource : resources) {
-			if (swaggerResource.getUrl() != null && swaggerResource.getUrl().contains("openapi.yaml")) {
-				foundStaticOpenApi = true;
-				break;
-			}
-		}
-		assertTrue(foundStaticOpenApi, "Could not find the static openapi.yaml Swagger resource");
-	}
+  @Autowired
+  SwaggerResourcesProvider swaggerResourcesProvider;
+
+  @Test
+  void contextLoads() {
+    List<SwaggerResource> resources = swaggerResourcesProvider.get();
+    boolean foundStaticOpenApi = false;
+    for (SwaggerResource swaggerResource : resources) {
+      if (swaggerResource.getUrl() != null && swaggerResource.getUrl().contains("openapi.yaml")) {
+        foundStaticOpenApi = true;
+        break;
+      }
+    }
+    assertTrue(foundStaticOpenApi, "Could not find the static openapi.yaml Swagger resource");
+  }
 }

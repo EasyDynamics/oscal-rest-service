@@ -14,28 +14,31 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class OscalRestServiceApplication {
 
-	private static final String PROPERTY_CORS_ALLOWED_ORIGINS = "cors.allowedOrigins";
-	
-	public static void main(String[] args) {
-		SpringApplication.run(OscalRestServiceApplication.class, args);
-	}
+  private static final String PROPERTY_CORS_ALLOWED_ORIGINS = "cors.allowedOrigins";
 
-	@Autowired
-    private Environment env;
-	
-	/**
-	 * Defines an MVC configurer that will load allowed CORS origins from environment / application.properties
-	 * @return the CORS configured configurer
-	 */
-	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				String urls = env.getProperty(PROPERTY_CORS_ALLOWED_ORIGINS);
-				// TODO Investigate a delimiter for a single string property to split up before sending here
-				registry.addMapping("/oscal/v1/**").allowedOrigins(urls);
-			}
-		};
-    }   
+  public static void main(String[] args) {
+    SpringApplication.run(OscalRestServiceApplication.class, args);
+  }
+
+  @Autowired
+  private Environment env;
+
+  /**
+   * Defines an MVC configurer that will load allowed CORS origins
+   * from environment / application.properties
+   *
+   * @return the CORS configured configurer
+   */
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        String urls = env.getProperty(PROPERTY_CORS_ALLOWED_ORIGINS);
+        // TODO Investigate a delimiter for a single string property to split up before
+        // sending here
+        registry.addMapping("/oscal/v1/**").allowedOrigins(urls);
+      }
+    };
+  }
 }
