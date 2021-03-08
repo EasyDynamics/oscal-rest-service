@@ -1,8 +1,6 @@
 package com.easydynamics.oscalrestservice;
-import static org.hamcrest.Matchers.containsString;
+import static com.easydynamics.oscalrestservice.api.CatalogController.CATALOG_ID_80053r5;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +15,26 @@ public class CatalogControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
+  /**
+   * Test to see if the GET Request to /catalogs/{id} will retrieve the catalog.json from the oscal-content git hub when provided a valid id
+   * @throws Exception
+   */
+
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
-    String id="62f21617-b40f-4e89-bf3b-01b04b68f473";
-    this.mockMvc.perform(get("/oscal/v1/catalogs/{id}", id))
-        //.andDo(print()) Catalog is too huge, it will crash the test if this is uncommented.
+    this.mockMvc.perform(get("/oscal/v1/catalogs/{id}", CATALOG_ID_80053r5))
         .andExpect(status().isOk());
+  }
+
+  /**
+   * Test to see if the GET Request to /catalogs/{id} will fail if provided an invalid id
+   * @throws Exception
+   */
+
+  @Test
+  public void isNotFound() throws Exception {
+    String id="bad-id-this-will-not-work-123";
+    this.mockMvc.perform(get("/oscal/v1/catalogs/{id}", id))
+        .andExpect(status().isNotFound());
   }
 }
