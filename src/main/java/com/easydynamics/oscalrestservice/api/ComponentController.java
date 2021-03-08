@@ -20,11 +20,11 @@ public class ComponentController {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  private static final String COMPONENT_URL_80053r5 = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/examples/component-definition/json/example-component.json";
+  private static final String EXAMPLE_COMPONENT_URL = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/examples/component-definition/json/example-component.json";
 
-  public static final String COMPONENT_ID_80053r5 = "aabcfa61-c6eb-4979-851f-35b461f6a0ef";
+  public static final String EXAMPLE_COMPONENT_ID = "aabcfa61-c6eb-4979-851f-35b461f6a0ef";
 
-  private String componentFromUrl = restTemplate.getForObject(COMPONENT_URL_80053r5, String.class);
+  private String componentFromUrl = restTemplate.getForObject(EXAMPLE_COMPONENT_URL, String.class);
 
   /**
    * Defines a GET request for component by ID.
@@ -36,7 +36,7 @@ public class ComponentController {
   @GetMapping("/components/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
 
-    if (id.contains(COMPONENT_ID_80053r5)) {
+    if (id.contains(EXAMPLE_COMPONENT_ID)) {
       return new ResponseEntity<String>(componentFromUrl, HttpStatus.OK);
     } else {
       return new ResponseEntity<String>("Component not found", HttpStatus.NOT_FOUND);

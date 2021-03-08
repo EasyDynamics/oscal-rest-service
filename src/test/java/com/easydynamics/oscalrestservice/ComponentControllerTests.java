@@ -1,5 +1,5 @@
 package com.easydynamics.oscalrestservice;
-import static com.easydynamics.oscalrestservice.api.ComponentController.COMPONENT_ID_80053r5;
+import static com.easydynamics.oscalrestservice.api.ComponentController.EXAMPLE_COMPONENT_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class ComponentControllerTests {
 
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
-    this.mockMvc.perform(get("/oscal/v1/components/{id}", COMPONENT_ID_80053r5))
+    this.mockMvc.perform(get("/oscal/v1/components/{id}", EXAMPLE_COMPONENT_ID))
         .andExpect(status().isOk());
   }
 
