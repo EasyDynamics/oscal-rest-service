@@ -20,9 +20,11 @@ public class CatalogController {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  static String urlForCatalog = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json";
+  private static final String CATALOG_URL_80053r5 = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json";
 
-  private String catalogFromUrl = restTemplate.getForObject(urlForCatalog, String.class);
+  public static final String CATALOG_ID_80053r5 = "62f21617-b40f-4e89-bf3b-01b04b68f473";
+
+  private String catalogFromUrl = restTemplate.getForObject(CATALOG_URL_80053r5, String.class);
 
   /**
    * Defines a GET request for catalog by ID.
@@ -34,10 +36,10 @@ public class CatalogController {
   @GetMapping("/catalogs/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
 
-    if (id.contains("62f21617-b40f-4e89-bf3b-01b04b68f473")) {
+    if (id.contains(CATALOG_ID_80053r5)) {
       return new ResponseEntity<String>(catalogFromUrl, HttpStatus.OK);
     } else {
-      return new ResponseEntity<String>("Catalog not found", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<String>("Catalog not found", HttpStatus.NOT_FOUND);
     }
   }
 
