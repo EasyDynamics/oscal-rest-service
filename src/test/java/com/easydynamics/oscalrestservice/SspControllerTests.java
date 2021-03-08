@@ -1,5 +1,5 @@
 package com.easydynamics.oscalrestservice;
-import static com.easydynamics.oscalrestservice.api.SspController.SSP_ID_80053r5;
+import static com.easydynamics.oscalrestservice.api.SspController.SSP_EXAMPLE_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class SspControllerTests {
 
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
-    this.mockMvc.perform(get("/oscal/v1/ssps/{id}", SSP_ID_80053r5))
+    this.mockMvc.perform(get("/oscal/v1/ssps/{id}", SSP_EXAMPLE_ID))
         .andExpect(status().isOk());
   }
 

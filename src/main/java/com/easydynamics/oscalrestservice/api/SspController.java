@@ -20,11 +20,11 @@ public class SspController {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  private static final String SSP_URL_80053r5 = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/examples/ssp/json/ssp-example.json";
+  private static final String SSP_EXAMPLE_URL = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/examples/ssp/json/ssp-example.json";
 
-  public static final String SSP_ID_80053r5 = "66c2a1c8-5830-48bd-8fdd-55a1c3a52888";
+  public static final String SSP_EXAMPLE_ID = "66c2a1c8-5830-48bd-8fdd-55a1c3a52888";
 
-  private String sspFromUrl = restTemplate.getForObject(SSP_URL_80053r5, String.class);
+  private String sspFromUrl = restTemplate.getForObject(SSP_EXAMPLE_URL, String.class);
 
   /**
    * Defines a GET request for ssp by ID.
@@ -36,7 +36,7 @@ public class SspController {
   @GetMapping("/ssps/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
 
-    if (id.contains(SSP_ID_80053r5)) {
+    if (id.contains(SSP_EXAMPLE_ID)) {
       return new ResponseEntity<String>(sspFromUrl, HttpStatus.OK);
     } else {
       return new ResponseEntity<String>("Ssp not found", HttpStatus.NOT_FOUND);
