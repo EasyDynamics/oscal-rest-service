@@ -35,9 +35,7 @@ public class OscalRestServiceApplication {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
         String urls = env.getProperty(PROPERTY_CORS_ALLOWED_ORIGINS);
-        // TODO Investigate a delimiter for a single string property to split up before
-        // sending here
-        registry.addMapping("/oscal/v1/**").allowedOrigins(urls);
+        registry.addMapping("/oscal/v1/**").allowedOrigins(urls.split(","));
       }
     };
   }
