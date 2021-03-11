@@ -42,9 +42,9 @@ public class PartyController {
   }
 
   /**
-   * Defines a GET request for party by ID.
+   * Defines a GET request to return all parties.
    *
-   * @return the party simple object
+   * @return all parties
    */
 
   @GetMapping("/parties")
