@@ -4,6 +4,7 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscalrestservice.model.OscalParty;
 import com.easydynamics.oscalrestservice.repository.PartyRepository;
 import io.swagger.models.Response;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +53,21 @@ public class PartyController {
   public ResponseEntity<List<OscalParty>> findAllParties() {
 
     return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+  }
+
+  /**
+   * Defines a GET request for party by ID.
+   *
+   * @param id the party uuid.
+   * @return the party simple object
+   */
+
+  @GetMapping("/parties/{id}")
+  public ResponseEntity<OscalParty> findById(@Parameter @PathVariable String id) {
+    if (repository.findByUuid(id) != null) {
+      return new ResponseEntity<OscalParty>(repository.findByUuid(id), HttpStatus.OK);
+    } else {
+      return new ResponseEntity<OscalParty>(HttpStatus.NOT_FOUND);
+    }
   }
 }

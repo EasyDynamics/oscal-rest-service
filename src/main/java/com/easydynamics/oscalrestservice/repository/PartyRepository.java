@@ -14,4 +14,6 @@ public interface PartyRepository extends JpaRepository<OscalParty, String> {
 
   OscalParty findByName(String name);
 
+  OscalParty findByUuid(String uuid);
+
 }
