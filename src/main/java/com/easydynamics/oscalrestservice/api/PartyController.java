@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +39,17 @@ public class PartyController {
 
     repository.save(party);
     return ResponseEntity.ok(party);
-    //TODO set up custom response message for post request
-    // currently responseentity.ok will send 400 bad request automatically
+  }
 
+  /**
+   * Defines a GET request for party by ID.
+   *
+   * @return the party simple object
+   */
+
+  @GetMapping("/parties")
+  public ResponseEntity<List<OscalParty>> findAllParties() {
+
+    return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
   }
 }
