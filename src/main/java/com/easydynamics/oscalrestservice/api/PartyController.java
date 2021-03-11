@@ -1,7 +1,6 @@
 package com.easydynamics.oscalrestservice.api;
 
 
-import com.easydynamics.oscalrestservice.model.OscalParty;
 import com.easydynamics.oscalrestservice.repository.PartyRepository;
 import io.swagger.models.Response;
 import java.util.List;
