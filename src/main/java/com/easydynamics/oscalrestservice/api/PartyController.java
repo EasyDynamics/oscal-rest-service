@@ -1,23 +1,21 @@
 package com.easydynamics.oscalrestservice.api;
 
-
+import com.easydynamics.oscalrestservice.exception.RecordNotFoundException;
 import com.easydynamics.oscalrestservice.model.OscalParty;
 import com.easydynamics.oscalrestservice.repository.PartyRepository;
-import io.swagger.models.Response;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 /**
  * Party Controller for OSCAL REST Service.
@@ -40,7 +38,7 @@ public class PartyController {
   public ResponseEntity<OscalParty> addParty(@Valid @RequestBody OscalParty party) {
 
     repository.save(party);
-    return ResponseEntity.ok(party);
+    return new ResponseEntity<OscalParty>(party,HttpStatus.OK);
   }
 
   /**
@@ -64,10 +62,9 @@ public class PartyController {
 
   @GetMapping("/parties/{id}")
   public ResponseEntity<OscalParty> findById(@Parameter @PathVariable String id) {
-    if (repository.findByUuid(id) != null) {
-      return new ResponseEntity<OscalParty>(repository.findByUuid(id), HttpStatus.OK);
-    } else {
-      return new ResponseEntity<OscalParty>(HttpStatus.NOT_FOUND);
-    }
+    OscalParty party = repository.findByUuid(id)
+        .orElseThrow(() -> new RecordNotFoundException(
+            "Error, Party with specified UUID not found"));
+    return new ResponseEntity<OscalParty>(party, HttpStatus.OK);
   }
 }
