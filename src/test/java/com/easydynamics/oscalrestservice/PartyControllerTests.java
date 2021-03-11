@@ -30,7 +30,7 @@ public class PartyControllerTests {
   private PartyRepository testRepository;
 
   /**
-   * Test to see if the POST Request to /parties will be valid when provided a good request
+   * Test to see if the POST Request to /parties will be valid when provided a good request.
    * @throws Exception
    */
 
@@ -39,13 +39,34 @@ public class PartyControllerTests {
     OscalParty party = new OscalParty("organization", "IT Department");
     testRepository.save(party);
     this.mockMvc.perform(get("/oscal/v1/parties"))
-        .andDo(print())
         .andExpect(status().isOk());
   }
+
+  /**
+   * Test to see if the GET Request to /parties/{id} will be invalid when provided a bad uuid.
+   * @throws Exception
+   */
 
   @Test
   public void getPartyByIdTestInvalidRequest() throws Exception {
     this.mockMvc.perform(get("/oscal/v1/parties/{id}", "not a uuid"))
         .andExpect(status().isNotFound());
+  }
+
+  /**
+   * Test to see if the GET Request to /parties/{id} will be valid when provided a good uuid.
+   * @throws Exception
+   */
+
+  @Test
+  public void getPartyByIdValidRequest() throws Exception {
+    OscalParty testParty = new OscalParty("testing", "testing the id");
+    testRepository.save(testParty);
+    this.mockMvc.perform(get("/oscal/v1/parties/{id}", testParty.getUuid()))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.type").value("testing"));
+
   }
 }
