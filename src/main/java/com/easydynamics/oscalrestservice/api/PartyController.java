@@ -41,6 +41,21 @@ public class PartyController {
     return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
   }
 
+  /**
+   * Defines a GET request for party by ID.
+   *
+   * @param id the party uuid.
+   * @return the party simple object
+   */
+
+  @GetMapping("/parties/{id}")
+  public ResponseEntity<OscalParty> findById(@Parameter @PathVariable String id) {
+    OscalParty party = repository.findByUuid(id)
+        .orElseThrow(() -> new RecordNotFoundException(
+            "Error, Party with specified UUID not found"));
+    return new ResponseEntity<OscalParty>(party, HttpStatus.OK);
+  }
+
 
 
 }
