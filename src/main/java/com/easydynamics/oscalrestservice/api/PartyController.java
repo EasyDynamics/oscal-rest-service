@@ -55,7 +55,33 @@ public class PartyController {
             "Error, Party with specified UUID not found"));
     return new ResponseEntity<OscalParty>(party, HttpStatus.OK);
   }
+  /**
+   * Defines a GET request for party by type.
+   *
+   * @param searchByType the party type.
+   * @return the party simple object
+   */
 
+  @GetMapping("/parties/type")
+  public ResponseEntity<List<OscalParty>> findPartyByType(@RequestParam String searchByType) {
 
+    List<OscalParty> results = repository.findByType(searchByType);
+    System.out.println(results);
+    return new ResponseEntity<>(results, HttpStatus.OK);
+  }
 
+  /**
+   * Defines a GET request for party by name.
+   *
+   * @param searchByName the party name.
+   * @return the party simple object
+   */
+
+  @GetMapping("/parties/name")
+  public ResponseEntity<List<OscalParty>> findPartyByName(@RequestParam String searchByName) {
+
+    List<OscalParty> results = repository.findByName(searchByName);
+    System.out.println(results);
+    return new ResponseEntity<>(results, HttpStatus.OK);
+  }
 }
