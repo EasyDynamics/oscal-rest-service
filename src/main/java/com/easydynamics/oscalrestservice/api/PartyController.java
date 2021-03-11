@@ -29,6 +29,18 @@ public class PartyController {
   @Autowired
   private PartyRepository repository;
 
+  /**
+   * Defines a GET request to return all parties.
+   *
+   * @return all parties
+   */
+
+  @GetMapping("/parties")
+  public ResponseEntity<List<OscalParty>> findAllParties() {
+
+    return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+  }
+
 
 
 }
