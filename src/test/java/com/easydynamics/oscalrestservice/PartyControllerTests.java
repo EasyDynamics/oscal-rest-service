@@ -1,6 +1,7 @@
 package com.easydynamics.oscalrestservice;
 
 import static com.easydynamics.oscalrestservice.api.CatalogController.CATALOG_ID_80053r5;
+import static com.easydynamics.oscalrestservice.api.SspController.SSP_EXAMPLE_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -42,4 +43,9 @@ public class PartyControllerTests {
         .andExpect(status().isOk());
   }
 
+  @Test
+  public void getPartyByIdTestInvalidRequest() throws Exception {
+    this.mockMvc.perform(get("/oscal/v1/parties/{id}", "not a uuid"))
+        .andExpect(status().isNotFound());
+  }
 }
