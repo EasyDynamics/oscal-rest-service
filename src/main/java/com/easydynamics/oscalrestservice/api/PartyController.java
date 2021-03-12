@@ -84,7 +84,7 @@ public class PartyController {
     System.out.println(results);
     return new ResponseEntity<>(results, HttpStatus.OK);
   }
-}
+
   /**
    * Defines a POST request to create a new party.
    *
