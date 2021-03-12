@@ -30,7 +30,23 @@ public class PartyControllerTests {
   private PartyRepository testRepository;
 
   /**
-   * Test to see if the POST Request to /parties will be valid when provided a good request.
+   * Test to see if the OSCAL Party created with POST /parties can be retrieved by GET /parties/{id}
+   * @throws Exception
+   */
+
+  @Test
+  public void partyPostAndGetTest() throws Exception {
+    OscalParty testParty = new OscalParty("testing", "testing the id");
+    testRepository.save(testParty);
+    this.mockMvc.perform(get("/oscal/v1/parties/{id}", testParty.getUuid()))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.type").value("testing"));
+  }
+
+  /**
+   * Test to see if all parties can be return by the GET /parties request
    * @throws Exception
    */
 
@@ -54,24 +70,9 @@ public class PartyControllerTests {
   }
 
   /**
-   * Test to see if the POST Request to /parties will be valid when provided a good request
+   * Test to see if the POST Request to /parties will be valid when provided a good request.
    * @throws Exception
    */
-
-  @Test
-  public void getPartyByIdValidRequest() throws Exception {
-    OscalParty testParty = new OscalParty("testing", "testing the id");
-    testRepository.save(testParty);
-    this.mockMvc.perform(get("/oscal/v1/parties/{id}", testParty.getUuid()))
-        .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.type").value("testing"));
-  }
-
-  /**
-   * Test to see if the GET Request to /parties/{id} will be valid when provided a good uuid.
-  */
   
   @Test
   public void giveValidRequest_thenVerifyResponse() throws Exception {
@@ -79,7 +80,7 @@ public class PartyControllerTests {
         .contentType(MediaType.APPLICATION_JSON)
         .content("{\"type\": \"bob\", \"name\" : \"the name\"}"))
         .andDo(print())
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.type").value("bob"));
   }
