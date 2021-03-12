@@ -4,13 +4,15 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
+/**
+ * ErrorResponse is the model used to build the error message response.
+ */
 @Data
 @XmlRootElement(name = "error")
 public class ErrorResponse {
 
   /**
    * Error Response Constructor.
-   *
    */
 
   public ErrorResponse(String message, List<String> details) {
