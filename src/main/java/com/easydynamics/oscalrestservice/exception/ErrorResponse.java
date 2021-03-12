@@ -5,7 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
 /**
- * ErrorResponse is the model used to build the error message response.
+ * ErrorResponse is the model used to build the default error message response.
+ * An ErrorResponse includes the error message, and a list of details
  */
 @Data
 @XmlRootElement(name = "error")
