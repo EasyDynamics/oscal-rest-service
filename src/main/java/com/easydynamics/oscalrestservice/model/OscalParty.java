@@ -21,7 +21,14 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class OscalParty {
+
+  /**
+   * OscalParty is the model used to map requests to the /parties endpoint.
+   * This is a temporary class, used until we find a better
+   * way to directly generate from the OSCAL Schema
+   */
 
   @Id
   @GeneratedValue(generator = "uuid2")
