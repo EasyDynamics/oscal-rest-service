@@ -85,3 +85,16 @@ public class PartyController {
     return new ResponseEntity<>(results, HttpStatus.OK);
   }
 }
+  /**
+   * Defines a POST request to create a new party.
+   *
+   * @return the party simple object
+   */
+
+  @PostMapping("/parties")
+  public ResponseEntity<OscalParty> addParty(@Valid @RequestBody OscalParty party) {
+
+    repository.save(party);
+    return new ResponseEntity<OscalParty>(party,HttpStatus.OK);
+  }
+}
