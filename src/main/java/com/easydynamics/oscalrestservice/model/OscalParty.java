@@ -14,6 +14,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * OscalParty is the model used to map requests to the /parties endpoint.
+ * This is a temporary class, used until we find a better
+ * way to directly generate from the OSCAL Schema
+ */
+
 @Entity
 @Table(name = "parties")
 @Getter
@@ -23,12 +29,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Builder
 
 public class OscalParty {
-
-  /**
-   * OscalParty is the model used to map requests to the /parties endpoint.
-   * This is a temporary class, used until we find a better
-   * way to directly generate from the OSCAL Schema
-   */
 
   @Id
   @GeneratedValue(generator = "uuid2")
