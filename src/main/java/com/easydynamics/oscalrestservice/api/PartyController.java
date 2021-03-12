@@ -95,6 +95,6 @@ public class PartyController {
   public ResponseEntity<OscalParty> addParty(@Valid @RequestBody OscalParty party) {
 
     repository.save(party);
-    return new ResponseEntity<OscalParty>(party,HttpStatus.OK);
+    return new ResponseEntity<OscalParty>(party,HttpStatus.CREATED);
   }
 }
