@@ -30,6 +30,62 @@ public class PartyController {
   private PartyRepository repository;
 
   /**
+   * Defines a GET request to return all parties.
+   *
+   * @return all parties
+   */
+
+  @GetMapping("/parties")
+  public ResponseEntity<List<OscalParty>> findAllParties() {
+
+    return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+  }
+
+  /**
+   * Defines a GET request for party by ID.
+   *
+   * @param id the party uuid.
+   * @return the party simple object
+   */
+
+  @GetMapping("/parties/{id}")
+  public ResponseEntity<OscalParty> findById(@Parameter @PathVariable String id) {
+    OscalParty party = repository.findByUuid(id)
+        .orElseThrow(() -> new RecordNotFoundException(
+            "Error, Party with specified UUID not found"));
+    return new ResponseEntity<OscalParty>(party, HttpStatus.OK);
+  }
+  /**
+   * Defines a GET request for party by type.
+   *
+   * @param searchByType the party type.
+   * @return the party simple object
+   */
+
+  @GetMapping("/parties/type")
+  public ResponseEntity<List<OscalParty>> findPartyByType(@RequestParam String searchByType) {
+
+    List<OscalParty> results = repository.findByType(searchByType);
+    System.out.println(results);
+    return new ResponseEntity<>(results, HttpStatus.OK);
+  }
+
+  /**
+   * Defines a GET request for party by name.
+   *
+   * @param searchByName the party name.
+   * @return the party simple object
+   */
+
+  @GetMapping("/parties/name")
+  public ResponseEntity<List<OscalParty>> findPartyByName(@RequestParam String searchByName) {
+
+    List<OscalParty> results = repository.findByName(searchByName);
+    System.out.println(results);
+    return new ResponseEntity<>(results, HttpStatus.OK);
+  }
+}
+  /**
    * Defines a POST request to create a new party.
    *
    * @return the party simple object

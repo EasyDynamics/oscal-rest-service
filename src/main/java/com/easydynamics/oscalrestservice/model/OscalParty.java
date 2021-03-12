@@ -6,12 +6,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "parties")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OscalParty {
 
   @Id
@@ -25,5 +34,15 @@ public class OscalParty {
 
   @NotBlank(message = "Name cannot be null")
   private String name;
+
+  /**
+   * Default constructor for Oscal Party, used in the PartyControllerTests.
+   */
+
+  public OscalParty(String type, String name) {
+
+    this.type = type;
+    this.name = name;
+  }
 
 }
