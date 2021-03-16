@@ -30,7 +30,8 @@ public class PartyControllerTests {
   private PartyRepository testRepository;
 
   /**
-   * Test to see if the OSCAL Party created with POST /parties can be retrieved by GET /parties/{id}
+   * Test to see if the OSCAL Party is created with POST to /parties,
+   * and test to see if that Party can be retrieved by a request to GET /parties/{id}
    * @throws Exception
    */
 
@@ -46,7 +47,7 @@ public class PartyControllerTests {
   }
 
   /**
-   * Test to see if all parties can be return by the GET /parties request
+   * Test to see if all parties can be returned by a GET /parties request
    * @throws Exception
    */
 
@@ -59,7 +60,7 @@ public class PartyControllerTests {
   }
 
   /**
-   * Test to see if the GET Request to /parties/{id} will be invalid when provided a bad uuid.
+   * Test to see if a GET Request to /parties/{id} will be invalid if provided a bad uuid.
    * @throws Exception
    */
 
@@ -70,7 +71,7 @@ public class PartyControllerTests {
   }
 
   /**
-   * Test to see if the POST Request to /parties will be valid when provided a good request.
+   * Test to see if the POST Request to /parties will be valid if provided a good request body.
    * @throws Exception
    */
   
@@ -86,7 +87,7 @@ public class PartyControllerTests {
   }
 
   /**
-   * Test to see if the POST Request to /parties will be invalid when provided a bad request
+   * Test to see if a POST Request to /parties will be invalid when provided a bad request body.
    * @throws Exception
    */
 
