@@ -12,3 +12,7 @@ You can view the api documentation in swagger-ui by pointing to
 http://localhost:8080/swagger-ui/index.html
 
 Change default port value in application.properties
+
+## Database Connection
+
+TODO
