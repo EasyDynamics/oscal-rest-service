@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RequestMapping(path = "/oscal/v1")
 @RestController
-public class ProfilesController {
+public class ProfileController {
   private RestTemplate restTemplate = new RestTemplate();
 
   private static final String EXAMPLE_PROFILE_URL = "https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_MODERATE-baseline_profile.json";
