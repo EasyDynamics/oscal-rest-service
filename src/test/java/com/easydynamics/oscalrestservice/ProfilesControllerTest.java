@@ -16,26 +16,26 @@ public class ProfilesControllerTest {
   private MockMvc mockMvc;
 
   /**
-   * * Test to see if the GET Request to /profile/{id} will retrieve the profile.json from the oscal-content git hub when provided a valid id
+   * * Test to see if the GET Request to /profiles/{id} will retrieve the profile.json from the oscal-content git hub when provided a valid id
    * @throws Exception
    */
 
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
 
-    this.mockMvc.perform(get("/oscal/v1/profile/{id}", EXAMPLE_PROFILE_ID))
+    this.mockMvc.perform(get("/oscal/v1/profiles/{id}", EXAMPLE_PROFILE_ID))
         .andExpect(status().isOk());
   }
 
   /**
-   * Test to see if the GET Request to /profile/{id} will fail if provided an invalid id
+   * Test to see if the GET Request to /profiles/{id} will fail if provided an invalid id
    * @throws Exception
    */
 
   @Test
   public void isNotFound() throws Exception {
     String id="bad-id-this-will-not-work-123";
-    this.mockMvc.perform(get("/oscal/v1/profile/{id}", id))
+    this.mockMvc.perform(get("/oscal/v1/profiles/{id}", id))
         .andExpect(status().isNotFound());
   }
 }

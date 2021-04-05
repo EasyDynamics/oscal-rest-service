@@ -1,6 +1,5 @@
 package com.easydynamics.oscalrestservice.api;
 
-
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,7 @@ public class ProfilesController {
    * @return the oscal-content profile hosted on github
    */
 
-  @GetMapping("/profile/{id}")
+  @GetMapping("/profiles/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
 
     if (id.contains(EXAMPLE_PROFILE_ID)) {
