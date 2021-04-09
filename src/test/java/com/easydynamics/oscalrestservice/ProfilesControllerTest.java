@@ -1,5 +1,5 @@
 package com.easydynamics.oscalrestservice;
-import static com.easydynamics.oscalrestservice.api.ProfileController.EXAMPLE_PROFILE_ID;
+import static com.easydynamics.oscalrestservice.api.ProfilesController.EXAMPLE_PROFILE_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ProfileControllerTest {
+public class ProfilesControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
