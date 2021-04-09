@@ -16,7 +16,7 @@ public class ProfileControllerTest {
   private MockMvc mockMvc;
 
   /**
-   * * Test to see if the GET Request to /profiles/{id} will retrieve the profile.json from the oscal-content git hub when provided a valid id
+   * Test to see if the GET Request to /profiles/{id} will retrieve the profile.json from the oscal-content git hub when provided a valid id
    * @throws Exception
    */
 
