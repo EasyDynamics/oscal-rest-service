@@ -4,6 +4,9 @@ import com.easydynamics.oscalrestservice.exception.RecordNotFoundException;
 import com.easydynamics.oscalrestservice.model.OscalParty;
 import com.easydynamics.oscalrestservice.repository.PartyRepository;
 import io.swagger.v3.oas.annotations.Parameter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 /**
  * Party Controller for OSCAL REST Service.
@@ -50,9 +52,8 @@ public class PartyController {
 
   @GetMapping("/parties/{id}")
   public ResponseEntity<OscalParty> findById(@Parameter @PathVariable String id) {
-    OscalParty party = repository.findByUuid(id)
-        .orElseThrow(() -> new RecordNotFoundException(
-            "Error, Party with specified UUID not found"));
+    OscalParty party = repository.findByUuid(id).orElseThrow(
+        () -> new RecordNotFoundException("Error, Party with specified UUID not found"));
     return new ResponseEntity<OscalParty>(party, HttpStatus.OK);
   }
 
@@ -81,6 +82,30 @@ public class PartyController {
   public ResponseEntity<OscalParty> addParty(@Valid @RequestBody OscalParty party) {
 
     repository.save(party);
-    return new ResponseEntity<OscalParty>(party,HttpStatus.CREATED);
+    return new ResponseEntity<OscalParty>(party, HttpStatus.CREATED);
+  }
+
+  /**
+   * Defines a GET request for a party via an environment variable.
+   *
+   * @param partyLocalJson the environment variable representing the local
+   *                       components file
+   * @return the oscal content of the local components json file
+   */
+  @GetMapping("/parties/env/{partyLocalJson}")
+  public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String partyLocalJson) {
+    String fileName = System.getenv(partyLocalJson);
+    if (fileName == null) {
+      return new ResponseEntity<String>("partyLocalJson is not an environemnt variable.", 
+        HttpStatus.NOT_FOUND);
+    }
+    String contents;
+    try {
+      contents = Files.readString(Path.of(fileName));
+    } catch (IOException e) {
+      return new ResponseEntity<String>("Party file does not exist locally.", HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<String>(contents, HttpStatus.OK);
   }
 }

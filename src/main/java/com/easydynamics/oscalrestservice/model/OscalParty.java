@@ -52,4 +52,8 @@ public class OscalParty {
     this.name = name;
   }
 
+  public String getUuid() {
+    return this.uuid;
+  }
+
 }

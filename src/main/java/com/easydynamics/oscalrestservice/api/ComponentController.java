@@ -1,7 +1,9 @@
 package com.easydynamics.oscalrestservice.api;
 
-
 import io.swagger.v3.oas.annotations.Parameter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,31 @@ public class ComponentController {
     } else {
       return new ResponseEntity<String>("Component not found", HttpStatus.NOT_FOUND);
     }
+  }
+
+  /**
+   * Defines a GET request for a component via an environment variable.
+   *
+   * @param componentLocalJson the environment variable representing the local
+   *                           components file
+   * @return the oscal content of the local components json file
+   */
+  @GetMapping("/components/env/{componentLocalJson}")
+  public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String componentLocalJson) {
+    String fileName = System.getenv(componentLocalJson);
+    if (fileName == null) {
+      return new ResponseEntity<String>("componentLocalJson is not an environemnt variable.", 
+        HttpStatus.NOT_FOUND);
+    }
+    String contents;
+    try {
+      contents = Files.readString(Path.of(fileName));
+    } catch (IOException e) {
+      return new ResponseEntity<String>("Component file does not exist locally.", 
+        HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<String>(contents, HttpStatus.OK);
   }
 
 }

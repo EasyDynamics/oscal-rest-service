@@ -1,7 +1,9 @@
 package com.easydynamics.oscalrestservice.api;
 
-
 import io.swagger.v3.oas.annotations.Parameter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,12 +37,34 @@ public class SspController {
 
   @GetMapping("/ssps/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
-
     if (id.contains(SSP_EXAMPLE_ID)) {
       return new ResponseEntity<String>(sspFromUrl, HttpStatus.OK);
     } else {
       return new ResponseEntity<String>("Ssp not found", HttpStatus.NOT_FOUND);
     }
+  }
+
+  /**
+   * Defines a GET request for ssp via an environment variable.
+   *
+   * @param sspLocalJson the environment variable representing the local ssp file
+   * @return the oscal content of the local ssp json file
+   */
+  @GetMapping("/ssps/env/{sspLocalJson}")
+  public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String sspLocalJson) {
+    String fileName = System.getenv(sspLocalJson);
+    if (fileName == null) {
+      return new ResponseEntity<String>("sspLocalJson is not an environemnt variable.", 
+        HttpStatus.NOT_FOUND);
+    }
+    String contents;
+    try {
+      contents = Files.readString(Path.of(fileName));
+    } catch (IOException e) {
+      return new ResponseEntity<String>("Ssp file does not exist locally.", HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<String>(contents, HttpStatus.OK);
   }
 
 }
