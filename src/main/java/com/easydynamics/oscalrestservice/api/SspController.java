@@ -4,9 +4,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +42,7 @@ public class SspController {
 
   @GetMapping("/ssps/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
+
     if (id.contains(SSP_EXAMPLE_ID)) {
       return new ResponseEntity<String>(sspFromUrl, HttpStatus.OK);
     } else {

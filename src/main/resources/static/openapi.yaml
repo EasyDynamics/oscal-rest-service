@@ -83,6 +83,35 @@ paths:
             - write:catalogs
             - read:catalogs
       x-codegen-request-body-name: body
+  /catalogs/env/{catalogLocalJson}:
+    get:
+      tags:
+        - OSCAL Catalog
+      summary: Finds an OSCAL catalog by environment variable
+      description: Returns a single OSCAL catalog
+      operationId: getCatalogByEnv
+      parameters:
+        - name: catalogLocalJson
+          in: catalogLocalJson
+          description: Environment variable containing local path to catalog to return
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OSCALCatalog'
+        400:
+          description: Invalid Environment variable supplied
+          content: {}
+        404:
+          description: Catalog not found
+          content: {}
+      security:
+        - api_key: []
   /catalogs/{catalogId}:
     get:
       tags:
@@ -269,6 +298,35 @@ paths:
             - write:profiles
             - read:profiles
       x-codegen-request-body-name: body
+  /profiles/env/{profileLocalJson}:
+    get:
+      tags:
+        - OSCAL Profile
+      summary: Finds an OSCAL profile by environment variable
+      description: Returns a single OSCAL profile
+      operationId: getProfileByEnv
+      parameters:
+        - name: profileLocalJson
+          in: profileLocalJson
+          description: Environment variable containing local path to profile to return
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OSCALProfile'
+        400:
+          description: Invalid Environment variable supplied
+          content: {}
+        404:
+          description: Profile not found
+          content: {}
+      security:
+        - api_key: []
   /profiles/{profileId}:
     get:
       tags:
@@ -394,6 +452,35 @@ paths:
             - write:components
             - read:components
       x-codegen-request-body-name: body
+  /components/env/{componentLocalJson}:
+    get:
+      tags:
+        - OSCAL Component
+      summary: Finds an OSCAL component by environment variable
+      description: Returns a single OSCAL component
+      operationId: getComponentByEnv
+      parameters:
+        - name: componentLocalJson
+          in: componentLocalJson
+          description: Environment variable containing local path to component to return
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OSCALComponent'
+        400:
+          description: Invalid Environment variable supplied
+          content: {}
+        404:
+          description: Component not found
+          content: {}
+      security:
+        - api_key: []
   /components/{componentId}:
     get:
       tags:
@@ -553,6 +640,35 @@ paths:
             - write:ssps
             - read:ssps
       x-codegen-request-body-name: body
+  /ssps/env/{sspLocalJson}:
+    get:
+      tags:
+        - OSCAL System Security Plan
+      summary: Finds an OSCAL system security plan by environment variable
+      description: Returns a single OSCAL system security plan
+      operationId: getSspByEnv
+      parameters:
+        - name: sspLocalJson
+          in: sspLocalJson
+          description: Environment variable containing local path to system security plan to return
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OSCALSsp'
+        400:
+          description: Invalid Environment variable supplied
+          content: {}
+        404:
+          description: System security plan not found
+          content: {}
+      security:
+        - api_key: []
   /ssps/{sspId}:
     get:
       tags:
@@ -712,6 +828,35 @@ paths:
             - write:parties
             - read:parties
       x-codegen-request-body-name: body
+  /parties/env/{partyLocalJson}:
+    get:
+      tags:
+        - OSCAL Party
+      summary: Finds an OSCAL party by environment variable
+      description: Returns a single OSCAL party
+      operationId: getPartyByEnv
+      parameters:
+        - name: partyLocalJson
+          in: partyLocalJson
+          description: Environment variable containing local path to party to return
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OSCALParty'
+        400:
+          description: Invalid Environment variable supplied
+          content: {}
+        404:
+          description: Party not found
+          content: {}
+      security:
+        - api_key: []
   /parties/{partyId}:
     get:
       tags:
