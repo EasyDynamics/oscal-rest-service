@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,9 @@ public class CatalogController {
   public static final String CATALOG_ID_80053r5 = "62f21617-b40f-4e89-bf3b-01b04b68f473";
 
   private String catalogFromUrl = restTemplate.getForObject(CATALOG_URL_80053r5, String.class);
+
+  @Autowired
+  private Environment env;
 
   /**
    * Defines a GET request for catalog by ID.
@@ -54,7 +60,7 @@ public class CatalogController {
    */
   @GetMapping("/catalogs/env/{catalogLocalJson}")
   public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String catalogLocalJson) {
-    String fileName = System.getenv(catalogLocalJson);
+    String fileName = env.getProperty(catalogLocalJson);
     if (fileName == null) {
       return new ResponseEntity<String>("catalogLocalJson is not an environemnt variable.", 
         HttpStatus.NOT_FOUND);

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,9 @@ public class PartyController {
 
   @Autowired
   private PartyRepository repository;
+
+  @Autowired
+  private Environment env;
 
   /**
    * Defines a GET request to return all parties.
@@ -94,7 +98,7 @@ public class PartyController {
    */
   @GetMapping("/parties/env/{partyLocalJson}")
   public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String partyLocalJson) {
-    String fileName = System.getenv(partyLocalJson);
+    String fileName = env.getProperty(partyLocalJson);
     if (fileName == null) {
       return new ResponseEntity<String>("partyLocalJson is not an environemnt variable.", 
         HttpStatus.NOT_FOUND);

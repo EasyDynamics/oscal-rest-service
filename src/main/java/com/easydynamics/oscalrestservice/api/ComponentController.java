@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,9 @@ public class ComponentController {
   public static final String EXAMPLE_COMPONENT_ID = "aabcfa61-c6eb-4979-851f-35b461f6a0ef";
 
   private String componentFromUrl = restTemplate.getForObject(EXAMPLE_COMPONENT_URL, String.class);
+
+  @Autowired
+  private Environment env;
 
   /**
    * Defines a GET request for component by ID.
@@ -54,7 +60,7 @@ public class ComponentController {
    */
   @GetMapping("/components/env/{componentLocalJson}")
   public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String componentLocalJson) {
-    String fileName = System.getenv(componentLocalJson);
+    String fileName = env.getProperty(componentLocalJson);
     if (fileName == null) {
       return new ResponseEntity<String>("componentLocalJson is not an environemnt variable.", 
         HttpStatus.NOT_FOUND);

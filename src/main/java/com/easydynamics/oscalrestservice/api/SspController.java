@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,9 @@ public class SspController {
   public static final String SSP_EXAMPLE_ID = "66c2a1c8-5830-48bd-8fdd-55a1c3a52888";
 
   private String sspFromUrl = restTemplate.getForObject(SSP_EXAMPLE_URL, String.class);
+
+  @Autowired
+  private Environment env;
 
   /**
    * Defines a GET request for ssp by ID.
@@ -52,7 +58,7 @@ public class SspController {
    */
   @GetMapping("/ssps/env/{sspLocalJson}")
   public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String sspLocalJson) {
-    String fileName = System.getenv(sspLocalJson);
+    String fileName = env.getProperty(sspLocalJson);
     if (fileName == null) {
       return new ResponseEntity<String>("sspLocalJson is not an environemnt variable.", 
         HttpStatus.NOT_FOUND);

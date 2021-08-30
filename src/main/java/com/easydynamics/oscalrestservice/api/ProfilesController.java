@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,9 @@ public class ProfilesController {
   public static final String EXAMPLE_PROFILE_ID = "0f2814d7-a9a1-4b1f-aec8-eb7b10c1ef06";
 
   private String profileFromUrl = restTemplate.getForObject(EXAMPLE_PROFILE_URL, String.class);
+
+  @Autowired
+  private Environment env;
 
   /**
    * Defines a GET request for profile by ID.
@@ -53,7 +59,7 @@ public class ProfilesController {
    */
   @GetMapping("/profile/env/{profileLocalJson}")
   public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String profileLocalJson) {
-    String fileName = System.getenv(profileLocalJson);
+    String fileName = env.getProperty(profileLocalJson);
     if (fileName == null) {
       return new ResponseEntity<String>("profileLocalJson is not an environemnt variable.", 
         HttpStatus.NOT_FOUND);
