@@ -4,13 +4,9 @@ import com.easydynamics.oscalrestservice.exception.RecordNotFoundException;
 import com.easydynamics.oscalrestservice.model.OscalParty;
 import com.easydynamics.oscalrestservice.repository.PartyRepository;
 import io.swagger.v3.oas.annotations.Parameter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,9 +27,6 @@ public class PartyController {
 
   @Autowired
   private PartyRepository repository;
-
-  @Autowired
-  private Environment env;
 
   /**
    * Defines a GET request to return all parties.
@@ -89,27 +82,4 @@ public class PartyController {
     return new ResponseEntity<OscalParty>(party, HttpStatus.CREATED);
   }
 
-  /**
-   * Defines a GET request for a party via an environment variable.
-   *
-   * @param partyLocalJson the environment variable representing the local
-   *                       components file
-   * @return the oscal content of the local components json file
-   */
-  @GetMapping("/parties/env/{partyLocalJson}")
-  public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String partyLocalJson) {
-    String fileName = env.getProperty(partyLocalJson);
-    if (fileName == null) {
-      return new ResponseEntity<String>("partyLocalJson is not an environemnt variable.", 
-        HttpStatus.NOT_FOUND);
-    }
-    String contents;
-    try {
-      contents = Files.readString(Path.of(fileName));
-    } catch (IOException e) {
-      return new ResponseEntity<String>("Party file does not exist locally.", HttpStatus.NOT_FOUND);
-    }
-
-    return new ResponseEntity<String>(contents, HttpStatus.OK);
-  }
 }

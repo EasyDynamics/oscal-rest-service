@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +28,6 @@ public class SspController {
 
   private String sspFromUrl = restTemplate.getForObject(SSP_EXAMPLE_URL, String.class);
 
-  @Autowired
-  private Environment env;
-
   /**
    * Defines a GET request for ssp by ID.
    *
@@ -42,35 +37,25 @@ public class SspController {
 
   @GetMapping("/ssps/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
-
-    if (id.contains(SSP_EXAMPLE_ID)) {
+    if (id.equals(SSP_EXAMPLE_ID)) {
       return new ResponseEntity<String>(sspFromUrl, HttpStatus.OK);
-    } else {
+    }
+
+    String parentDirectory = System.getenv("PARENT_DIR");
+    String sspsDirectory = System.getenv("SSPS_DIR");
+    String json;
+
+    if (parentDirectory == null || sspsDirectory == null) {
       return new ResponseEntity<String>("Ssp not found", HttpStatus.NOT_FOUND);
     }
-  }
 
-  /**
-   * Defines a GET request for ssp via an environment variable.
-   *
-   * @param sspLocalJson the environment variable representing the local ssp file
-   * @return the oscal content of the local ssp json file
-   */
-  @GetMapping("/ssps/env/{sspLocalJson}")
-  public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String sspLocalJson) {
-    String fileName = env.getProperty(sspLocalJson);
-    if (fileName == null) {
-      return new ResponseEntity<String>("sspLocalJson is not an environemnt variable.", 
-        HttpStatus.NOT_FOUND);
-    }
-    String contents;
     try {
-      contents = Files.readString(Path.of(fileName));
+      json = Files.readString(Path.of(parentDirectory, sspsDirectory, id));
     } catch (IOException e) {
-      return new ResponseEntity<String>("Ssp file does not exist locally.", HttpStatus.NOT_FOUND);
+      return new ResponseEntity<String>("Ssp not found", HttpStatus.NOT_FOUND);
     }
-
-    return new ResponseEntity<String>(contents, HttpStatus.OK);
+    
+    return new ResponseEntity<String>(json, HttpStatus.OK);
   }
 
 }

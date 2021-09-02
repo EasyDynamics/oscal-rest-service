@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +27,6 @@ public class ProfilesController {
 
   private String profileFromUrl = restTemplate.getForObject(EXAMPLE_PROFILE_URL, String.class);
 
-  @Autowired
-  private Environment env;
-
   /**
    * Defines a GET request for profile by ID.
    *
@@ -41,37 +36,25 @@ public class ProfilesController {
 
   @GetMapping("/profiles/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
-
-    if (id.contains(EXAMPLE_PROFILE_ID)) {
+    if (id.equals(EXAMPLE_PROFILE_ID)) {
       return new ResponseEntity<String>(profileFromUrl, HttpStatus.OK);
-    } else {
+    }
+
+    String parentDirectory = System.getenv("PARENT_DIR");
+    String profilesDirectory = System.getenv("PROFILES_DIR");
+    String json;
+
+    if (parentDirectory == null || profilesDirectory == null) {
       return new ResponseEntity<String>("Profile not found", HttpStatus.NOT_FOUND);
     }
-  }
 
-  /**
-   * Defines a GET request for a profile via an environment variable.
-   *
-   * @param profileLocalJson the environment variable representing the local
-   *                         profile file
-   * @return the oscal content of the local profile json file
-   */
-  @GetMapping("/profiles/env/{profileLocalJson}")
-  public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String profileLocalJson) {
-    String fileName = env.getProperty(profileLocalJson);
-    if (fileName == null) {
-      return new ResponseEntity<String>("profileLocalJson is not an environemnt variable.", 
-        HttpStatus.NOT_FOUND);
-    }
-    String contents;
     try {
-      contents = Files.readString(Path.of(fileName));
+      json = Files.readString(Path.of(parentDirectory, profilesDirectory, id));
     } catch (IOException e) {
-      return new ResponseEntity<String>("Profile file does not exist locally.", 
-        HttpStatus.NOT_FOUND);
+      return new ResponseEntity<String>("Profile not found", HttpStatus.NOT_FOUND);
     }
-
-    return new ResponseEntity<String>(contents, HttpStatus.OK);
+    
+    return new ResponseEntity<String>(json, HttpStatus.OK);
   }
 
 }

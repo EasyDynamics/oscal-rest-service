@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +28,6 @@ public class CatalogController {
 
   private String catalogFromUrl = restTemplate.getForObject(CATALOG_URL_80053r5, String.class);
 
-  @Autowired
-  private Environment env;
-
   /**
    * Defines a GET request for catalog by ID.
    *
@@ -42,37 +37,25 @@ public class CatalogController {
 
   @GetMapping("/catalogs/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
-
-    if (id.contains(CATALOG_ID_80053r5)) {
+    if (id.equals(CATALOG_ID_80053r5)) {
       return new ResponseEntity<String>(catalogFromUrl, HttpStatus.OK);
-    } else {
+    }
+
+    String parentDirectory = System.getenv("PARENT_DIR");
+    String catalogsDirectory = System.getenv("CATALOGS_DIR");
+    String json;
+
+    if (parentDirectory == null || catalogsDirectory == null) {
       return new ResponseEntity<String>("Catalog not found", HttpStatus.NOT_FOUND);
     }
-  }
 
-  /**
-   * Defines a GET request for a catalog via an environment variable.
-   *
-   * @param catalogLocalJson the environment variable representing the local
-   *                         catalog file
-   * @return the oscal content of the local catalog json file
-   */
-  @GetMapping("/catalogs/env/{catalogLocalJson}")
-  public ResponseEntity<String> findByLocalEnv(@Parameter @PathVariable String catalogLocalJson) {
-    String fileName = env.getProperty(catalogLocalJson);
-    if (fileName == null) {
-      return new ResponseEntity<String>("catalogLocalJson is not an environemnt variable.", 
-        HttpStatus.NOT_FOUND);
-    }
-    String contents;
     try {
-      contents = Files.readString(Path.of(fileName));
+      json = Files.readString(Path.of(parentDirectory, catalogsDirectory, id));
     } catch (IOException e) {
-      return new ResponseEntity<String>("Catalog file does not exist locally.", 
-        HttpStatus.NOT_FOUND);
+      return new ResponseEntity<String>("Catalog not found", HttpStatus.NOT_FOUND);
     }
-
-    return new ResponseEntity<String>(contents, HttpStatus.OK);
+    
+    return new ResponseEntity<String>(json, HttpStatus.OK);
   }
 
 }
