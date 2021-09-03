@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +44,7 @@ public class ProfilesController {
     String parentDirectory = System.getenv("PARENT_DIR");
     String profilesDirectory = System.getenv("PROFILES_DIR");
     String json;
+    
 
     if (parentDirectory == null || profilesDirectory == null) {
       return new ResponseEntity<String>("Profile not found", HttpStatus.NOT_FOUND);
@@ -54,7 +56,10 @@ public class ProfilesController {
       return new ResponseEntity<String>("Profile not found", HttpStatus.NOT_FOUND);
     }
     
-    return new ResponseEntity<String>(json, HttpStatus.OK);
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
+
+    return new ResponseEntity<String>(json, headers, HttpStatus.OK);
   }
 
 }

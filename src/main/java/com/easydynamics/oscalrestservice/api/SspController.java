@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,8 +55,11 @@ public class SspController {
     } catch (IOException e) {
       return new ResponseEntity<String>("Ssp not found", HttpStatus.NOT_FOUND);
     }
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Access-Control-Allow-Origin", "*");
     
-    return new ResponseEntity<String>(json, HttpStatus.OK);
+    return new ResponseEntity<String>(json, headers, HttpStatus.OK);
   }
 
 }
