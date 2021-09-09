@@ -1,5 +1,4 @@
 package com.easydynamics.oscalrestservice;
-import static com.easydynamics.oscalrestservice.api.SspController.SSP_EXAMPLE_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,8 @@ public class SspControllerTests {
 
   @Autowired
   private MockMvc mockMvc;
+
+  public static final String SSP_EXAMPLE_ID = "66c2a1c8-5830-48bd-8fdd-55a1c3a52888";
 
   /**
    * Test to see if the GET Request to /ssps/{id} will retrieve the ssp-example.json from the oscal-content git hub when provided a valid id
@@ -34,6 +35,7 @@ public class SspControllerTests {
   @Test
   public void isNotFound() throws Exception {
     String id="bad-id-this-will-not-work-123";
+    
     this.mockMvc.perform(get("/oscal/v1/ssps/{id}", id))
         .andExpect(status().isNotFound());
   }
