@@ -1,6 +1,5 @@
 package com.easydynamics.oscalrestservice.repository;
 
-import com.easydynamics.oscalrestservice.exception.RepositoryException;
 import com.easydynamics.oscalrestservice.model.OscalObject;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -9,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Optional;
-import lombok.Lombok;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -33,8 +32,6 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     this.genericClass = genericClass;
   }
 
-  // protect against things like /etc/passwd with a .json at end of file check?
-  // null id: IllegalArgumentException
   // DataAccessException with causes being the exception caught
 
   /**
@@ -45,16 +42,16 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
    */
   public Optional<T> findById(String id) {
     if (id == null) {
-      throw Lombok.sneakyThrow(new RepositoryException("IllegalArgumentException"));
+      throw new DataRetrievalFailureException("File id not provided.");
     }
 
     String json;
     Path pathToOscalFile;
 
     try {
-      pathToOscalFile = (Path.of(this.path, id));
+      pathToOscalFile = (Path.of(this.path, id, ".json"));
     } catch (InvalidPathException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("InvalidPathException"));
+      throw new DataRetrievalFailureException("Illegal path provided.", e);
     }
 
     try {
@@ -62,9 +59,9 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     } catch (IOException e) {
       return Optional.empty();
     } catch (OutOfMemoryError e) {
-      throw Lombok.sneakyThrow(new RepositoryException("OutOfMemoryError"));
+      throw new DataRetrievalFailureException("Could not load Oscal object.", e);
     } catch (SecurityException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("SecurityException"));
+      throw new DataRetrievalFailureException("Could not access file.", e);
     }
 
     T response;
@@ -72,20 +69,13 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     try {
       response = genericClass.getDeclaredConstructor(String.class, String.class)
         .newInstance(id, json);
-    } catch (InstantiationException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("InstantiationException"));
-    } catch (IllegalAccessException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("IllegalAccessException"));
-    } catch (IllegalArgumentException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("IllegalArgumentException"));
-    } catch (InvocationTargetException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("InvocationTargetException"));
+    } catch (InstantiationException | IllegalArgumentException 
+      | InvocationTargetException | ExceptionInInitializerError e) {
+      throw new DataRetrievalFailureException("Error creating Oscal object.", e);
+    } catch (IllegalAccessException | SecurityException e) {
+      throw new DataRetrievalFailureException("Access denied when creating Oscal object.", e);
     } catch (NoSuchMethodException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("NoSuchMethodException"));
-    } catch (SecurityException e) {
-      throw Lombok.sneakyThrow(new RepositoryException("SecurityException"));
-    } catch (ExceptionInInitializerError e) {
-      throw Lombok.sneakyThrow(new RepositoryException("ExceptionInInitializerError"));
+      throw new DataRetrievalFailureException("Oscal constructor not defined.", e);
     }
 
     return Optional.of(response);

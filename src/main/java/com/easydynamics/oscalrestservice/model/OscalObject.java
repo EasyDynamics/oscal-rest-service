@@ -6,8 +6,7 @@ public class OscalObject {
 
   @NotBlank(message = "Type cannot be null")
   private String uuid;
-
-  @NotBlank(message = "Type cannot be null")
+  
   private String content;
 
   protected OscalObject(String uuid, String content) {
