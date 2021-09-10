@@ -40,11 +40,11 @@
 				<artifactId>springfox-swagger-ui</artifactId>
 				<version>${springfox-version}</version>
 		</dependency>
-		 <dependency>
-			 <groupId>io.springfox</groupId>
-			 <artifactId>springfox-swagger2</artifactId>
-			 <version>${springfox-version}</version>
-		 </dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${springfox-version}</version>
+		</dependency>
 		<!--JPA dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
