@@ -5,6 +5,7 @@ import com.easydynamics.oscalrestservice.repository.OscalSspRepository;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,18 +37,19 @@ public class SspController {
     Optional<OscalSspObject> response;
     try {
       response = sspRepository.findById(id);
-    } catch (Exception e) {
-      return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (DataRetrievalFailureException e) {
+      return new ResponseEntity<String>("Something went wrong, could not retrieve the file.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    if (response.isEmpty()) {
-      String responseMessage = "Ssp with id " + id + " was not found";
-      return new ResponseEntity<String>(responseMessage, HttpStatus.NOT_FOUND);
-    }
+    return response.map(this::buildResponse).orElse(new ResponseEntity<>("SSP with ID " + id + " was not found", HttpStatus.NOT_FOUND));
+
+  }
+
+  private ResponseEntity<String> buildResponse(OscalSspObject ssp) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Access-Control-Allow-Origin", "localhost");
-
-    return new ResponseEntity<String>(response.get().getContent(), headers, HttpStatus.OK);
+    return new ResponseEntity<>(ssp.getContent(), headers, HttpStatus.OK);
   }
+  
 
 }

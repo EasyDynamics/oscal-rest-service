@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OscalRepository<T extends OscalObject> implements CrudRepository<T, String> {
 
-  // define constructor that passes in the folder.
   private Class<T> genericClass;
   public String path;
 
@@ -23,16 +22,10 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
 
   }
 
-  public Class<T> ac(Class<T> classObject) {
-    return classObject;
-  }
-
   protected OscalRepository(String path, Class<T> genericClass) {
     this.path = path;
     this.genericClass = genericClass;
   }
-
-  // DataAccessException with causes being the exception caught
 
   /**
    * Finds an OSCAL file and returns its contents.
@@ -49,13 +42,13 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     Path pathToOscalFile;
 
     try {
-      pathToOscalFile = (Path.of(this.path, id, ".json"));
+      pathToOscalFile = (Path.of(this.path, id + ".json"));
     } catch (InvalidPathException e) {
       throw new DataRetrievalFailureException("Illegal path provided.", e);
     }
 
     try {
-      json = Files.readString(pathToOscalFile, StandardCharsets.US_ASCII);
+      json = Files.readString(pathToOscalFile, StandardCharsets.UTF_8);
     } catch (IOException e) {
       return Optional.empty();
     } catch (OutOfMemoryError e) {
@@ -63,12 +56,10 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     } catch (SecurityException e) {
       throw new DataRetrievalFailureException("Could not access file.", e);
     }
-
-    T response;
-
+    
     try {
-      response = genericClass.getDeclaredConstructor(String.class, String.class)
-        .newInstance(id, json);
+      return Optional.of(genericClass.getDeclaredConstructor(String.class, String.class)
+        .newInstance(id, json));
     } catch (InstantiationException | IllegalArgumentException 
       | InvocationTargetException | ExceptionInInitializerError e) {
       throw new DataRetrievalFailureException("Error creating Oscal object.", e);
@@ -77,8 +68,6 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     } catch (NoSuchMethodException e) {
       throw new DataRetrievalFailureException("Oscal constructor not defined.", e);
     }
-
-    return Optional.of(response);
   }
 
   public long count() {

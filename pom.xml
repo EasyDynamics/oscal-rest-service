@@ -30,17 +30,17 @@
 		</dependency>
 		
 		<!--SpringFox dependencies -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-oas</artifactId>
-            <version>${springfox-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox-version}</version>
-        </dependency>
-        <dependency>
+		<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-oas</artifactId>
+				<version>${springfox-version}</version>
+		</dependency>
+		<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${springfox-version}</version>
+		</dependency>
+    <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
       <version>${springfox-version}</version>
@@ -99,7 +99,7 @@
 			<version>2.2</version>
 			<scope>test</scope>
 		</dependency>
- </dependencies>
+  </dependencies>
 	<build>
 		<plugins>
 			<plugin>
