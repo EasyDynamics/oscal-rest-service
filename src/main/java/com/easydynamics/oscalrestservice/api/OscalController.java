@@ -3,7 +3,6 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscalrestservice.model.OscalObject;
 import com.easydynamics.oscalrestservice.repository.OscalRepository;
 import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -34,8 +33,6 @@ public class OscalController {
   }
 
   private ResponseEntity<String> buildResponse(OscalObject oscalObject) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Access-Control-Allow-Origin", "localhost");
-    return new ResponseEntity<>(oscalObject.getContent(), headers, HttpStatus.OK);
+    return new ResponseEntity<>(oscalObject.getContent(), HttpStatus.OK);
   }
 }
