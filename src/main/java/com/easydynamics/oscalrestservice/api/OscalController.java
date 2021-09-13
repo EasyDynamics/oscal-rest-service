@@ -23,16 +23,13 @@ public class OscalController {
    */
   public ResponseEntity<String> findById(String id) {
     try {
-      return this.repository.findById(id).map(this::buildResponse)
+      return this.repository.findById(id)
+          .map((oscalObject) -> new ResponseEntity<>(oscalObject.getContent(), HttpStatus.OK))
           .orElse(new ResponseEntity<>("Oscal object with ID " + id + " was not found", 
           HttpStatus.NOT_FOUND));
     } catch (DataRetrievalFailureException e) {
       return new ResponseEntity<String>("Something went wrong, could not retrieve the file.",
         HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  private ResponseEntity<String> buildResponse(OscalObject oscalObject) {
-    return new ResponseEntity<>(oscalObject.getContent(), HttpStatus.OK);
   }
 }
