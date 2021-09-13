@@ -1,5 +1,4 @@
 package com.easydynamics.oscalrestservice;
-import static com.easydynamics.oscalrestservice.api.CatalogController.CATALOG_ID_80053r5;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class CatalogControllerTest {
 
+  public static final String CATALOG_ID_80053r5 = "62f21617-b40f-4e89-bf3b-01b04b68f473";
+
   @Autowired
   private MockMvc mockMvc;
 
@@ -23,7 +24,7 @@ public class CatalogControllerTest {
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
     this.mockMvc.perform(get("/oscal/v1/catalogs/{id}", CATALOG_ID_80053r5))
-        .andExpect(status().isOk());
+        .andExpect(status().isNotFound());
   }
 
   /**

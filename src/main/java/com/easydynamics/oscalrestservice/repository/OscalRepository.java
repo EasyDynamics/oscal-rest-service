@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public class OscalRepository<T extends OscalObject> implements CrudRepository<T, String> {
 
   private Class<T> genericClass;
-  public String path;
+  private String path;
 
   protected OscalRepository(){
 

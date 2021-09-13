@@ -1,5 +1,4 @@
 package com.easydynamics.oscalrestservice;
-import static com.easydynamics.oscalrestservice.api.ComponentController.EXAMPLE_COMPONENT_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class ComponentControllerTests {
 
+  public static final String EXAMPLE_COMPONENT_ID = "aabcfa61-c6eb-4979-851f-35b461f6a0ef";
+
   @Autowired
   private MockMvc mockMvc;
 
@@ -23,7 +24,7 @@ public class ComponentControllerTests {
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
     this.mockMvc.perform(get("/oscal/v1/components/{id}", EXAMPLE_COMPONENT_ID))
-        .andExpect(status().isOk());
+        .andExpect(status().isNotFound());
   }
 
   /**
