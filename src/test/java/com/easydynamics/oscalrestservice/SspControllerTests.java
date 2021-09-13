@@ -24,7 +24,7 @@ public class SspControllerTests {
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
     this.mockMvc.perform(get("/oscal/v1/ssps/{id}", SSP_EXAMPLE_ID))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isOk());
   }
 
   /**

@@ -24,7 +24,7 @@ public class ComponentControllerTests {
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
     this.mockMvc.perform(get("/oscal/v1/components/{id}", EXAMPLE_COMPONENT_ID))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isOk());
   }
 
   /**

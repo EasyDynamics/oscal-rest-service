@@ -24,7 +24,7 @@ public class CatalogControllerTest {
   @Test
   public void shouldReturnDefaultMessage() throws Exception {
     this.mockMvc.perform(get("/oscal/v1/catalogs/{id}", CATALOG_ID_80053r5))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isOk());
   }
 
   /**

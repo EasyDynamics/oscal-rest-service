@@ -35,7 +35,7 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
    */
   public Optional<T> findById(String id) {
     if (id == null) {
-      throw new DataRetrievalFailureException("File id not provided.");
+      throw new IllegalArgumentException("File id not provided.");
     }
 
     String json;

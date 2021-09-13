@@ -25,7 +25,7 @@ public class ProfilesControllerTest {
   public void shouldReturnDefaultMessage() throws Exception {
 
     this.mockMvc.perform(get("/oscal/v1/profiles/{id}", EXAMPLE_PROFILE_ID))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isOk());
   }
 
   /**
