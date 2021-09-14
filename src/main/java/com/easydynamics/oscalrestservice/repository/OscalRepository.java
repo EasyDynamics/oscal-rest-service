@@ -43,6 +43,9 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
 
     try {
       pathToOscalFile = (Path.of(this.path, id + ".json"));
+      if (!pathToOscalFile.toFile().exists() || pathToOscalFile.toFile().isDirectory()) {
+        return Optional.empty();
+      }
     } catch (InvalidPathException e) {
       throw new DataRetrievalFailureException("Illegal path provided.", e);
     }
@@ -50,7 +53,7 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     try {
       json = Files.readString(pathToOscalFile, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      return Optional.empty();
+      throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
     } catch (OutOfMemoryError e) {
       throw new DataRetrievalFailureException("Could not load Oscal object.", e);
     } catch (SecurityException e) {
