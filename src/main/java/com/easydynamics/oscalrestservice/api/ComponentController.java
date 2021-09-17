@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Component Controller for OSCAL REST Service.
+ * Component Controller for OSCAL REST Service. This class handles all requests to the /components
+ * endpoint.
  */
 
 @RequestMapping(path = "/oscal/v1")

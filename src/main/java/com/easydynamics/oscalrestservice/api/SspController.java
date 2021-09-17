@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Ssp Controller for OSCAL REST Service.
+ * Ssp Controller for OSCAL REST Service. This class handles all requests to the /ssps endpoint.
  */
-
 @RequestMapping(path = "/oscal/v1")
 @RestController
 public class SspController extends OscalController {

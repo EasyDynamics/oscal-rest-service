@@ -12,6 +12,12 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * OscalRepository processes HTTP requests to OscalObject endpoints. These requests are received
+ * by an OscalController and sent to the corresponding OscalRepository to process the requests. 
+ * Through an implementation of CrudRepository, OscalRepository can count, create, delete, edit,
+ * find, and save files whose content resembles an OSCAL Object.
+ */
 @Repository
 public class OscalRepository<T extends OscalObject> implements CrudRepository<T, String> {
 
@@ -22,6 +28,13 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
 
   }
 
+  /**
+   * Constructs an OscalRepository.
+   * 
+   * @param path path to the directory containing files whose content represents an object of type 
+   *             <T extends OscalObject>
+   * @param genericClass runtime class of the generic class T, which extends OscalObject
+   */
   protected OscalRepository(String path, Class<T> genericClass) {
     this.path = path;
     this.genericClass = genericClass;

@@ -6,6 +6,11 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * OscalController is the superclass for all Controllers that handles request to an Oscal
+ * endpoint. It uses its repository field to perform CRUD operations on files of the
+ * corresponding Oscal type.
+ */
 public class OscalController {
 
   private final OscalRepository<? extends OscalObject> repository;

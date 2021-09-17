@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Profile Controller for OSCAL REST Service.
+ * Profile Controller for OSCAL REST Service. This class handles all requests to the /profiles
+ * endpoint.
  */
 
 @RequestMapping(path = "/oscal/v1")
