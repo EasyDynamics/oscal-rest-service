@@ -17,7 +17,6 @@ public class OscalComponentRepository extends OscalRepository<OscalComponentObje
    * Constructs an OscalComponentRepository.
    * 
    * @param path path to the directory containing OSCAL Component files
-   * @param genericClass runtime class of OscalComponentObject
    */
   public OscalComponentRepository(@Value("${persistence.file.components.path}") String path) {
     super(path, OscalComponentObject.class);

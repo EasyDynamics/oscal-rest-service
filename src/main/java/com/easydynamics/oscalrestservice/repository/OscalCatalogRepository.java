@@ -17,7 +17,6 @@ public class OscalCatalogRepository extends OscalRepository<OscalCatalogObject> 
    * Constructs an OscalCatalogRepository.
    * 
    * @param path path to the directory containing OSCAL Catalog files
-   * @param genericClass runtime class of OscalCatalogObject
    */
   public OscalCatalogRepository(@Value("${persistence.file.catalogs.path}") String path) {
     super(path, OscalCatalogObject.class);

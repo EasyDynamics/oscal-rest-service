@@ -17,7 +17,6 @@ public class OscalSspRepository extends OscalRepository<OscalSspObject> {
    * Constructs an OscalSspRepository.
    * 
    * @param path path to the directory containing OSCAL Ssp files
-   * @param genericClass runtime class of OscalSspObject
    */
   public OscalSspRepository(@Value("${persistence.file.ssps.path}") String path) {
     super(path, OscalSspObject.class);

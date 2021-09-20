@@ -32,7 +32,7 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
    * Constructs an OscalRepository.
    * 
    * @param path path to the directory containing files whose content represents an object of type 
-   *             <T extends OscalObject>
+   *             T extends OscalObject.
    * @param genericClass runtime class of the generic class T, which extends OscalObject
    */
   protected OscalRepository(String path, Class<T> genericClass) {

@@ -17,7 +17,6 @@ public class OscalProfileRepository extends OscalRepository<OscalProfileObject> 
    * Constructs an OscalProfileRepository.
    * 
    * @param path path to the directory containing OSCAL Profile files
-   * @param genericClass runtime class of OscalProfileObject
    */
   public OscalProfileRepository(@Value("${persistence.file.profiles.path}") String path) {
     super(path, OscalProfileObject.class);
