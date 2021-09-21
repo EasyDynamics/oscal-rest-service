@@ -6,8 +6,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 /**
- * OscalCatalogRepository is a repository that processes requests to the /catalogs endpoint. It
- * is used by the OscalCatalogController for the processing of the request.
+ * OscalCatalogRepository is a repository that handles persistence to files representing OSCAL
+ * Catalog objects.
  */
 @PropertySource("classpath:application.properties")
 @Service("catalogRepository")

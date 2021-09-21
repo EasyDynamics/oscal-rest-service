@@ -13,10 +13,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * OscalRepository processes HTTP requests to OscalObject endpoints. These requests are received
- * by an OscalController and sent to the corresponding OscalRepository to process the requests. 
- * Through an implementation of CrudRepository, OscalRepository can count, create, delete, edit,
- * find, and save files whose content resembles an OSCAL Object.
+ * OscalRepository handles persistence to files representing an OSCAL object, which can be a
+ * Catalog, Component, Profile, or System Security Plan. Through an implementation of 
+ * CrudRepository, OscalRepository can count, create, delete, edit, find, and save those files.
  */
 @Repository
 public class OscalRepository<T extends OscalObject> implements CrudRepository<T, String> {

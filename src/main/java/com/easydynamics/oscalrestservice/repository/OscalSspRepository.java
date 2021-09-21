@@ -6,8 +6,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 /**
- * OscalSspRepository is a repository that processes requests to the /ssps endpoint. It is used
- * by the OscalSspController for the processing of the request.
+ * OscalSspRepository is a repository that handles persistence to files representing OSCAL SSP
+ * objects.
  */
 @PropertySource("classpath:application.properties")
 @Service("sspRepository")

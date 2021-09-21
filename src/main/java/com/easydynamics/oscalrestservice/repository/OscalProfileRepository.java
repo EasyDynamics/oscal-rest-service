@@ -6,8 +6,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 /**
- * OscalProfileRepository is a repository that processes requests to the /profiles endpoint. It 
- * is used by the OscalProfileController for the processing of the request.
+ * OscalProfileRepository is a repository that handles persistence to files representing OSCAL
+ * Profile objects.
  */
 @PropertySource("classpath:application.properties")
 @Service("profileRepository")

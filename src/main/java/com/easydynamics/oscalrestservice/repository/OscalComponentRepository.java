@@ -6,8 +6,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 /**
- * OscalComponentRepository is a repository that processes requests to the /components endpoint.
- * It is used by the OscalComponentController for the processing of the request.
+ * OscalComponentRepository is a repository that handles persistence to files representing OSCAL
+ * Component objects.
  */
 @PropertySource("classpath:application.properties")
 @Service("componentRepository")

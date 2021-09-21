@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * OscalObject is the superclass for all OSCAL types. This class contains behavior common to all
- * OSCAL objects - SSPs, Profiles, Components, andCatalogs. It allows for the use of generics at a
+ * OSCAL objects - SSPs, Profiles, Components, and Catalogs. It allows for the use of generics at a
  * location when any of the OSCAL object types could be used.
  */
 public class OscalObject {
