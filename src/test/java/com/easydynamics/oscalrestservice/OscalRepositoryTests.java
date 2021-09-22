@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.easydynamics.oscalrestservice.model.OscalObject;
 import com.easydynamics.oscalrestservice.repository.OscalRepository;
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
 
 /**
  * OscalRepositoryTests is an abstract class that provides methods for common tests among the
@@ -14,36 +15,32 @@ import java.util.Optional;
  */
 public abstract class OscalRepositoryTests {
   
+  protected OscalRepository<? extends OscalObject> repository;
+  protected String defaultId;
+
   /**
    * Tests if a null id will cause an OSCAL repository to throw an IllegalArgumentException when
    * trying to find a file.
-   * 
-   * @param repository OscalRepository that persists to files
    */
-  public void nullFindById(OscalRepository<? extends OscalObject> repository) {
+  @Test
+  public void nullFindById() {
     assertThrows(IllegalArgumentException.class, () -> repository.findById(null));
   }
 
   /**
    * Tests if an OscalRepository returns an empty optional object when trying to find a file
    * using an invalid id.
-   * 
-   * @param repository OscalRepository that persists to files
    */
-  public void badIdOptionalEmpty(OscalRepository<? extends OscalObject> repository) {
+  @Test
+  public void badIdOptionalEmpty() {
     assertEquals(Optional.empty(), repository.findById("bad-id"));
   }
 
   /**
-   * Tests is an OscalRepository returns the correct content when trying to find a file using a
-   * valid id.
-   * 
-   * @param repository OscalRepository that persists to files
-   * @param goodId a valid file id
-   * @param uuid uuid seen in the file contents, an identifier of the respective OscalObject
+   * Tests if an OscalRepository returns content when trying to find a file using a valid id.
    */
-  public void getGoodId(OscalRepository<? extends OscalObject> repository, String goodId, String uuid) {
-    Optional<? extends OscalObject> object = repository.findById(goodId);
-    assertTrue(object.get().getContent().contains("\"uuid\": " + uuid));
+  @Test
+  public void getGoodId() {
+    assertTrue(!repository.findById(defaultId).get().getContent().isEmpty());
   }
 }
