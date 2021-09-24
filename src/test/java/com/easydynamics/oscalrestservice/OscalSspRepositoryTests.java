@@ -1,13 +1,13 @@
 package com.easydynamics.oscalrestservice;
 
-import static com.easydynamics.oscalrestservice.SspControllerTests.SSP_EXAMPLE_ID;
-
 import com.easydynamics.oscalrestservice.repository.OscalSspRepository;
 
 /**
  * OscalSspRepositoryTests runs tests of the OscalSspRepository class.
  */
 public class OscalSspRepositoryTests extends OscalRepositoryTests {
+
+  public static final String SSP_EXAMPLE_ID = "66c2a1c8-5830-48bd-8fdd-55a1c3a52888";
 
   private OscalSspRepositoryTests() {
     this.repository = new OscalSspRepository("oscal-content/system-security-plans");

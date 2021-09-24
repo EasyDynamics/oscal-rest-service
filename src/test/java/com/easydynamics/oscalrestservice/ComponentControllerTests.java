@@ -1,11 +1,11 @@
 package com.easydynamics.oscalrestservice;
 
+import static com.easydynamics.oscalrestservice.OscalComponentRepositoryTests.EXAMPLE_COMPONENT_ID;
+
 /**
  * OscalComponentControllerTests runs tests of the OscalComponentController class.
  */
 public class ComponentControllerTests extends OscalControllerTests {
-
-  public static final String EXAMPLE_COMPONENT_ID = "aabcfa61-c6eb-4979-851f-35b461f6a0ef";
 
   private ComponentControllerTests() {
     this.oscalType = "components";

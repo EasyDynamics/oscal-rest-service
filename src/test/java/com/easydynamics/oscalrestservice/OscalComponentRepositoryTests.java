@@ -1,13 +1,13 @@
 package com.easydynamics.oscalrestservice;
 
-import static com.easydynamics.oscalrestservice.ComponentControllerTests.EXAMPLE_COMPONENT_ID;
-
 import com.easydynamics.oscalrestservice.repository.OscalComponentRepository;
 
 /**
  * OscalComponentRepositoryTests runs tests of the OscalComponentRepository class.
  */
 public class OscalComponentRepositoryTests extends OscalRepositoryTests {
+
+  public static final String EXAMPLE_COMPONENT_ID = "aabcfa61-c6eb-4979-851f-35b461f6a0ef";
 
   private OscalComponentRepositoryTests() {
     this.repository = new OscalComponentRepository("oscal-content/components");
