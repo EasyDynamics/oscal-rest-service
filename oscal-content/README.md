@@ -12,5 +12,5 @@ The files in this directory are also used to test and validate different
 aspects of the REST service.
 
 ## Source
-The OSCAL files are all pulled from the NIST [oscal-content](https://github.com/EasyDynamics/oscal-content)
+The OSCAL files are all pulled from the [Oscal Content](https://github.com/EasyDynamics/oscal-content)
 repository.
