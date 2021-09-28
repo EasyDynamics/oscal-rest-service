@@ -21,7 +21,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub EasyDynamics Maven Packages</name>
-			<urL>https://maven.pkg.github.com/EasyDynamics/oscal-rest-service</url>
+			<url>https://maven.pkg.github.com/EasyDynamics/oscal-rest-service</url>
 		</repository>
 	</distributionManagement>
 	<dependencies>

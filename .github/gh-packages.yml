@@ -1,7 +1,7 @@
 name: Publish package to GitHub Packages
 on:
   push:
-    branches: [main]
+    branches: [develop]
 
 jobs:
   publish:
@@ -16,7 +16,8 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
+          cache: 'maven'
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
