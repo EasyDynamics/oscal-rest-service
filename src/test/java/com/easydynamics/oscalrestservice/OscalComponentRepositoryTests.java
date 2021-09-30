@@ -10,7 +10,7 @@ public class OscalComponentRepositoryTests extends OscalRepositoryTests {
   public static final String EXAMPLE_COMPONENT_ID = "aabcfa61-c6eb-4979-851f-35b461f6a0ef";
 
   private OscalComponentRepositoryTests() {
-    this.repository = new OscalComponentRepository("oscal-content/components");
+    this.repository = new OscalComponentRepository("oscal-content/component-definitions");
     this.defaultId = EXAMPLE_COMPONENT_ID;
   }
 

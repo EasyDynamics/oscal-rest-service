@@ -30,7 +30,7 @@ public class ComponentController extends OscalController {
    * @return the oscal-content component hosted on github
    */
 
-  @GetMapping("/components/{id}")
+  @GetMapping("/component-definitions/{id}")
   public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
     return super.findById(id);
   }

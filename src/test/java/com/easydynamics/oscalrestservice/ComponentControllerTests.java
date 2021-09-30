@@ -8,7 +8,7 @@ import static com.easydynamics.oscalrestservice.OscalComponentRepositoryTests.EX
 public class ComponentControllerTests extends OscalControllerTests {
 
   private ComponentControllerTests() {
-    this.oscalType = "components";
+    this.oscalType = "component-definitions";
     this.defaultId = EXAMPLE_COMPONENT_ID;
   }
 
