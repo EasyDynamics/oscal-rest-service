@@ -17,6 +17,13 @@
 		<java.version>11</java.version>
 		<springfox-version>3.0.0</springfox-version>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub EasyDynamics Maven Packages</name>
+			<url>https://maven.pkg.github.com/EasyDynamics/oscal-rest-service</url>
+		</repository>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
