@@ -1,7 +1,8 @@
 name: Publish package to GitHub Packages
 on:
   push:
-    branches: [develop]
+    branches: [EGRC-492]
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -11,9 +12,9 @@ jobs:
       packages: write
     steps:
       - name: Checkout code
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
       - name: Setup Java
-      - uses: actions/setup-java@v2
+        uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'temurin'
