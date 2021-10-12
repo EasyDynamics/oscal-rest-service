@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -50,6 +49,10 @@ public class OscalParty {
 
     this.type = type;
     this.name = name;
+  }
+
+  public String getUuid() {
+    return this.uuid;
   }
 
 }

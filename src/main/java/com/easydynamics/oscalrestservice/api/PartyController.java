@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * Party Controller for OSCAL REST Service.
  */
@@ -50,9 +49,8 @@ public class PartyController {
 
   @GetMapping("/parties/{id}")
   public ResponseEntity<OscalParty> findById(@Parameter @PathVariable String id) {
-    OscalParty party = repository.findByUuid(id)
-        .orElseThrow(() -> new RecordNotFoundException(
-            "Error, Party with specified UUID not found"));
+    OscalParty party = repository.findByUuid(id).orElseThrow(
+        () -> new RecordNotFoundException("Error, Party with specified UUID not found"));
     return new ResponseEntity<OscalParty>(party, HttpStatus.OK);
   }
 
@@ -81,6 +79,7 @@ public class PartyController {
   public ResponseEntity<OscalParty> addParty(@Valid @RequestBody OscalParty party) {
 
     repository.save(party);
-    return new ResponseEntity<OscalParty>(party,HttpStatus.CREATED);
+    return new ResponseEntity<OscalParty>(party, HttpStatus.CREATED);
   }
+
 }
