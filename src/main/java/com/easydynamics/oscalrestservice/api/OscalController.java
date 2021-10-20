@@ -1,6 +1,5 @@
 package com.easydynamics.oscalrestservice.api;
 
-import com.easydynamics.oscalrestservice.model.OscalObject;
 import com.easydynamics.oscalrestservice.repository.OscalRepository;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.HttpStatus;
@@ -13,9 +12,9 @@ import org.springframework.http.ResponseEntity;
  */
 public class OscalController {
 
-  private final OscalRepository<? extends OscalObject> repository;
+  private final OscalRepository<? extends Object> repository;
 
-  protected OscalController(OscalRepository<? extends OscalObject> repository) {
+  protected OscalController(OscalRepository<? extends Object> repository) {
     this.repository = repository;
   }
 
@@ -29,7 +28,8 @@ public class OscalController {
   public ResponseEntity<String> findById(String id) {
     try {
       return this.repository.findById(id)
-          .map((oscalObject) -> new ResponseEntity<>(oscalObject.getContent(), HttpStatus.OK))
+          .map((oscalObject) -> new ResponseEntity<>(
+            oscalObject.toString(), HttpStatus.OK))
           .orElse(new ResponseEntity<>("Oscal object with ID " + id + " was not found", 
           HttpStatus.NOT_FOUND));
     } catch (DataRetrievalFailureException e) {

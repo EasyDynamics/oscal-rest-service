@@ -15,7 +15,8 @@
 	<description>Initial OSCAL REST API</description>
 	<properties>
 		<java.version>11</java.version>
-		<springfox-version>3.0.0</springfox-version>
+		<springfox.version>3.0.0</springfox.version>
+		<liboscal-java.version>1.0.0</liboscal-java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -33,17 +34,17 @@
 		<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-oas</artifactId>
-				<version>${springfox-version}</version>
+				<version>${springfox.version}</version>
 		</dependency>
 		<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger-ui</artifactId>
-				<version>${springfox-version}</version>
+				<version>${springfox.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>${springfox-version}</version>
+			<version>${springfox.version}</version>
 		</dependency>
 		<!--JPA dependencies -->
 		<dependency>
@@ -73,6 +74,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>gov.nist.secauto.oscal</groupId>
+			<artifactId>liboscal-java</artifactId>
+			<version>${liboscal-java.version}</version>
 		</dependency>
 
 		<dependency>

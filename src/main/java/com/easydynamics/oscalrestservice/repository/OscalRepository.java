@@ -1,10 +1,9 @@
 package com.easydynamics.oscalrestservice.repository;
 
-import com.easydynamics.oscalrestservice.model.OscalObject;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.oscal.java.OscalLoader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -18,10 +17,11 @@ import org.springframework.stereotype.Repository;
  * CrudRepository, OscalRepository can count, create, delete, edit, find, and save those files.
  */
 @Repository
-public class OscalRepository<T extends OscalObject> implements CrudRepository<T, String> {
+public class OscalRepository<T> implements CrudRepository<T, String> {
 
   private Class<T> genericClass;
   private String path;
+  private OscalLoader oscalLoader;
 
   protected OscalRepository(){
 
@@ -37,6 +37,7 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
   protected OscalRepository(String path, Class<T> genericClass) {
     this.path = path;
     this.genericClass = genericClass;
+    this.oscalLoader = new OscalLoader();
   }
 
   /**
@@ -50,7 +51,6 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
       throw new IllegalArgumentException("File id not provided.");
     }
 
-    String json;
     Path pathToOscalFile;
 
     try {
@@ -63,25 +63,12 @@ public class OscalRepository<T extends OscalObject> implements CrudRepository<T,
     }
 
     try {
-      json = Files.readString(pathToOscalFile, StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
-    } catch (OutOfMemoryError e) {
-      throw new DataRetrievalFailureException("Could not load Oscal object.", e);
-    } catch (SecurityException e) {
+      T oscalPojo = oscalLoader.load(genericClass, new File(pathToOscalFile.toUri()));
+      return Optional.of(oscalPojo);
+    } catch (FileNotFoundException e) {
       throw new DataRetrievalFailureException("Could not access file.", e);
-    }
-    
-    try {
-      return Optional.of(genericClass.getDeclaredConstructor(String.class, String.class)
-        .newInstance(id, json));
-    } catch (InstantiationException | IllegalArgumentException 
-      | InvocationTargetException | ExceptionInInitializerError e) {
+    } catch (BindingException e) {
       throw new DataRetrievalFailureException("Error creating Oscal object.", e);
-    } catch (IllegalAccessException | SecurityException e) {
-      throw new DataRetrievalFailureException("Access denied when creating Oscal object.", e);
-    } catch (NoSuchMethodException e) {
-      throw new DataRetrievalFailureException("Oscal constructor not defined.", e);
     }
   }
 

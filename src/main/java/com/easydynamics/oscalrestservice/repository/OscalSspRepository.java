@@ -1,6 +1,6 @@
 package com.easydynamics.oscalrestservice.repository;
 
-import com.easydynamics.oscalrestservice.model.OscalSspObject;
+import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  */
 @PropertySource("classpath:application.properties")
 @Service("sspRepository")
-public class OscalSspRepository extends OscalRepository<OscalSspObject> {
+public class OscalSspRepository extends OscalRepository<SystemSecurityPlan> {
 
   /**
    * Constructs an OscalSspRepository.
@@ -19,6 +19,6 @@ public class OscalSspRepository extends OscalRepository<OscalSspObject> {
    * @param path path to the directory containing OSCAL Ssp files
    */
   public OscalSspRepository(@Value("${persistence.file.ssps.path}") String path) {
-    super(path, OscalSspObject.class);
+    super(path, SystemSecurityPlan.class);
   }
 }

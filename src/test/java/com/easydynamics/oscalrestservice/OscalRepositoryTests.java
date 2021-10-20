@@ -1,10 +1,9 @@
 package com.easydynamics.oscalrestservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.easydynamics.oscalrestservice.model.OscalObject;
 import com.easydynamics.oscalrestservice.repository.OscalRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.Test;
  */
 public abstract class OscalRepositoryTests {
   
-  protected OscalRepository<? extends OscalObject> repository;
+  protected OscalRepository<? extends Object> repository;
   protected String defaultId;
 
   /**
@@ -41,6 +40,6 @@ public abstract class OscalRepositoryTests {
    */
   @Test
   public void getGoodId() {
-    assertTrue(!repository.findById(defaultId).get().getContent().isEmpty());
+    assertNotNull(repository.findById(defaultId).get());
   }
 }

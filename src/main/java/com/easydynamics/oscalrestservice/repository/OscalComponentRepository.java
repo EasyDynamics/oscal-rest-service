@@ -1,6 +1,6 @@
 package com.easydynamics.oscalrestservice.repository;
 
-import com.easydynamics.oscalrestservice.model.OscalComponentObject;
+import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  */
 @PropertySource("classpath:application.properties")
 @Service("componentRepository")
-public class OscalComponentRepository extends OscalRepository<OscalComponentObject> {
+public class OscalComponentRepository extends OscalRepository<ComponentDefinition> {
   
   /**
    * Constructs an OscalComponentRepository.
@@ -19,6 +19,6 @@ public class OscalComponentRepository extends OscalRepository<OscalComponentObje
    * @param path path to the directory containing OSCAL Component files
    */
   public OscalComponentRepository(@Value("${persistence.file.components.path}") String path) {
-    super(path, OscalComponentObject.class);
+    super(path, ComponentDefinition.class);
   }
 }

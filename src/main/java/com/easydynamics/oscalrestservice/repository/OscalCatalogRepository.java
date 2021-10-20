@@ -1,6 +1,6 @@
 package com.easydynamics.oscalrestservice.repository;
 
-import com.easydynamics.oscalrestservice.model.OscalCatalogObject;
+import gov.nist.secauto.oscal.lib.model.Catalog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  */
 @PropertySource("classpath:application.properties")
 @Service("catalogRepository")
-public class OscalCatalogRepository extends OscalRepository<OscalCatalogObject> {
+public class OscalCatalogRepository extends OscalRepository<Catalog> {
   
   /**
    * Constructs an OscalCatalogRepository.
@@ -19,6 +19,6 @@ public class OscalCatalogRepository extends OscalRepository<OscalCatalogObject> 
    * @param path path to the directory containing OSCAL Catalog files
    */
   public OscalCatalogRepository(@Value("${persistence.file.catalogs.path}") String path) {
-    super(path, OscalCatalogObject.class);
+    super(path, Catalog.class);
   }
 }
