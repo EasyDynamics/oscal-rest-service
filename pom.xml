@@ -26,7 +26,7 @@
 		<module>oscal-data-repository-file-passthrough</module>
 		<module>oscal-object-service</module>
 		<module>oscal-rest-service-app</module>
-  </modules>
+        </modules>
 
 	<build>
 		<plugins>
