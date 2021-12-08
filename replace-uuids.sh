@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ "$1" = "--sspfile" -a "$2" != "" ]; then
-	file=$2;
+if [ "${1:0:11}" = "-oscalfile:" -a ${1: -5} = ".json" ]; then
+	file=${1:11};
 else
-	echo "You must specify --sspfile \$file, where file is an ssp."
+	echo "You must specify -oscalfile:\$file, where \$file is a json oscal file.";
 	exit 1;
 fi
 
@@ -16,11 +16,11 @@ uuid_arr=();
 while read -r line;
 do
 	#Extracting the uuid from the line
-	old_uuid="$(echo $line | sed -e 's/^[ \t]*\"uuid\": //')";
-	old_uuid="$(echo $old_uuid | sed -e 's/[\" | ,]//g')";
+	old_uuid="$(echo $line | sed 's/^[ \t]*\"uuid\": //')";
+	old_uuid="$(echo $old_uuid | sed 's/[\" | ,]//g')";
 	old_uuid=${old_uuid::-1}
 
-	#Checking if we have alreading replaced the uuid
+	#Checking if we have already replaced the uuid
 	array_contains=$(echo ${uuid_arr[@]} | grep -o "$old_uuid" | wc -w);
 
 	if [ $array_contains = 0 ];
