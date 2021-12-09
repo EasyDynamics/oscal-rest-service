@@ -19,7 +19,7 @@ do
   old_uuid="$(echo $line | sed 's/^[ \t]*\"uuid\": //' | sed 's/[\" | ,]//g')";
 	old_uuid=${old_uuid::-1};
 
-	#Checking if we have already replaced the uuid
+	#Checking if we already replaced the uuid
 	array_contains=$(echo ${uuid_arr[@]} | grep -o "$old_uuid" | wc -w);
 
 	if [ $array_contains = 0 ];
