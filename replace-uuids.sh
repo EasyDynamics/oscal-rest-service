@@ -7,8 +7,8 @@ else
 	exit 1;
 fi
 
-cd $(dirname $file)
-file=$(basename $file)
+cd $(dirname $file);
+file=$(basename $file);
 
 #Will contain the replaced uuids to avoid replacing uuid multiple times
 uuid_arr=();
@@ -16,9 +16,8 @@ uuid_arr=();
 while read -r line;
 do
 	#Extracting the uuid from the line
-	old_uuid="$(echo $line | sed 's/^[ \t]*\"uuid\": //')";
-	old_uuid="$(echo $old_uuid | sed 's/[\" | ,]//g')";
-	old_uuid=${old_uuid::-1}
+  old_uuid="$(echo $line | sed 's/^[ \t]*\"uuid\": //' | sed 's/[\" | ,]//g')";
+	old_uuid=${old_uuid::-1};
 
 	#Checking if we have already replaced the uuid
 	array_contains=$(echo ${uuid_arr[@]} | grep -o "$old_uuid" | wc -w);
@@ -32,6 +31,6 @@ do
 		auto_generated_uuid=$(uuidgen);
 
 		#replacing all instances of current_uuid in file
-		sed -i "s/$old_uuid/$auto_generated_uuid/g" "$file"
+		sed -i "s/$old_uuid/$auto_generated_uuid/g" "$file";
 	fi
 done < <(cat $file | grep \"uuid\"); #We only want to read lines with uuids
