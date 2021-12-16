@@ -8,6 +8,7 @@ fi
 
 cd $(dirname $file);
 file=$(basename $file);
+contents="$(jq '.' $file | jq .)"
 
 #Will contain the replaced uuids to avoid replacing uuid multiple times
 uuid_arr=();
@@ -28,9 +29,9 @@ while read -r line; do
 		uuid_arr+=($old_uuid);
 
 		#auto generating a new uuid with the uuidgen command
-		auto_generated_uuids+=$(uuidgen);
+		auto_generated_uuids+=("$(uuidgen)");
 	fi
-done < <(cat $file | grep \"uuid\"); #We only want to read lines with uuids
+done < <(grep \"uuid\" <<< $contents); #We only want to read lines with uuids
 
 for i in "${!uuid_arr[@]}"; do
 	sed -i "s/"${uuid_arr[i]}"/"${auto_generated_uuids[i]}"/g" "$file";
