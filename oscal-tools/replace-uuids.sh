@@ -6,6 +6,7 @@ else
 	exit 1;
 fi
 
+current_directory="$(pwd)"
 cd $(dirname $file);
 file=$(basename $file);
 contents="$(jq '.' $file | jq .)"
@@ -36,3 +37,5 @@ done < <(grep \"uuid\" <<< $contents); #We only want to read lines with uuids
 for i in "${!uuid_arr[@]}"; do
 	sed -i "s/"${uuid_arr[i]}"/"${auto_generated_uuids[i]}"/g" "$file";
 done;
+
+cd "$current_directory"
