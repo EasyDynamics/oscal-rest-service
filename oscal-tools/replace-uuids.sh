@@ -19,7 +19,7 @@ auto_generated_uuids=();
 
 while read -r line; do
 	#Extracting the uuid from the line
-  old_uuid="$(echo $line | sed 's/^[ \t]*\"uuid\": //' | sed 's/[\" | ,]//g')";
+	old_uuid="$(echo $line | sed 's/^[ \t]*\"uuid\": //' | sed 's/[\" | ,]//g')";
 	old_uuid=${old_uuid::-1};
 
 	#Checking if we already replaced the uuid
