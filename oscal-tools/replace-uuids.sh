@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ "${1:0:11}" = "-oscalfile:" -a ${1: -5} = ".json" ]; then
-	file=${1:11};
+if [ "${1: -5}" = ".json" ]; then
+	file="$1";
 else
 	echo "You must specify -oscalfile:\$file, where \$file is a json oscal file.";
 	exit 1;
