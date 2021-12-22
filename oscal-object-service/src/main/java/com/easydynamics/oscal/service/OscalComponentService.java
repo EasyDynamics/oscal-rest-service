@@ -1,10 +1,10 @@
 package com.easydynamics.oscal.service;
 
-import com.easydynamics.oscal.data.model.OscalComponentObject;
+import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
 
 /**
  * Defines the service for OSCAL component objects.
  */
-public interface OscalComponentService extends BaseOscalObjectService<OscalComponentObject> {
+public interface OscalComponentService extends BaseOscalObjectService<ComponentDefinition> {
 
 }

@@ -1,10 +1,6 @@
 package com.easydynamics.oscalrestservice.api;
 
-import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.BaseOscalObjectService;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 /**
  * BaseOscalController is the superclass for all Controllers that handles request to an Oscal
@@ -14,14 +10,11 @@ import org.springframework.http.ResponseEntity;
 public class BaseOscalController<T> {
 
   private final BaseOscalObjectService<T> oscalObjectService;
-  private final OscalObjectMarshaller marshaller;
 
   protected BaseOscalController(
-      BaseOscalObjectService<T> oscalObjectService,
-      OscalObjectMarshaller marshaller
+      BaseOscalObjectService<T> oscalObjectService
   ) {
     this.oscalObjectService = oscalObjectService;
-    this.marshaller = marshaller;
   }
 
   /**
@@ -31,15 +24,8 @@ public class BaseOscalController<T> {
    * @return HTTP response containing file contents, error message and
    *     status code returned if file cannot be opened.
    */
-  public ResponseEntity<String> findById(String id) {
-    try {
-      return this.oscalObjectService.findById(id)
-          .map((oscalObject) -> new ResponseEntity<>(marshaller.toJson(oscalObject), HttpStatus.OK))
-          .orElse(new ResponseEntity<>("Oscal object with ID " + id + " was not found",
-          HttpStatus.NOT_FOUND));
-    } catch (DataRetrievalFailureException e) {
-      return new ResponseEntity<String>("Something went wrong, could not retrieve the file.",
-        HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  public T findById(String id) {
+    return oscalObjectService.findById(id)
+        .orElseThrow(() -> new OscalObjectNotFoundException(id));
   }
 }

@@ -74,4 +74,9 @@ public class BaseOscalObjectServiceImpl<T> implements BaseOscalObjectService<T> 
     repository.deleteAll();
   }
 
+  @Override
+  public void deleteAllById(Iterable<? extends String> ids) {
+    repository.deleteAllById(ids);
+  }
+
 }

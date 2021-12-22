@@ -1,10 +1,10 @@
 package com.easydynamics.oscal.service;
 
-import com.easydynamics.oscal.data.model.OscalProfileObject;
+import gov.nist.secauto.oscal.lib.model.Profile;
 
 /**
  * Defines the service for OSCAL profile objects.
  */
-public interface OscalProfileService extends BaseOscalObjectService<OscalProfileObject> {
+public interface OscalProfileService extends BaseOscalObjectService<Profile> {
 
 }

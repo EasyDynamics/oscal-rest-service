@@ -1,12 +1,12 @@
 package com.easydynamics.oscal.data.repository.filepassimpl;
 
 import com.easydynamics.oscal.data.example.ExampleContentConstants;
-import com.easydynamics.oscal.data.model.OscalComponentObject;
+import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
 
 /**
  * OscalComponentRepositoryTests runs tests of the OscalComponentRepository class.
  */
-public class OscalComponentRepositoryTests extends BaseOscalRepositoryTests<OscalComponentObject> {
+public class OscalComponentRepositoryTests extends BaseOscalRepositoryTests<ComponentDefinition> {
 
   private OscalComponentRepositoryTests() {
     this.repository = new OscalComponentRepoFilePassImpl("oscal-content/component-definitions");

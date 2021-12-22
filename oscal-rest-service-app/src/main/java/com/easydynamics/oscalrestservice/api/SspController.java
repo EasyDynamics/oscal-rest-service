@@ -1,11 +1,9 @@
 package com.easydynamics.oscalrestservice.api;
 
-import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
-import com.easydynamics.oscal.data.model.OscalSspObject;
 import com.easydynamics.oscal.service.OscalSspService;
+import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequestMapping(path = "/oscal/v1")
 @RestController
-public class SspController extends BaseOscalController<OscalSspObject> {
+public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
   @Autowired(required = true)
   public SspController(
-      OscalSspService sspService,
-      OscalObjectMarshaller marshaller
+      OscalSspService sspService
   ) {
-    super(sspService, marshaller);
+    super(sspService);
   }
 
   /**
@@ -34,7 +31,7 @@ public class SspController extends BaseOscalController<OscalSspObject> {
    */
 
   @GetMapping("/ssps/{id}")
-  public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
+  public SystemSecurityPlan findById(@Parameter @PathVariable String id) {
     return super.findById(id);
   }
 

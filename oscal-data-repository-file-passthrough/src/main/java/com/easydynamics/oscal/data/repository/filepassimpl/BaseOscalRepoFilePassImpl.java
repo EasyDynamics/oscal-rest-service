@@ -1,6 +1,5 @@
 package com.easydynamics.oscal.data.repository.filepassimpl;
 
-import com.easydynamics.oscal.data.model.OscalObject;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Repository;
  * CrudRepository, this class can count, create, delete, edit, find, and save those files.
  */
 @Repository
-public class BaseOscalRepoFilePassImpl<T extends OscalObject>
+public class BaseOscalRepoFilePassImpl<T extends Object>
     implements CrudRepository<T, String> {
 
   private Class<T> genericClass;
