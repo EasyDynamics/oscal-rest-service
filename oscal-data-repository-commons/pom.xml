@@ -22,6 +22,12 @@
 			<groupId>gov.nist.secauto.oscal</groupId>
 			<artifactId>liboscal-java</artifactId>
 			<version>${liboscal-java.version}</version>
+			<exclusions>
+			<exclusion>
+				 <groupId>org.apache.logging.log4j</groupId>
+				 <artifactId>*</artifactId>
+			</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>

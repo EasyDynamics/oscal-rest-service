@@ -8,21 +8,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>
-	<artifactId>oscal-object-service</artifactId>
-	<name>oscal-object-service</name>
-	<description>OSCAL service layer</description>
-	<properties>
-		<oscal-data-repository-file.version>0.0.1-SNAPSHOT</oscal-data-repository-file.version>
-	</properties>
-
-	<dependencies>
-
-		<dependency>
-			<groupId>com.easydynamics</groupId>
-			<artifactId>oscal-data-repository-file</artifactId>
-			<version>${oscal-data-repository-file.version}</version>
-		</dependency>
-
-	</dependencies>
+	<artifactId>oscal-data-repository-commons-tests</artifactId>
+	<name>oscal-data-repository-commons-tests</name>
+	<description>Parent tests and test data for OSCAL data repository implementations</description>
 
 </project>

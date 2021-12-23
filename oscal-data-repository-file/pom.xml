@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.easydynamics</groupId>
+		<artifactId>oscal-rest-service-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+	<artifactId>oscal-data-repository-file</artifactId>
+	<name>oscal-data-repository-file</name>
+	<description>File-persistent OSCAL data repository implementation</description>
+	<properties>
+		 <oscal-data-repository-commons.version>0.0.1-SNAPSHOT</oscal-data-repository-commons.version>
+		 <oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.easydynamics</groupId>
+			<artifactId>oscal-data-repository-commons</artifactId>
+			<version>${oscal-data-repository-commons.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.easydynamics</groupId>
+			<artifactId>oscal-data-repository-commons-tests</artifactId>
+			<version>${oscal-data-repository-commons-tests.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!--JPA dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring-boot-starter-data-jpa.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-test.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.easydynamics</groupId>
+									<artifactId>oscal-data-repository-commons-tests</artifactId>
+									<version>${oscal-data-repository-commons-tests.version}</version>
+									<type>jar</type>
+									<includes>oscal-content/**</includes>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>

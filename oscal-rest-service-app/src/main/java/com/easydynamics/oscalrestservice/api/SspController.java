@@ -1,13 +1,16 @@
 package com.easydynamics.oscalrestservice.api;
 
+import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalSspService;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
  * Ssp Controller for OSCAL REST Service. This class handles all requests to the /ssps endpoint.
@@ -18,9 +21,10 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
   @Autowired(required = true)
   public SspController(
-      OscalSspService sspService
+      OscalSspService sspService,
+      OscalObjectMarshaller<SystemSecurityPlan> marshaller
   ) {
-    super(sspService);
+    super(sspService, marshaller);
   }
 
   /**
@@ -31,7 +35,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    */
 
   @GetMapping("/ssps/{id}")
-  public SystemSecurityPlan findById(@Parameter @PathVariable String id) {
+  public ResponseEntity<StreamingResponseBody> findById(@Parameter @PathVariable String id) {
     return super.findById(id);
   }
 

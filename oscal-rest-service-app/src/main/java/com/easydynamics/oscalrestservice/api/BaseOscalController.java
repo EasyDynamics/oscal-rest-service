@@ -1,6 +1,12 @@
 package com.easydynamics.oscalrestservice.api;
 
+import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.BaseOscalObjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
  * BaseOscalController is the superclass for all Controllers that handles request to an Oscal
@@ -9,12 +15,17 @@ import com.easydynamics.oscal.service.BaseOscalObjectService;
  */
 public class BaseOscalController<T> {
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
   private final BaseOscalObjectService<T> oscalObjectService;
+  private final OscalObjectMarshaller<T> oscalObjectMarshaller;
 
   protected BaseOscalController(
-      BaseOscalObjectService<T> oscalObjectService
+      BaseOscalObjectService<T> oscalObjectService,
+      OscalObjectMarshaller<T> oscalObjectMarshaller
   ) {
     this.oscalObjectService = oscalObjectService;
+    this.oscalObjectMarshaller = oscalObjectMarshaller;
   }
 
   /**
@@ -24,8 +35,18 @@ public class BaseOscalController<T> {
    * @return HTTP response containing file contents, error message and
    *     status code returned if file cannot be opened.
    */
-  public T findById(String id) {
-    return oscalObjectService.findById(id)
+  public ResponseEntity<StreamingResponseBody> findById(String id) {
+    T oscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
+
+    StreamingResponseBody responseBody = outputStream -> {
+      logger.debug("Starting marshalling of object type: {}", oscalObject.getClass().getName());
+      oscalObjectMarshaller.toJson(oscalObject, outputStream);
+      logger.debug("Marshalling complete");
+    };
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(responseBody);
   }
 }
