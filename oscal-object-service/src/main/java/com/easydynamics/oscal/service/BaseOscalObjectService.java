@@ -9,4 +9,12 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface BaseOscalObjectService<T> extends CrudRepository<T, String> {
 
+  /**
+   * Merges all fields/properties from the given source OSCAL object
+   * to the given target OSCAL object.
+   *
+   * @param source the source OSCAL object
+   * @param target the target OSCAL object
+   */
+  public void merge(T source, T target);
 }

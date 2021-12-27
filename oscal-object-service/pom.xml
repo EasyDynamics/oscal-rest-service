@@ -15,12 +15,36 @@
 		<oscal-data-repository-file.version>0.0.1-SNAPSHOT</oscal-data-repository-file.version>
 	</properties>
 
+    <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 
 		<dependency>
 			<groupId>com.easydynamics</groupId>
 			<artifactId>oscal-data-repository-file</artifactId>
 			<version>${oscal-data-repository-file.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-test.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

@@ -2,6 +2,7 @@ package com.easydynamics.oscal.service.impl;
 
 import com.easydynamics.oscal.service.BaseOscalObjectService;
 import java.util.Optional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -77,6 +78,11 @@ public class BaseOscalObjectServiceImpl<T> implements BaseOscalObjectService<T> 
   @Override
   public void deleteAllById(Iterable<? extends String> ids) {
     repository.deleteAllById(ids);
+  }
+
+  @Override
+  public void merge(T source, T target) {
+    BeanUtils.copyProperties(source, target);
   }
 
 }

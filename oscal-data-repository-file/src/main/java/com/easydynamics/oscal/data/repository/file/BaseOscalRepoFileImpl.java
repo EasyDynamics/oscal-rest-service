@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
  * CrudRepository, this class can count, create, delete, edit, find, and save those files.
  */
 @Repository
-public class BaseOscalRepoFilePassImpl<T extends Object>
+public class BaseOscalRepoFileImpl<T extends Object>
     implements CrudRepository<T, String> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -28,7 +28,7 @@ public class BaseOscalRepoFilePassImpl<T extends Object>
   private String path;
   private OscalLoader oscalLoader = new OscalLoader();
 
-  protected BaseOscalRepoFilePassImpl() {
+  protected BaseOscalRepoFileImpl() {
 
   }
 
@@ -39,7 +39,7 @@ public class BaseOscalRepoFilePassImpl<T extends Object>
    *             T extends OscalObject.
    * @param genericClass runtime class of the generic class T, which extends OscalObject
    */
-  protected BaseOscalRepoFilePassImpl(String path, Class<T> genericClass) {
+  protected BaseOscalRepoFileImpl(String path, Class<T> genericClass) {
     this.path = path;
     this.genericClass = genericClass;
   }

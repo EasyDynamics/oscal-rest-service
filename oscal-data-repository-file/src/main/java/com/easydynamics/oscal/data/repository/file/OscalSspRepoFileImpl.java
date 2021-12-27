@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
  */
 @PropertySource("classpath:application.properties")
 @Service("sspRepository")
-public class OscalSspRepoFilePassImpl
-    extends BaseOscalRepoFilePassImpl<SystemSecurityPlan> {
+public class OscalSspRepoFileImpl
+    extends BaseOscalRepoFileImpl<SystemSecurityPlan> {
 
   /**
    * Constructs an OscalSspRepository.
    *
    * @param path path to the directory containing OSCAL Ssp files
    */
-  public OscalSspRepoFilePassImpl(@Value("${persistence.file.ssps.path}") String path) {
+  public OscalSspRepoFileImpl(@Value("${persistence.file.ssps.path}") String path) {
     super(path, SystemSecurityPlan.class);
   }
 }
