@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,19 @@ public abstract class BaseOscalObjectServiceImpl<T> implements BaseOscalObjectSe
         | SecurityException e) {
       throw new InvalidDataAccessResourceUsageException(
           "could not updated last modified metadata", e);
+    }
+  }
+
+  @Override
+  public UUID getUuid(T object) {
+    try {
+      Method getUuid = object.getClass().getMethod("getUuid");
+      return (UUID) getUuid.invoke(object);
+    } catch (IllegalAccessException | IllegalArgumentException
+        | InvocationTargetException | NoSuchMethodException
+        | SecurityException e) {
+      throw new InvalidDataAccessResourceUsageException(
+          "could not get UUID", e);
     }
   }
 

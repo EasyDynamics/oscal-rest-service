@@ -10,12 +10,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Controller advice for object not found exceptions.
  */
 @ControllerAdvice
-public class OscalObjectNotFoundAdvice {
+public class OscalControllerExceptionAdvice {
 
   @ResponseBody
   @ExceptionHandler(OscalObjectNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   String oscalObjectNotFoundHandler(OscalObjectNotFoundException exception) {
+    return exception.getMessage();
+  }
+
+  @ResponseBody
+  @ExceptionHandler(OscalObjectConflictException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  String oscalObjectConflictHandler(OscalObjectConflictException exception) {
     return exception.getMessage();
   }
 }

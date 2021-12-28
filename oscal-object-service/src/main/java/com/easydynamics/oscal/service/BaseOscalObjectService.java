@@ -1,5 +1,6 @@
 package com.easydynamics.oscal.service;
 
+import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -18,4 +19,15 @@ public interface BaseOscalObjectService<T> extends CrudRepository<T, String> {
    * @return the result of the merge
    */
   public T merge(T source, T target);
+
+  /**
+   * Gets the UUID of the given object.
+   *
+   * <p>Note this is primarily needed to consolidate reflection to the service
+   * since liboscal-java does not define interfaces for root objects.
+   *
+   * @param object the OSCAL object
+   * @return the object's UUID
+   */
+  public UUID getUuid(T object);
 }

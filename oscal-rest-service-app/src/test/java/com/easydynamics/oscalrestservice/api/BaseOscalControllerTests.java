@@ -7,7 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import java.time.ZonedDateTime;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import net.minidev.json.JSONArray;
 
 /**
  * OscalControllerTests is an abstract class that provides methods for common tests among the
@@ -69,6 +73,7 @@ public abstract class BaseOscalControllerTests {
    */
   @Test
   public void testPatchOscalObject() throws Exception {
+    ZonedDateTime startDateTime = ZonedDateTime.now();
     String expectedTitle = "Some New Title";
     String updatedObject = "{\n"
         + "  \"" + oscalObjectType.jsonField + "\": {\n"
@@ -96,7 +101,69 @@ public abstract class BaseOscalControllerTests {
     this.mockMvc.perform(asyncDispatch(asyncResult))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.*.metadata.title").value(expectedTitle));
-    // TODO test for updated last-modified
+        .andExpect(jsonPath("$.*.metadata.title").value(expectedTitle))
+        .andExpect(jsonPath("$.*.metadata.last-modified",
+            new DateGreaterMatcher(startDateTime)));
+  }
+
+  /**
+   * Tests that an empty PATCH request fails.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testPatchEmptyOscalObject() throws Exception {
+    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaType.APPLICATION_JSON)
+        .characterEncoding("UTF-8"))
+        .andExpect(status().is4xxClientError());
+  }
+
+  /**
+   * Tests that a PATCH request with an UUID mismatch fails.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testPatchMismatchOscalObject() throws Exception {
+    String expectedTitle = "Some New Title";
+    String updatedObject = "{\n"
+        + "  \"" + oscalObjectType.jsonField + "\": {\n"
+        + "    \"uuid\": \"8A7D0A6D-024E-416A-956A-FDEB8816EEA1\",\n"
+        + "    \"metadata\": {\n"
+        + "      \"title\": \"" + expectedTitle + "\",\n"
+        + "      \"version\": \"1.0\"\n"
+        + "    }\n"
+        + "  }\n"
+        + "}";
+
+    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaType.APPLICATION_JSON)
+        .characterEncoding("UTF-8")
+        .content(updatedObject))
+        .andExpect(status().is4xxClientError());
+  }
+
+  class DateGreaterMatcher extends BaseMatcher<ZonedDateTime> {
+    private ZonedDateTime floor;
+    DateGreaterMatcher(ZonedDateTime floor) {
+      this.floor = floor;
+    }
+
+    @Override
+    public boolean matches(Object actual) {
+      JSONArray jsonArray = (JSONArray) actual;
+      ZonedDateTime actualDateTime = ZonedDateTime.parse(jsonArray.get(0).toString());
+      return actualDateTime.isAfter(floor);
+    }
+
+    @Override
+    public void describeTo(Description description) {
+      description.appendText(
+          String.format("last-modified should have been greater than %s",
+          floor));
+    }
   }
 }

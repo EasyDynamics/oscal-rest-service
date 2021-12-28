@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
  * endpoint. It uses its repository field to perform CRUD operations on files of the
  * corresponding Oscal type.
  */
-public class BaseOscalController<T> {
+public abstract class BaseOscalController<T> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -59,16 +59,15 @@ public class BaseOscalController<T> {
    *     status code returned if file cannot be opened.
    */
   public ResponseEntity<StreamingResponseBody> patch(String id, String json) {
-    // TODO check for empty json
-
     T incomingOscalObject = oscalObjectMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
-    // TODO handle new object
     T existingOscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    // TODO check for id mismatch
+    if (!id.equals(oscalObjectService.getUuid(incomingOscalObject).toString())) {
+      throw new OscalObjectConflictException("object UUID did not match path UUID");
+    }
 
     T updatedOscalObject = oscalObjectService.merge(incomingOscalObject, existingOscalObject);
 
