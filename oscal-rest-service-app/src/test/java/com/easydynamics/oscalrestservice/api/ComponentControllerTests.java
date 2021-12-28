@@ -8,7 +8,7 @@ import com.easydynamics.oscal.data.example.ExampleContentConstants;
 public class ComponentControllerTests extends BaseOscalControllerTests {
 
   private ComponentControllerTests() {
-    this.oscalType = "component-definitions";
+    this.oscalObjectType = OscalObjectType.COMPONENT_DEFINITION;
     this.defaultId = ExampleContentConstants.EXAMPLE_COMPONENT_ID;
   }
 

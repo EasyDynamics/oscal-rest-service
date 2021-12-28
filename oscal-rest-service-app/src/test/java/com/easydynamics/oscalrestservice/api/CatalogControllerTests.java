@@ -8,7 +8,7 @@ import com.easydynamics.oscal.data.example.ExampleContentConstants;
 public class CatalogControllerTests extends BaseOscalControllerTests {
 
   private CatalogControllerTests() {
-    this.oscalType = "catalogs";
+    this.oscalObjectType = OscalObjectType.CATALOG;
     this.defaultId = ExampleContentConstants.CATALOG_ID_80053r5;
   }
 

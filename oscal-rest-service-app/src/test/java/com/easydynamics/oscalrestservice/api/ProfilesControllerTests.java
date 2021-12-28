@@ -11,7 +11,7 @@ import com.easydynamics.oscal.data.example.ExampleContentConstants;
 public class ProfilesControllerTests extends BaseOscalControllerTests {
 
   private ProfilesControllerTests() {
-    this.oscalType = "profiles";
+    this.oscalObjectType = OscalObjectType.PROFILE;
     this.defaultId = ExampleContentConstants.EXAMPLE_PROFILE_ID;
   }
 

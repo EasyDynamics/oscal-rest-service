@@ -8,7 +8,7 @@ import com.easydynamics.oscal.data.example.ExampleContentConstants;
 public class SspControllerTests extends BaseOscalControllerTests {
 
   private SspControllerTests() {
-    this.oscalType = "ssps";
+    this.oscalObjectType = OscalObjectType.SSP;
     this.defaultId = ExampleContentConstants.SSP_EXAMPLE_ID;
   }
 

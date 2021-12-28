@@ -15,6 +15,7 @@ public interface BaseOscalObjectService<T> extends CrudRepository<T, String> {
    *
    * @param source the source OSCAL object
    * @param target the target OSCAL object
+   * @return the result of the merge
    */
-  public void merge(T source, T target);
+  public T merge(T source, T target);
 }

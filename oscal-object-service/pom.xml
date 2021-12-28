@@ -13,9 +13,10 @@
 	<description>OSCAL service layer</description>
 	<properties>
 		<oscal-data-repository-file.version>0.0.1-SNAPSHOT</oscal-data-repository-file.version>
+		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 	</properties>
 
-    <dependencyManagement>
+		<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.junit</groupId>
@@ -33,6 +34,11 @@
 			<groupId>com.easydynamics</groupId>
 			<artifactId>oscal-data-repository-file</artifactId>
 			<version>${oscal-data-repository-file.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${commons-beanutils.version}</version>
 		</dependency>
 
 		<dependency>

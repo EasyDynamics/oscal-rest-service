@@ -2,6 +2,7 @@ package com.easydynamics.oscalrestservice.api;
 
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.BaseOscalObjectService;
+import java.io.ByteArrayInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -48,5 +49,37 @@ public class BaseOscalController<T> {
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
         .body(responseBody);
+  }
+
+  /**
+   * Defines how a get request is handled by an Oscal controller.
+   *
+   * @param id uuid of the file to open
+   * @return HTTP response containing file contents, error message and
+   *     status code returned if file cannot be opened.
+   */
+  public ResponseEntity<StreamingResponseBody> patch(String id, String json) {
+    // TODO check for empty json
+
+    T incomingOscalObject = oscalObjectMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    // TODO handle new object
+    T existingOscalObject = oscalObjectService.findById(id)
+        .orElseThrow(() -> new OscalObjectNotFoundException(id));
+
+    // TODO check for id mismatch
+
+    T updatedOscalObject = oscalObjectService.merge(incomingOscalObject, existingOscalObject);
+
+    logger.debug("{} merge complete, saving via service",
+        updatedOscalObject.getClass().getSimpleName());
+
+    oscalObjectService.save(existingOscalObject);
+
+    logger.debug("{} save complete, re-retrieving from service",
+        existingOscalObject.getClass().getSimpleName());
+
+    return findById(id);
   }
 }

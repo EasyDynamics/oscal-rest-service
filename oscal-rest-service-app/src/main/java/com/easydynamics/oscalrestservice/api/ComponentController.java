@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -41,4 +43,16 @@ public class ComponentController extends BaseOscalController<ComponentDefinition
     return super.findById(id);
   }
 
+  /**
+   * Defines a PATCH request for updating component definitions.
+   *
+   * @param id the component definition uuid
+   * @param json the component definition contents
+   */
+  @PatchMapping("/component-definitions/{id}")
+  public ResponseEntity<StreamingResponseBody> patch(
+      @Parameter @PathVariable String id,
+      @RequestBody String json) {
+    return super.patch(id, json);
+  }
 }

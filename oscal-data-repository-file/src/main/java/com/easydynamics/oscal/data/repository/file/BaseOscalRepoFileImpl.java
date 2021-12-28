@@ -1,15 +1,24 @@
 package com.easydynamics.oscal.data.repository.file;
 
+import gov.nist.secauto.metaschema.binding.BindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
+import gov.nist.secauto.metaschema.binding.io.Feature;
+import gov.nist.secauto.metaschema.binding.io.Format;
+import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
+import gov.nist.secauto.metaschema.binding.io.Serializer;
 import gov.nist.secauto.oscal.java.OscalLoader;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,18 +28,15 @@ import org.springframework.stereotype.Repository;
  * CrudRepository, this class can count, create, delete, edit, find, and save those files.
  */
 @Repository
-public class BaseOscalRepoFileImpl<T extends Object>
+public abstract class BaseOscalRepoFileImpl<T extends Object>
     implements CrudRepository<T, String> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private Class<T> genericClass;
-  private String path;
-  private OscalLoader oscalLoader = new OscalLoader();
-
-  protected BaseOscalRepoFileImpl() {
-
-  }
+  private final Class<T> genericClass;
+  private final String path;
+  private final OscalLoader oscalLoader;
+  private final Serializer<T> serializer;
 
   /**
    * Constructs an OscalRepository.
@@ -42,33 +48,55 @@ public class BaseOscalRepoFileImpl<T extends Object>
   protected BaseOscalRepoFileImpl(String path, Class<T> genericClass) {
     this.path = path;
     this.genericClass = genericClass;
+    this.oscalLoader = new OscalLoader();
+    BindingContext context = BindingContext.newInstance();
+    MutableConfiguration config = new MutableConfiguration().enableFeature(
+            Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
+    this.serializer = context.newSerializer(Format.JSON, genericClass, config);
   }
 
-  /**
-   * Finds an OSCAL file and returns its contents.
-   *
-   * @param id the OSCAL file name
-   * @return OSCAL contents of the file, if it exists
-   */
+  protected Optional<Path> getValidatedPathToOscalFile(String id) {
+    try {
+      Path pathToOscalFile = Path.of(this.path, id + ".json");
+      logger.debug("Checking pathToOscalFile={}", pathToOscalFile);
+      if (!pathToOscalFile.toFile().exists() || pathToOscalFile.toFile().isDirectory()) {
+        return Optional.empty();
+      }
+      return Optional.of(pathToOscalFile);
+    } catch (InvalidPathException e) {
+      throw new DataRetrievalFailureException("Illegal path provided.", e);
+    }
+  }
+
+  protected Optional<Path> getValidatedPathToOscalFile(T oscalObject) {
+    if (oscalObject == null) {
+      throw new IllegalArgumentException("oscalObject must not be null");
+    }
+    try {
+      Method getUuid = oscalObject.getClass().getMethod("getUuid");
+      UUID uuid = (UUID) getUuid.invoke(oscalObject);
+      return getValidatedPathToOscalFile(uuid.toString());
+    } catch (IllegalAccessException | IllegalArgumentException
+        | InvocationTargetException | NoSuchMethodException
+        | SecurityException e) {
+      throw new InvalidDataAccessResourceUsageException(
+          "could not get object UUID", e);
+    }
+  }
+
+  @Override
   public Optional<T> findById(String id) {
     if (id == null) {
       throw new IllegalArgumentException("File id not provided.");
     }
 
-    Path pathToOscalFile;
-
-    try {
-      pathToOscalFile = (Path.of(this.path, id + ".json"));
-      logger.debug("Chacking pathToOscalFile={}", pathToOscalFile);
-      if (!pathToOscalFile.toFile().exists() || pathToOscalFile.toFile().isDirectory()) {
-        return Optional.empty();
-      }
-    } catch (InvalidPathException e) {
-      throw new DataRetrievalFailureException("Illegal path provided.", e);
+    Optional<Path> pathToOscalFile = getValidatedPathToOscalFile(id);
+    if (pathToOscalFile.isEmpty()) {
+      return Optional.empty();
     }
 
     try {
-      return Optional.of(oscalLoader.load(genericClass, new File(pathToOscalFile.toUri())));
+      return Optional.of(oscalLoader.load(genericClass, new File(pathToOscalFile.get().toUri())));
     } catch (IOException | BindingException e) {
       throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
     } catch (OutOfMemoryError e) {
@@ -114,8 +142,25 @@ public class BaseOscalRepoFileImpl<T extends Object>
     throw new UnsupportedOperationException("operation not permitted.");
   }
 
+  @Override
   public <S extends T> S save(S entity) {
-    throw new UnsupportedOperationException("operation not permitted.");
+    if (entity == null) {
+      throw new IllegalArgumentException("entity must not be null");
+    }
+    Optional<Path> pathToOscalFile = getValidatedPathToOscalFile(entity);
+    File oscalFile = new File(pathToOscalFile.get().toUri());
+
+    try {
+      if (pathToOscalFile.isEmpty()) {
+        oscalFile.createNewFile();
+      }
+      logger.debug("Serializing {} to path {}",
+          entity.getClass().getSimpleName(), pathToOscalFile.get().toString());
+      serializer.serialize(entity, new File(pathToOscalFile.get().toUri()));
+      return entity;
+    } catch (BindingException | IOException e) {
+      throw new InvalidDataAccessResourceUsageException("Could not serialize to file", e);
+    }
   }
 
   public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {

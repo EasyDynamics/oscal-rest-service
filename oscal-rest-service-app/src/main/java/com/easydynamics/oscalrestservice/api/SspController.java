@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -33,10 +35,21 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * @param id the ssp uuid
    * @return the oscal-content ssp-example hosted on github
    */
-
   @GetMapping("/ssps/{id}")
   public ResponseEntity<StreamingResponseBody> findById(@Parameter @PathVariable String id) {
     return super.findById(id);
   }
 
+  /**
+   * Defines a PATCH request for updating SSPs.
+   *
+   * @param id the SSP uuid
+   * @param json the SSP contents
+   */
+  @PatchMapping("/ssps/{id}")
+  public ResponseEntity<StreamingResponseBody> patch(
+      @Parameter @PathVariable String id,
+      @RequestBody String json) {
+    return super.patch(id, json);
+  }
 }

@@ -1,5 +1,6 @@
 package com.easydynamics.oscal.data.marshalling;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -13,4 +14,11 @@ public interface OscalObjectMarshaller<T> {
    */
   public void toJson(T oscalObject, OutputStream outputStream);
 
+  /**
+   * Deserializes the given input stream into an OSCAL POJO object.
+   *
+   * @param inputStream the input stream to deserialize
+   * @return the OSCAL object
+   */
+  public T toObject(InputStream inputStream);
 }
