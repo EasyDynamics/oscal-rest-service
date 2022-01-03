@@ -19,7 +19,7 @@ while read -r line; do
   uuid="$(sed 's/^.*"uuid":"\(.*\)"/\1/g' <<< "$line")" #Extracting the uuid
 
   #Checking if we have already found the current value of uuid in the file
-  if [[ ! $(echo "${uuid_array[@]}" | grep --quiet --only-matching "$uuid") ]]; then	
+  if ! echo "${uuid_array[@]}" | grep --quiet --only-matching "$uuid"; then	
     #adding the uuid (in the current line) to the array of replaced uuids
     uuid_array+=("$uuid")
 
