@@ -27,15 +27,19 @@ future.
 
 ## Local Development
 
-`mvn install`
+To build and install all of the above artifacts, from the `oscal-rest-service` root dir run:
+```
+mvn clean install
+```
 
-`mvn spring-boot:run`
+To then launch the Spring Boot app:
+```
+cd oscal-rest-service-app
+mvn spring-boot:run
+```
+
 
 You can view the api documentation in swagger-ui by pointing to
 http://localhost:8080/swagger-ui/index.html
 
 Change default port value in application.properties
-
-## Database Connection
-
-TODO
