@@ -1,7 +1,7 @@
 name: Publish package to GitHub Packages
 on:
   push:
-    branches: [update-package]
+    branches: [develop]
   workflow_dispatch:
 
 jobs:
