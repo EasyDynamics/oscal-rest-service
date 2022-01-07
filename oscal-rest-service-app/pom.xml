@@ -18,6 +18,7 @@
 		<springfox.version>3.0.0</springfox.version>
 		<oscal-object-service.version>0.0.1-SNAPSHOT</oscal-object-service.version>
 		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
+		<maven.deploy.skip>false</maven.deploy.skip>
 	</properties>
 	<distributionManagement>
 		<repository>
