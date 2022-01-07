@@ -17,6 +17,7 @@ import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalSspService;
 import gov.nist.secauto.metaschema.datatypes.markup.MarkupLine;
 import gov.nist.secauto.oscal.lib.model.Metadata;
+import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Property;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
@@ -52,10 +53,17 @@ public class OscalSspServiceImplTest {
     origProps.add(origProp1);
     origProps.add(origProp2);
 
+    LinkedList<Party> origParties = new LinkedList<>();
+    Party origParty = new Party();
+    UUID origPartyUuid = UUID.randomUUID();
+    origParty.setUuid(origPartyUuid);
+    origParties.add(origParty);
+
     Metadata origMetadata = new Metadata();
     origMetadata.setTitle(origTitle);
     origMetadata.setVersion(EXPECTED_VERSION);
     origMetadata.setProps(origProps);
+    origMetadata.setParties(origParties);
     origSsp.setMetadata(origMetadata);
 
     String newSspString = "\n{\n"
@@ -97,6 +105,8 @@ public class OscalSspServiceImplTest {
         "The mergedSsp prop1 should not have changed: " + mergedSspJson);
     assertEquals("new value 2", mergedSsp.getMetadata().getProps().get(1).getValue(),
         "The mergedSsp prop2 should have been updated: " + mergedSspJson);
+    assertEquals(origPartyUuid, mergedSsp.getMetadata().getParties().get(0).getUuid(),
+        "The mergedSsp parties should not have changed: " + mergedSspJson);
   }
 
 }

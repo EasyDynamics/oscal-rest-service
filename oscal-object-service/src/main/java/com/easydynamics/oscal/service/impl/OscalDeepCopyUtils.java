@@ -80,8 +80,8 @@ public class OscalDeepCopyUtils {
       @Override
       public void copyProperty(Object dest, String name, Object value)
               throws IllegalAccessException, InvocationTargetException {
-        if (value == null) {
-          logger.trace("skipping null value for {}", name);
+        if (value == null || (value instanceof List<?> && ((List<?>) value).isEmpty())) {
+          logger.trace("skipping null/empty value for {}", name);
           return;
         }
         if (isDeepCopyNeeded(value)) {
