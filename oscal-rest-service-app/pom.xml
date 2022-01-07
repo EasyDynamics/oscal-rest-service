@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<springfox-version>3.0.0</springfox-version>
+		<maven.deploy.skip>false</maven.deploy.skip>
 	</properties>
 	<distributionManagement>
 		<repository>
