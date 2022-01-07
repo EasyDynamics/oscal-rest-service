@@ -66,24 +66,8 @@ public abstract class BaseOscalControllerTests {
         .andExpect(status().isNotFound());
   }
 
-  /**
-   * Tests if the PATCH Request to /<oscalType>/{id} will update a <oscalType> json file.
-   *
-   * @throws Exception
-   */
-  @Test
-  public void testPatchOscalObject() throws Exception {
+  protected void testPatchOscalObject(String updatedObject, String expectedTitle) throws Exception {
     ZonedDateTime startDateTime = ZonedDateTime.now();
-    String expectedTitle = "Some New Title";
-    String updatedObject = "{\n"
-        + "  \"" + oscalObjectType.jsonField + "\": {\n"
-        + "    \"uuid\": \"" + defaultId + "\",\n"
-        + "    \"metadata\": {\n"
-        + "      \"title\": \"" + expectedTitle + "\",\n"
-        + "      \"version\": \"1.0\"\n"
-        + "    }\n"
-        + "  }\n"
-        + "}";
 
     this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -102,8 +86,50 @@ public abstract class BaseOscalControllerTests {
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.*.metadata.title").value(expectedTitle))
+        .andExpect(jsonPath("$.*.metadata.oscal-version").value("1.0.0"))
         .andExpect(jsonPath("$.*.metadata.last-modified",
             new DateGreaterMatcher(startDateTime)));
+  }
+
+  /**
+   * Tests if the PATCH Request to /<oscalType>/{id} will update a <oscalType> json file.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testPatchOscalObject() throws Exception {
+    String expectedTitle = "Some New Title";
+    String updatedObject = "{\n"
+        + "  \"" + oscalObjectType.jsonField + "\": {\n"
+        + "    \"uuid\": \"" + defaultId + "\",\n"
+        + "    \"metadata\": {\n"
+        + "      \"title\": \"" + expectedTitle + "\",\n"
+        + "      \"version\": \"1.0\"\n"
+        + "    }\n"
+        + "  }\n"
+        + "}";
+
+    testPatchOscalObject(updatedObject, expectedTitle);
+  }
+
+  /**
+   * Tests if the PATCH Request to /<oscalType>/{id} will update a <oscalType> json file.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testPatchOscalObjectNoUuid() throws Exception {
+    String expectedTitle = "Some New Title";
+    String updatedObject = "{\n"
+        + "  \"" + oscalObjectType.jsonField + "\": {\n"
+        + "    \"metadata\": {\n"
+        + "      \"title\": \"" + expectedTitle + "\",\n"
+        + "      \"version\": \"1.0\"\n"
+        + "    }\n"
+        + "  }\n"
+        + "}";
+
+    testPatchOscalObject(updatedObject, expectedTitle);
   }
 
   /**

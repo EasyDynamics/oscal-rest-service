@@ -3,6 +3,7 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.BaseOscalObjectService;
 import java.io.ByteArrayInputStream;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -65,7 +66,8 @@ public abstract class BaseOscalController<T> {
     T existingOscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    if (!id.equals(oscalObjectService.getUuid(incomingOscalObject).toString())) {
+    UUID incomingUuid = oscalObjectService.getUuid(incomingOscalObject);
+    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
       throw new OscalObjectConflictException("object UUID did not match path UUID");
     }
 
