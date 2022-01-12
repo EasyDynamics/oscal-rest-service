@@ -1,7 +1,7 @@
 package com.easydynamics.oscal.service.impl;
 
-import com.easydynamics.oscal.data.model.OscalCatalogObject;
 import com.easydynamics.oscal.service.OscalCatalogService;
+import gov.nist.secauto.oscal.lib.model.Catalog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OscalCatalogServiceImpl
-    extends BaseOscalObjectServiceImpl<OscalCatalogObject>
+    extends BaseOscalObjectServiceImpl<Catalog>
     implements OscalCatalogService {
 
   @Autowired(required = true)
   public OscalCatalogServiceImpl(
-      CrudRepository<OscalCatalogObject, String> catalogRepository
+      CrudRepository<Catalog, String> catalogRepository
   ) {
     super(catalogRepository);
   }

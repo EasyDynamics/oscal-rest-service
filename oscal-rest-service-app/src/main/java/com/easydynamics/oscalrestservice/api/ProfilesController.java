@@ -1,15 +1,18 @@
 package com.easydynamics.oscalrestservice.api;
 
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
-import com.easydynamics.oscal.data.model.OscalProfileObject;
 import com.easydynamics.oscal.service.OscalProfileService;
+import gov.nist.secauto.oscal.lib.model.Profile;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
  * Profile Controller for OSCAL REST Service. This class handles all requests to the /profiles
@@ -18,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping(path = "/oscal/v1")
 @RestController
-public class ProfilesController extends BaseOscalController<OscalProfileObject> {
+public class ProfilesController extends BaseOscalController<Profile> {
 
   @Autowired(required = true)
   public ProfilesController(
       OscalProfileService profileService,
-      OscalObjectMarshaller marshaller
+      OscalObjectMarshaller<Profile> marshaller
   ) {
     super(profileService, marshaller);
   }
@@ -37,8 +40,20 @@ public class ProfilesController extends BaseOscalController<OscalProfileObject> 
    */
 
   @GetMapping("/profiles/{id}")
-  public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
+  public ResponseEntity<StreamingResponseBody> findById(@Parameter @PathVariable String id) {
     return super.findById(id);
   }
 
+  /**
+   * Defines a PATCH request for updating profiles.
+   *
+   * @param id the profile uuid
+   * @param json the profile contents
+   */
+  @PatchMapping("/profiles/{id}")
+  public ResponseEntity<StreamingResponseBody> patch(
+      @Parameter @PathVariable String id,
+      @RequestBody String json) {
+    return super.patch(id, json);
+  }
 }

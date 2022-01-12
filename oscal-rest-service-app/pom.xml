@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.3</version>
+		<version>2.6.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.easydynamics</groupId>
@@ -15,7 +15,9 @@
 	<description>Initial OSCAL REST API</description>
 	<properties>
 		<java.version>11</java.version>
-		<springfox-version>3.0.0</springfox-version>
+		<springfox.version>3.0.0</springfox.version>
+		<oscal-object-service.version>0.0.1-SNAPSHOT</oscal-object-service.version>
+		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
 		<maven.deploy.skip>false</maven.deploy.skip>
 	</properties>
 	<distributionManagement>
@@ -30,7 +32,13 @@
 		<dependency>
 			<groupId>com.easydynamics</groupId>
 			<artifactId>oscal-object-service</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${oscal-object-service.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.easydynamics</groupId>
+			<artifactId>oscal-data-repository-commons-tests</artifactId>
+			<version>${oscal-data-repository-commons-tests.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -46,45 +54,22 @@
 
 		<!--SpringFox dependencies -->
 		<dependency>
-				<groupId>io.springfox</groupId>
-				<artifactId>springfox-oas</artifactId>
-				<version>${springfox-version}</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-oas</artifactId>
+			<version>${springfox.version}</version>
 		</dependency>
 		<dependency>
-				<groupId>io.springfox</groupId>
-				<artifactId>springfox-swagger-ui</artifactId>
-				<version>${springfox-version}</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>${springfox-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<version>${springfox.version}</version>
 		</dependency>
 
-		<!-- Lombok -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Bean Validation API support -->
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-
-		</dependencies>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -92,26 +77,51 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				 <groupId>org.apache.maven.plugins</groupId>
-				 <artifactId>maven-checkstyle-plugin</artifactId>
-				 <version>3.1.2</version>
-				 <configuration>
-					 <configLocation>google_checks.xml</configLocation>
-					 <encoding>UTF-8</encoding>
-					 <consoleOutput>true</consoleOutput>
-					 <failsOnError>true</failsOnError>
-					 <violationSeverity>warning</violationSeverity>
-					 <linkXRef>false</linkXRef>
-				 </configuration>
-				 <executions>
-					 <execution>
-						 <id>validate</id>
-						 <phase>validate</phase>
-						 <goals>
-							 <goal>check</goal>
-						 </goals>
-					 </execution>
-				 </executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<configLocation>google_checks.xml</configLocation>
+					<encoding>UTF-8</encoding>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>true</failsOnError>
+					<violationSeverity>warning</violationSeverity>
+					<linkXRef>false</linkXRef>
+				</configuration>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.easydynamics</groupId>
+									<artifactId>oscal-data-repository-commons-tests</artifactId>
+									<version>${oscal-data-repository-commons-tests.version}</version>
+									<type>jar</type>
+									<includes>oscal-content/**</includes>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

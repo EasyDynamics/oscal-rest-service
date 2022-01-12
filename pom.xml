@@ -12,6 +12,12 @@
 		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<validation-api.version>2.0.1.Final</validation-api.version>
+		<spring-boot-starter-data-jpa.version>2.6.2</spring-boot-starter-data-jpa.version>
+		<spring-test.version>5.3.14</spring-test.version>
+		<junit.version>5.8.2</junit.version>
+		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 	<distributionManagement>
@@ -24,35 +30,40 @@
 
 	<modules>
 		<module>oscal-data-repository-commons</module>
-		<module>oscal-data-repository-file-passthrough</module>
+		<module>oscal-data-repository-commons-tests</module>
+		<module>oscal-data-repository-file</module>
 		<module>oscal-object-service</module>
 		<module>oscal-rest-service-app</module>
-        </modules>
+	</modules>
 
 	<build>
 		<plugins>
 			<plugin>
-			   <groupId>org.apache.maven.plugins</groupId>
-			   <artifactId>maven-checkstyle-plugin</artifactId>
-			   <version>3.1.2</version>
-			   <configuration>
-			     <configLocation>google_checks.xml</configLocation>
-			     <encoding>UTF-8</encoding>
-			     <consoleOutput>true</consoleOutput>
-			     <failsOnError>true</failsOnError>
-			     <violationSeverity>warning</violationSeverity>
-			     <linkXRef>false</linkXRef>
-			   </configuration>
-			   <executions>
-			     <execution>
-			       <id>validate</id>
-			       <phase>validate</phase>
-			       <goals>
-			         <goal>check</goal>
-			       </goals>
-			     </execution>
-			   </executions>
-			 </plugin>
+				 <groupId>org.apache.maven.plugins</groupId>
+				 <artifactId>maven-checkstyle-plugin</artifactId>
+				 <version>${maven-checkstyle-plugin.version}</version>
+				 <configuration>
+					 <configLocation>google_checks.xml</configLocation>
+					 <encoding>UTF-8</encoding>
+					 <consoleOutput>true</consoleOutput>
+					 <failsOnError>true</failsOnError>
+					 <violationSeverity>warning</violationSeverity>
+					 <linkXRef>false</linkXRef>
+				 </configuration>
+				 <executions>
+					 <execution>
+						 <id>validate</id>
+						 <phase>validate</phase>
+						 <goals>
+							 <goal>check</goal>
+						 </goals>
+					 </execution>
+				 </executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+			</plugin>
 		</plugins>
 	</build>
 

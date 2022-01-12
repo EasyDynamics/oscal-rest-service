@@ -1,7 +1,7 @@
 package com.easydynamics.oscal.service.impl;
 
-import com.easydynamics.oscal.data.model.OscalSspObject;
 import com.easydynamics.oscal.service.OscalSspService;
+import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OscalSspServiceImpl
-    extends BaseOscalObjectServiceImpl<OscalSspObject>
+    extends BaseOscalObjectServiceImpl<SystemSecurityPlan>
     implements OscalSspService {
 
   @Autowired(required = true)
   public OscalSspServiceImpl(
-      CrudRepository<OscalSspObject, String> sspRepository
+      CrudRepository<SystemSecurityPlan, String> sspRepository
   ) {
     super(sspRepository);
   }

@@ -1,10 +1,10 @@
 package com.easydynamics.oscal.service;
 
-import com.easydynamics.oscal.data.model.OscalSspObject;
+import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
 /**
  * Defines the service for OSCAL SSP objects.
  */
-public interface OscalSspService extends BaseOscalObjectService<OscalSspObject> {
+public interface OscalSspService extends BaseOscalObjectService<SystemSecurityPlan> {
 
 }

@@ -1,29 +1,31 @@
 package com.easydynamics.oscalrestservice.api;
 
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
-import com.easydynamics.oscal.data.model.OscalCatalogObject;
 import com.easydynamics.oscal.service.OscalCatalogService;
+import gov.nist.secauto.oscal.lib.model.Catalog;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
  * Catalog Controller for OSCAL REST Service. This class handles all requests to the /catalogs
  * endpoint.
  */
-
 @RequestMapping(path = "/oscal/v1")
 @RestController
-public class CatalogController extends BaseOscalController<OscalCatalogObject> {
+public class CatalogController extends BaseOscalController<Catalog> {
 
   @Autowired(required = true)
   public CatalogController(
       OscalCatalogService catalogService,
-      OscalObjectMarshaller marshaller
+      OscalObjectMarshaller<Catalog> marshaller
   ) {
     super(catalogService, marshaller);
   }
@@ -36,8 +38,20 @@ public class CatalogController extends BaseOscalController<OscalCatalogObject> {
    */
 
   @GetMapping("/catalogs/{id}")
-  public ResponseEntity<String> findById(@Parameter @PathVariable String id) {
+  public ResponseEntity<StreamingResponseBody> findById(@Parameter @PathVariable String id) {
     return super.findById(id);
   }
 
+  /**
+   * Defines a PATCH request for updating catalogs.
+   *
+   * @param id the catalog uuid
+   * @param json the catalog contents
+   */
+  @PatchMapping("/catalogs/{id}")
+  public ResponseEntity<StreamingResponseBody> patch(
+      @Parameter @PathVariable String id,
+      @RequestBody String json) {
+    return super.patch(id, json);
+  }
 }

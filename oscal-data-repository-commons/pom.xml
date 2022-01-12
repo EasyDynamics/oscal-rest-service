@@ -12,22 +12,24 @@
 	<name>oscal-data-repository-commons</name>
 	<description>Parent for OSCAL data repository implementations</description>
 
+	<properties>
+		<liboscal-java.version>1.0.0</liboscal-java.version>
+	</properties>
+
 	<dependencies>
 
-		<!-- Bean Validation API support -->
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>2.0.1.Final</version>
+			<groupId>gov.nist.secauto.oscal</groupId>
+			<artifactId>liboscal-java</artifactId>
+			<version>${liboscal-java.version}</version>
+			<exclusions>
+			<exclusion>
+				 <groupId>org.apache.logging.log4j</groupId>
+				 <artifactId>*</artifactId>
+			</exclusion>
+			</exclusions>
 		</dependency>
 
-		<!--JPA dependencies -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>2.4.3</version>
-		</dependency>
-
-  </dependencies>
+	</dependencies>
 
 </project>
