@@ -38,7 +38,7 @@ public abstract class BaseOscalControllerTests {
   /**
    * Tests if the GET Request to /<oscalType>/{id} will retrieve a valid default <oscalType> json file.
    *
-   * @throws Exception
+   * @throws Exception the exception thrown by the REST request.
    */
   @Test
   public void testGetOscalObject() throws Exception {
@@ -57,7 +57,7 @@ public abstract class BaseOscalControllerTests {
   /**
    * Tests if the GET Request to /<oscalType>/{id} will fail if provided an invalid id.
    *
-   * @throws Exception
+   * @throws Exception the exception thrown by the REST request.
    */
   @Test
   public void testOscalObjectNotFound() throws Exception {
