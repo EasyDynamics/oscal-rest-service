@@ -13,8 +13,9 @@
 	<name>oscal-data-repository-file</name>
 	<description>File-persistent OSCAL data repository implementation</description>
 	<properties>
-		 <oscal-data-repository-commons.version>0.0.1-SNAPSHOT</oscal-data-repository-commons.version>
-		 <oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
+		<oscal-data-repository-commons.version>0.0.1-SNAPSHOT</oscal-data-repository-commons.version>
+		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
+		<org.json.version>20211205</org.json.version>
 	</properties>
 
 	<dependencyManagement>
@@ -40,6 +41,12 @@
 			<artifactId>oscal-data-repository-commons-tests</artifactId>
 			<version>${oscal-data-repository-commons-tests.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${org.json.version}</version>
 		</dependency>
 
 		<!--JPA dependencies -->

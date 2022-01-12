@@ -6,15 +6,19 @@ import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
 import gov.nist.secauto.metaschema.binding.io.Serializer;
+import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
 import gov.nist.secauto.oscal.java.OscalLoader;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -35,6 +39,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
 
   private final Class<T> genericClass;
   private final String path;
+  private final String oscalRootName;
   private final OscalLoader oscalLoader;
   private final Serializer<T> serializer;
 
@@ -48,6 +53,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
   protected BaseOscalRepoFileImpl(String path, Class<T> genericClass) {
     this.path = path;
     this.genericClass = genericClass;
+    this.oscalRootName = getOscalRootName(genericClass);
     this.oscalLoader = new OscalLoader();
     BindingContext context = BindingContext.newInstance();
     MutableConfiguration config = new MutableConfiguration().enableFeature(
@@ -55,16 +61,43 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     this.serializer = context.newSerializer(Format.JSON, genericClass, config);
   }
 
+  protected String getOscalRootName(Class<T> genericClass) {
+    if (genericClass == null) {
+      throw new IllegalArgumentException("genericClass must not be null");
+    }
+    MetaschemaAssembly metaschemaAssembly =
+        genericClass.getAnnotation(MetaschemaAssembly.class);
+    if (metaschemaAssembly == null) {
+      throw new IllegalArgumentException("genericClass is not a MetaschemaAssembly");
+    }
+    return metaschemaAssembly.rootName();
+  }
+
   protected Optional<Path> getValidatedPathToOscalFile(String id) {
+    if (id == null) {
+      throw new IllegalArgumentException("File id not provided.");
+    }
+
+    /*
+    * Search through each file in the directory containing files of a specified
+    * OSCAL type. If that file's uuid matches the requested uuid, then we return
+    * the path to that file.
+    */
     try {
-      Path pathToOscalFile = Path.of(this.path, id + ".json");
-      logger.debug("Checking pathToOscalFile={}", pathToOscalFile);
-      if (!pathToOscalFile.toFile().exists() || pathToOscalFile.toFile().isDirectory()) {
-        return Optional.empty();
+      for (File f : new File(path).listFiles()) {
+        String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
+        String uuid = new JSONObject(oscalFileContents)
+            .getJSONObject(oscalRootName).getString("uuid");
+
+        if (uuid.equals(id)) {
+          return Optional.of(f.toPath());
+        }
       }
-      return Optional.of(pathToOscalFile);
+      return Optional.empty();
     } catch (InvalidPathException e) {
       throw new DataRetrievalFailureException("Illegal path provided.", e);
+    } catch (IOException e) {
+      throw new DataRetrievalFailureException("Error obtaining file contents.", e);
     }
   }
 
