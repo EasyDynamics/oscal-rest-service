@@ -84,7 +84,11 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     * the path to that file.
     */
     try {
-      for (File f : new File(path).listFiles()) {
+      File pathFile = new File(path);
+      if (!pathFile.exists() || pathFile.listFiles() == null) {
+        throw new DataRetrievalFailureException("Illegal path provided.");
+      }
+      for (File f : pathFile.listFiles()) {
         String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
         String uuid = new JSONObject(oscalFileContents)
             .getJSONObject(oscalRootName).getString("uuid");
