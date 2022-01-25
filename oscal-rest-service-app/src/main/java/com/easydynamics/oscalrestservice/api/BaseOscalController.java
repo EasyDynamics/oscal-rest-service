@@ -83,4 +83,23 @@ public abstract class BaseOscalController<T> {
 
     return findById(id);
   }
+
+  /**
+   * Delegates a find all of the T object type to the repository implementation.
+   *
+   * @return HTTP response containing OSCAL objects
+   */
+  public ResponseEntity<StreamingResponseBody> findAll() {
+    Iterable<T> oscalObjects = oscalObjectService.findAll();
+
+    StreamingResponseBody responseBody = outputStream -> {
+      logger.debug("Starting marshalling of objects");
+      oscalObjectMarshaller.toJson(oscalObjects, outputStream);
+      logger.debug("Marshalling complete");
+    };
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(responseBody);
+  }
 }

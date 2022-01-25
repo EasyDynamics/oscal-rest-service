@@ -31,6 +31,10 @@ public class ProfilesController extends BaseOscalController<Profile> {
     super(profileService, marshaller);
   }
 
+  @GetMapping("/profiles")
+  public ResponseEntity<StreamingResponseBody> findAll() {
+    return super.findAll();
+  }
 
   /**
    * Defines a GET request for profile by ID.

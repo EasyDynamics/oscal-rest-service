@@ -36,7 +36,7 @@ public abstract class BaseOscalControllerTests {
 
 
   /**
-   * Tests if the GET Request to /<oscalType>/{id} will retrieve a valid default <oscalType> json file.
+   * Tests if the GET Request to /<oscalType>/{id} will retrieve a valid default <oscalType> object.
    *
    * @throws Exception the exception thrown by the REST request.
    */
@@ -92,7 +92,7 @@ public abstract class BaseOscalControllerTests {
   }
 
   /**
-   * Tests if the PATCH Request to /<oscalType>/{id} will update a <oscalType> json file.
+   * Tests if the PATCH Request to /<oscalType>/{id} will update an <oscalType> object.
    *
    * @throws Exception
    */
@@ -113,7 +113,7 @@ public abstract class BaseOscalControllerTests {
   }
 
   /**
-   * Tests if the PATCH Request to /<oscalType>/{id} will update a <oscalType> json file.
+   * Tests if the PATCH Request to /<oscalType>/{id} will update an <oscalType> object.
    *
    * @throws Exception
    */
@@ -170,6 +170,25 @@ public abstract class BaseOscalControllerTests {
         .characterEncoding("UTF-8")
         .content(updatedObject))
         .andExpect(status().is4xxClientError());
+  }
+
+  /**
+   * Tests if the GET Request to /<oscalTypes> will retrieve a valid list of OSCAL objects.
+   *
+   * @throws Exception the exception thrown by the REST request.
+   */
+  @Test
+  public void testFindAllOscalObjects() throws Exception {
+    // With StreamingResponseBody this is async so we start the request here
+    MvcResult asyncResult = this.mockMvc.perform(get("/oscal/v1/" + oscalObjectType.restPath))
+        .andExpect(request().asyncStarted())
+        .andReturn();
+
+    // On async result check the content and UUID
+    this.mockMvc.perform(asyncDispatch(asyncResult))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$[0].*.uuid").value(defaultId));
   }
 
   class DateGreaterMatcher extends BaseMatcher<ZonedDateTime> {
