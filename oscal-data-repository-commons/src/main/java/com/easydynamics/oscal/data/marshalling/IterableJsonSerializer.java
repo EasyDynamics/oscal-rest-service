@@ -42,9 +42,10 @@ public class IterableJsonSerializer<T> extends DefaultJsonSerializer<T> {
       IterableAssemblyClassBinding classBinding = (IterableAssemblyClassBinding) getClassBinding();
       JsonWritingContext writingContext = new DefaultJsonWritingContext(generator);
       classBinding.writeRootItems(data, writingContext);
-      generator.close();
     } catch (IOException ex) {
       throw new BindingException(ex);
+    } finally {
+      generator.close();
     }
   }
 
