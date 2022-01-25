@@ -9,6 +9,7 @@ import gov.nist.secauto.metaschema.binding.io.Serializer;
 import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
 import gov.nist.secauto.oscal.java.OscalLoader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import org.json.JSONObject;
@@ -73,6 +75,18 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     return metaschemaAssembly.rootName();
   }
 
+  protected File[] getValidatedPathContents() {
+    File pathFile = new File(path);
+    if (!pathFile.exists()) {
+      throw new DataRetrievalFailureException("The provided path does not exist.");
+    }
+    File[] pathContents = pathFile.listFiles();
+    if (pathContents == null) {
+      throw new DataRetrievalFailureException("The provided path is not a directory.");
+    }
+    return pathContents;
+  }
+
   protected Optional<Path> getValidatedPathToOscalFile(String id) {
     if (id == null) {
       throw new IllegalArgumentException("File id not provided.");
@@ -84,14 +98,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     * the path to that file.
     */
     try {
-      File pathFile = new File(path);
-      if (!pathFile.exists()) {
-        throw new DataRetrievalFailureException("The provided path does not exist.");
-      }
-      File[] pathContents = pathFile.listFiles();
-      if (pathContents == null) {
-        throw new DataRetrievalFailureException("The provided path is not a directory.");
-      }
+      File[] pathContents = getValidatedPathContents();
       for (File f : pathContents) {
         String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
         String uuid = new JSONObject(oscalFileContents)
@@ -175,8 +182,23 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     throw new UnsupportedOperationException("operation not permitted.");
   }
 
+  /**
+   * Loads OSCAL objects from the validated file path for T object type.
+   */
   public Iterable<T> findAll() {
-    throw new UnsupportedOperationException("operation not permitted.");
+    File[] pathContents = getValidatedPathContents();
+    ArrayList<T> foundObjects = new ArrayList<>(pathContents.length);
+    for (int i = 0; i < pathContents.length; i++) {
+      File filePath = pathContents[i];
+      T foundObject;
+      try {
+        foundObject = oscalLoader.load(genericClass, filePath);
+      } catch (FileNotFoundException | BindingException e) {
+        throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
+      }
+      foundObjects.add(foundObject);
+    }
+    return foundObjects;
   }
 
   public Iterable<T> findAllById(Iterable<String> ids) {

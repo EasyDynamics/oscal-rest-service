@@ -29,6 +29,11 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     super(sspService, marshaller);
   }
 
+  @GetMapping("/ssps")
+  public ResponseEntity<StreamingResponseBody> findAll() {
+    return super.findAll();
+  }
+
   /**
    * Defines a GET request for ssp by ID.
    *

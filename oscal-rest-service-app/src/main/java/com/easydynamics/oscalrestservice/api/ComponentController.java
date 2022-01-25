@@ -31,6 +31,11 @@ public class ComponentController extends BaseOscalController<ComponentDefinition
     super(componentService, marshaller);
   }
 
+  @GetMapping("/component-definitions")
+  public ResponseEntity<StreamingResponseBody> findAll() {
+    return super.findAll();
+  }
+
   /**
    * Defines a GET request for component by ID.
    *

@@ -30,6 +30,11 @@ public class CatalogController extends BaseOscalController<Catalog> {
     super(catalogService, marshaller);
   }
 
+  @GetMapping("/catalogs")
+  public ResponseEntity<StreamingResponseBody> findAll() {
+    return super.findAll();
+  }
+
   /**
    * Defines a GET request for catalog by ID.
    *

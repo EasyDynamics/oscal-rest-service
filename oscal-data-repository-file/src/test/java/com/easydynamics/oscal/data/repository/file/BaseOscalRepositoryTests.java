@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,11 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
     assertEquals(Optional.empty(), repository.findById("bad-id"));
   }
 
+  protected String getObjectUuid(T oscalObject) throws Exception {
+    Method getUuid = oscalObject.getClass().getMethod("getUuid");
+    return getUuid.invoke(oscalObject).toString();
+  }
+
   /**
    * Tests if an OscalRepository returns content when trying to find a file using a valid id.
    * @throws Exception
@@ -55,8 +62,7 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
   public void getGoodId() throws Exception {
     T oscalObject = repository.findById(defaultId).get();
     assertNotNull(oscalObject);
-    Method getUuid = oscalObject.getClass().getMethod("getUuid");
-    String uuid = getUuid.invoke(oscalObject).toString();
+    String uuid = getObjectUuid(oscalObject);
 
     assertEquals(defaultId, uuid);
   }
@@ -83,5 +89,27 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
     Metadata savedMetadata = (Metadata) getMetadata.invoke(savedOscalObject);
 
     assertEquals(EXPECTED_TITLE, savedMetadata.getTitle().toMarkdown());
+  }
+
+  /**
+   * Tests that an OscalRepository returns a list for valid findAll executions.
+   * @throws Exception
+   */
+  @Test
+  public void testFindAll() throws Exception {
+    Iterable<T> oscalObjects = repository.findAll();
+    assertNotNull(oscalObjects);
+    T foundObject = StreamSupport.stream(oscalObjects.spliterator(), false)
+      .filter(oscalObject -> {
+        try {
+          return defaultId.equals(getObjectUuid(oscalObject));
+        } catch (Exception e) {
+          return false;
+        }
+      })
+      .findAny()
+      .orElse(null);
+
+    assertNotNull(foundObject);
   }
 }
