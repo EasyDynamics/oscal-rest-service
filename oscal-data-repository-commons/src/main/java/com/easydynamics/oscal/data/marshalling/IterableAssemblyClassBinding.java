@@ -8,7 +8,6 @@ import java.io.IOException;
 
 /**
  * Extends DefaultAssemblyClassBinding to add writing of root items as an array.
- *
  */
 public class IterableAssemblyClassBinding extends DefaultAssemblyClassBinding {
 
