@@ -9,7 +9,6 @@ public class ErrorHandlingController implements ErrorController {
  
   @GetMapping("/error")
   public String handleError() {
-    System.out.println("Testing error handler controller!");
     return "index.html";
   }
 }
