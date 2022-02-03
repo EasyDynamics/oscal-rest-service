@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,11 +102,15 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       File[] pathContents = getValidatedPathContents();
       for (File f : pathContents) {
         String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
-        String uuid = new JSONObject(oscalFileContents)
-            .getJSONObject(oscalRootName).getString("uuid");
+        try {
+          String uuid = new JSONObject(oscalFileContents)
+              .getJSONObject(oscalRootName).getString("uuid");
 
-        if (uuid.equals(id)) {
-          return Optional.of(f.toPath());
+          if (uuid.equals(id)) {
+            return Optional.of(f.toPath());
+          }
+        } catch (JSONException e) {
+          logger.debug("Unparsable content found at {}", f.getPath());
         }
       }
       return Optional.empty();
@@ -190,13 +195,14 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     ArrayList<T> foundObjects = new ArrayList<>(pathContents.length);
     for (int i = 0; i < pathContents.length; i++) {
       File filePath = pathContents[i];
-      T foundObject;
       try {
-        foundObject = oscalLoader.load(genericClass, filePath);
+        T foundObject = oscalLoader.load(genericClass, filePath);
+        foundObjects.add(foundObject);
+      } catch (UnsupportedOperationException e) {
+        logger.debug("Unparsable content found at {}", filePath);
       } catch (FileNotFoundException | BindingException e) {
         throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
       }
-      foundObjects.add(foundObject);
     }
     return foundObjects;
   }
