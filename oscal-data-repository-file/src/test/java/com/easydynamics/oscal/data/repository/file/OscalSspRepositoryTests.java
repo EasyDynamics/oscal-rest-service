@@ -9,7 +9,7 @@ import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 public class OscalSspRepositoryTests extends BaseOscalRepositoryTests<SystemSecurityPlan> {
 
   private OscalSspRepositoryTests() {
-    this.defaultId = ExampleContent.SSP_EXAMPLE.uuid;
+    this.exampleContent = ExampleContent.SSP_EXAMPLE;
   }
 
 }

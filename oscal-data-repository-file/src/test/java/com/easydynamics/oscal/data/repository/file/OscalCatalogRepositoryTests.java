@@ -9,6 +9,6 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 public class OscalCatalogRepositoryTests extends BaseOscalRepositoryTests<Catalog> {
 
   private OscalCatalogRepositoryTests() {
-    this.defaultId = ExampleContent.CATALOG_80053r5.uuid;
+    this.exampleContent = ExampleContent.CATALOG_80053r5;
   }
 }

@@ -12,7 +12,7 @@ import gov.nist.secauto.oscal.lib.model.Profile;
 public class OscalProfileRepositoryTests extends BaseOscalRepositoryTests<Profile> {
 
   private OscalProfileRepositoryTests() {
-    this.defaultId = ExampleContent.PROFILE_80053r4MOD.uuid;
+    this.exampleContent = ExampleContent.PROFILE_80053r4MOD;
   }
 
 }

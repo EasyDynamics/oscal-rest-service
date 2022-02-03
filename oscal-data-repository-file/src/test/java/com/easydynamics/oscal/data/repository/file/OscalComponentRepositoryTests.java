@@ -9,7 +9,7 @@ import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
 public class OscalComponentRepositoryTests extends BaseOscalRepositoryTests<ComponentDefinition> {
 
   private OscalComponentRepositoryTests() {
-    this.defaultId = ExampleContent.COMPONENT_EXAMPLE.uuid;
+    this.exampleContent = ExampleContent.COMPONENT_EXAMPLE;
   }
 
 }
