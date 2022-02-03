@@ -1,6 +1,6 @@
 package com.easydynamics.oscal.data.repository.file;
 
-import com.easydynamics.oscal.data.example.ExampleContentConstants;
+import com.easydynamics.oscal.data.example.ExampleContent;
 import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
 
 /**
@@ -9,7 +9,7 @@ import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
 public class OscalComponentRepositoryTests extends BaseOscalRepositoryTests<ComponentDefinition> {
 
   private OscalComponentRepositoryTests() {
-    this.defaultId = ExampleContentConstants.EXAMPLE_COMPONENT_ID;
+    this.defaultId = ExampleContent.COMPONENT_EXAMPLE.uuid;
   }
 
 }

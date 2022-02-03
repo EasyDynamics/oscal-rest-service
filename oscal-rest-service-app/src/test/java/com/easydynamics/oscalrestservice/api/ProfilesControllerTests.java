@@ -2,7 +2,7 @@ package com.easydynamics.oscalrestservice.api;
 
 import org.junit.jupiter.api.Disabled;
 
-import com.easydynamics.oscal.data.example.ExampleContentConstants;
+import com.easydynamics.oscal.data.example.ExampleContent;
 
 /**
  * OscalProfilesControllerTests runs tests of the OscalProfilesController class.
@@ -12,7 +12,7 @@ public class ProfilesControllerTests extends BaseOscalControllerTests {
 
   private ProfilesControllerTests() {
     this.oscalObjectType = OscalObjectType.PROFILE;
-    this.defaultId = ExampleContentConstants.EXAMPLE_PROFILE_ID;
+    this.exampleContent = ExampleContent.PROFILE_80053r4MOD;
   }
 
 }
