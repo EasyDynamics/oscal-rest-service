@@ -1,0 +1,1 @@
+This folder should contain system security plans (SSPs).
