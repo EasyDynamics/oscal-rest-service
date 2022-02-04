@@ -19,7 +19,7 @@ public class MisconfiguredRepoTests {
   protected CrudRepository<Catalog, String> repository;
 
   /**
-   * Tests that the proper exception is thrown when path points to
+   * Tests that no exception is thrown when path points to
    * a non-existent or empty directory.
    */
   @Test
