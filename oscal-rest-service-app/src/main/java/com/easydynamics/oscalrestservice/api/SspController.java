@@ -29,7 +29,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     super(sspService, marshaller);
   }
 
-  @GetMapping("/ssps")
+  @GetMapping("/system-security-plans")
   public ResponseEntity<StreamingResponseBody> findAll() {
     return super.findAll();
   }
@@ -40,7 +40,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * @param id the ssp uuid
    * @return the oscal-content ssp-example hosted on github
    */
-  @GetMapping("/ssps/{id}")
+  @GetMapping("/system-security-plans/{id}")
   public ResponseEntity<StreamingResponseBody> findById(@Parameter @PathVariable String id) {
     return super.findById(id);
   }
@@ -51,7 +51,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * @param id the SSP uuid
    * @param json the SSP contents
    */
-  @PatchMapping("/ssps/{id}")
+  @PatchMapping("/system-security-plans/{id}")
   public ResponseEntity<StreamingResponseBody> patch(
       @Parameter @PathVariable String id,
       @RequestBody String json) {
