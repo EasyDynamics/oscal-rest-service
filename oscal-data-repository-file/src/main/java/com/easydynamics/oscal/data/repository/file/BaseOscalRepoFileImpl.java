@@ -79,7 +79,8 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
   protected File[] getValidatedPathContents() {
     File pathFile = new File(path);
     if (!pathFile.exists()) {
-      throw new DataRetrievalFailureException("The provided path does not exist.");
+      logger.info("configured path {} does not exist", path);
+      return new File[]{};
     }
     File[] pathContents = pathFile.listFiles();
     if (pathContents == null) {
