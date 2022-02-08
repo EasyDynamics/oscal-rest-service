@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
- * Ssp Controller for OSCAL REST Service. This class handles all requests to the /ssps endpoint.
+ * Ssp Controller for OSCAL REST Service.
+ * This class handles all requests to the /system-security-plans endpoint.
  */
 @RequestMapping(path = "/oscal/v1")
 @RestController
