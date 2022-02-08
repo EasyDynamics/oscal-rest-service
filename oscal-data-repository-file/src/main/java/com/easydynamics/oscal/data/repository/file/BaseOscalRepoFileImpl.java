@@ -107,9 +107,9 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     try {
       File[] pathContents = getValidatedPathContents();
       for (File f : pathContents) {
-        String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
         if (PATTERN_REGEX.matcher(id).matches()) {
           try {
+            String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
             String uuid = new JSONObject(oscalFileContents)
                 .getJSONObject(oscalRootName).getString("uuid");
             if (uuid.equals(id)) {
@@ -117,6 +117,10 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
             }
           } catch (JSONException e) {
             logger.debug("Unparsable content found at {}", f.getPath());
+          } catch (OutOfMemoryError e) {
+            throw new DataRetrievalFailureException("Could not load Oscal object.", e);
+          } catch (SecurityException e) {
+            throw new DataRetrievalFailureException("Could not access file.", e);
           }
         } else {
           if (id.equals(f.getName())) {
