@@ -42,7 +42,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private static final String REGEX_UUID =
-      "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+      "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
   private static final Pattern PATTERN_REGEX = Pattern.compile(REGEX_UUID);
 
   private final Class<T> genericClass;
