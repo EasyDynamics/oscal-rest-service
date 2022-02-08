@@ -14,6 +14,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.easydynamics.oscal.data.example.ExampleContent;
+
 import gov.nist.secauto.metaschema.datatypes.markup.MarkupLine;
 import gov.nist.secauto.oscal.lib.model.Metadata;
 
@@ -27,7 +29,7 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
 
   @Autowired
   protected CrudRepository<T, String> repository;
-  protected String defaultId;
+  protected ExampleContent exampleContent;
 
   private static final String EXPECTED_TITLE = "Some New Title";
 
@@ -60,11 +62,24 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
    */
   @Test
   public void getGoodId() throws Exception {
-    T oscalObject = repository.findById(defaultId).get();
+    T oscalObject = repository.findById(exampleContent.uuid).get();
     assertNotNull(oscalObject);
     String uuid = getObjectUuid(oscalObject);
 
-    assertEquals(defaultId, uuid);
+    assertEquals(exampleContent.uuid, uuid);
+  }
+
+  /**
+   * Tests if an OscalRepository returns content when trying to find a file using a valid id.
+   * @throws Exception
+   */
+  @Test
+  public void getGoodIdByFileName() throws Exception {
+    T oscalObject = repository.findById(exampleContent.fileName).get();
+    assertNotNull(oscalObject);
+    String uuid = getObjectUuid(oscalObject);
+
+    assertEquals(exampleContent.uuid, uuid);
   }
 
   /**
@@ -73,7 +88,7 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
    */
   @Test
   public void testSave() throws Exception {
-    T oscalObject = repository.findById(defaultId).get();
+    T oscalObject = repository.findById(exampleContent.uuid).get();
     assertNotNull(oscalObject);
     Method getMetadata = oscalObject.getClass().getMethod("getMetadata");
     Metadata metadata = (Metadata) getMetadata.invoke(oscalObject);
@@ -84,7 +99,7 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
     repository.save(oscalObject);
 
     // Reload the object and confirm title
-    T savedOscalObject = repository.findById(defaultId).get();
+    T savedOscalObject = repository.findById(exampleContent.uuid).get();
     assertNotNull(savedOscalObject);
     Metadata savedMetadata = (Metadata) getMetadata.invoke(savedOscalObject);
 
@@ -102,7 +117,7 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
     T foundObject = StreamSupport.stream(oscalObjects.spliterator(), false)
       .filter(oscalObject -> {
         try {
-          return defaultId.equals(getObjectUuid(oscalObject));
+          return exampleContent.uuid.equals(getObjectUuid(oscalObject));
         } catch (Exception e) {
           return false;
         }

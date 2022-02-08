@@ -1,6 +1,6 @@
 package com.easydynamics.oscal.data.repository.file;
 
-import com.easydynamics.oscal.data.example.ExampleContentConstants;
+import com.easydynamics.oscal.data.example.ExampleContent;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 
 /**
@@ -9,7 +9,7 @@ import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 public class OscalSspRepositoryTests extends BaseOscalRepositoryTests<SystemSecurityPlan> {
 
   private OscalSspRepositoryTests() {
-    this.defaultId = ExampleContentConstants.SSP_EXAMPLE_ID;
+    this.exampleContent = ExampleContent.SSP_EXAMPLE;
   }
 
 }

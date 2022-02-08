@@ -1,6 +1,6 @@
 package com.easydynamics.oscal.data.repository.file;
 
-import com.easydynamics.oscal.data.example.ExampleContentConstants;
+import com.easydynamics.oscal.data.example.ExampleContent;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.secauto.oscal.lib.model.Catalog;
 public class OscalCatalogRepositoryTests extends BaseOscalRepositoryTests<Catalog> {
 
   private OscalCatalogRepositoryTests() {
-    this.defaultId = ExampleContentConstants.CATALOG_ID_80053r5;
+    this.exampleContent = ExampleContent.CATALOG_80053r5;
   }
 }

@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -39,6 +40,10 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     implements CrudRepository<T, String> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  private static final String REGEX_UUID =
+      "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+  private static final Pattern PATTERN_REGEX = Pattern.compile(REGEX_UUID);
 
   private final Class<T> genericClass;
   private final String path;
@@ -102,16 +107,25 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     try {
       File[] pathContents = getValidatedPathContents();
       for (File f : pathContents) {
-        String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
-        try {
-          String uuid = new JSONObject(oscalFileContents)
-              .getJSONObject(oscalRootName).getString("uuid");
-
-          if (uuid.equals(id)) {
+        if (PATTERN_REGEX.matcher(id).matches()) {
+          try {
+            String oscalFileContents = Files.readString(f.toPath(), StandardCharsets.UTF_8);
+            String uuid = new JSONObject(oscalFileContents)
+                .getJSONObject(oscalRootName).getString("uuid");
+            if (uuid.equals(id)) {
+              return Optional.of(f.toPath());
+            }
+          } catch (JSONException e) {
+            logger.debug("Unparsable content found at {}", f.getPath());
+          } catch (OutOfMemoryError e) {
+            throw new DataRetrievalFailureException("Could not load Oscal object.", e);
+          } catch (SecurityException e) {
+            throw new DataRetrievalFailureException("Could not access file.", e);
+          }
+        } else {
+          if (id.equals(f.getName())) {
             return Optional.of(f.toPath());
           }
-        } catch (JSONException e) {
-          logger.debug("Unparsable content found at {}", f.getPath());
         }
       }
       return Optional.empty();

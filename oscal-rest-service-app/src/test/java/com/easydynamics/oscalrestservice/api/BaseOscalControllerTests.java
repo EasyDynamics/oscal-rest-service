@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.easydynamics.oscal.data.example.ExampleContent;
+
 import net.minidev.json.JSONArray;
 
 /**
@@ -32,8 +34,7 @@ public abstract class BaseOscalControllerTests {
   private MockMvc mockMvc;
 
   protected OscalObjectType oscalObjectType;
-  protected String defaultId;
-
+  protected ExampleContent exampleContent;
 
   /**
    * Tests if the GET Request to /<oscalType>/{id} will retrieve a valid default <oscalType> object.
@@ -43,7 +44,8 @@ public abstract class BaseOscalControllerTests {
   @Test
   public void testGetOscalObject() throws Exception {
     // With StreamingResponseBody this is async so we start the request here
-    MvcResult asyncResult = this.mockMvc.perform(get("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId))
+    MvcResult asyncResult = this.mockMvc.perform(get("/oscal/v1/"
+        + oscalObjectType.restPath + "/{id}", exampleContent.uuid))
         .andExpect(request().asyncStarted())
         .andReturn();
 
@@ -51,7 +53,28 @@ public abstract class BaseOscalControllerTests {
     this.mockMvc.perform(asyncDispatch(asyncResult))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$.*.uuid").value(defaultId));
+        .andExpect(jsonPath("$.*.uuid").value(exampleContent.uuid));
+  }
+
+  /**
+   * Tests if the GET Request to /<oscalType>/{id} by file name
+   * will retrieve a valid default <oscalType> object.
+   *
+   * @throws Exception the exception thrown by the REST request.
+   */
+  @Test
+  public void testGetOscalObjectByFileName() throws Exception {
+    // With StreamingResponseBody this is async so we start the request here
+    MvcResult asyncResult = this.mockMvc.perform(get("/oscal/v1/"
+        + oscalObjectType.restPath + "/{id}", exampleContent.fileName))
+        .andExpect(request().asyncStarted())
+        .andReturn();
+
+    // On async result check the content and UUID
+    this.mockMvc.perform(asyncDispatch(asyncResult))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$.*.uuid").value(exampleContent.uuid));
   }
 
   /**
@@ -69,7 +92,7 @@ public abstract class BaseOscalControllerTests {
   protected void testPatchOscalObject(String updatedObject, String expectedTitle) throws Exception {
     ZonedDateTime startDateTime = ZonedDateTime.now();
 
-    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId)
+    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaType.APPLICATION_JSON)
         .characterEncoding("UTF-8")
@@ -77,7 +100,8 @@ public abstract class BaseOscalControllerTests {
         .andExpect(status().isOk());
 
     // With StreamingResponseBody this is async so we start the request here
-    MvcResult asyncResult = this.mockMvc.perform(get("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId))
+    MvcResult asyncResult = this.mockMvc.perform(get("/oscal/v1/"
+        + oscalObjectType.restPath + "/{id}", exampleContent.uuid))
         .andExpect(request().asyncStarted())
         .andReturn();
 
@@ -101,7 +125,7 @@ public abstract class BaseOscalControllerTests {
     String expectedTitle = "Some New Title";
     String updatedObject = "{\n"
         + "  \"" + oscalObjectType.jsonField + "\": {\n"
-        + "    \"uuid\": \"" + defaultId + "\",\n"
+        + "    \"uuid\": \"" + exampleContent.uuid + "\",\n"
         + "    \"metadata\": {\n"
         + "      \"title\": \"" + expectedTitle + "\",\n"
         + "      \"version\": \"1.0\"\n"
@@ -139,7 +163,7 @@ public abstract class BaseOscalControllerTests {
    */
   @Test
   public void testPatchEmptyOscalObject() throws Exception {
-    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId)
+    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaType.APPLICATION_JSON)
         .characterEncoding("UTF-8"))
@@ -164,7 +188,7 @@ public abstract class BaseOscalControllerTests {
         + "  }\n"
         + "}";
 
-    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", defaultId)
+    this.mockMvc.perform(patch("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaType.APPLICATION_JSON)
         .characterEncoding("UTF-8")
@@ -188,7 +212,7 @@ public abstract class BaseOscalControllerTests {
     this.mockMvc.perform(asyncDispatch(asyncResult))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].*.uuid").value(defaultId));
+        .andExpect(jsonPath("$[0].*.uuid").value(exampleContent.uuid));
   }
 
   class DateGreaterMatcher extends BaseMatcher<ZonedDateTime> {

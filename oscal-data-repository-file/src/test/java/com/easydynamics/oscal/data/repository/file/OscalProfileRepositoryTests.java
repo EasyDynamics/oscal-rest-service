@@ -2,7 +2,7 @@ package com.easydynamics.oscal.data.repository.file;
 
 import org.junit.jupiter.api.Disabled;
 
-import com.easydynamics.oscal.data.example.ExampleContentConstants;
+import com.easydynamics.oscal.data.example.ExampleContent;
 import gov.nist.secauto.oscal.lib.model.Profile;
 
 /**
@@ -12,7 +12,7 @@ import gov.nist.secauto.oscal.lib.model.Profile;
 public class OscalProfileRepositoryTests extends BaseOscalRepositoryTests<Profile> {
 
   private OscalProfileRepositoryTests() {
-    this.defaultId = ExampleContentConstants.EXAMPLE_PROFILE_ID;
+    this.exampleContent = ExampleContent.PROFILE_80053r4MOD;
   }
 
 }
