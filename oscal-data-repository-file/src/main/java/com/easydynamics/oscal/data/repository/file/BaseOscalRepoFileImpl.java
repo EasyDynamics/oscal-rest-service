@@ -1,15 +1,13 @@
 package com.easydynamics.oscal.data.repository.file;
 
-import gov.nist.secauto.metaschema.binding.BindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
-import gov.nist.secauto.metaschema.binding.io.Serializer;
+import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
+import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
-import gov.nist.secauto.oscal.java.OscalLoader;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -48,8 +46,8 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
   private final Class<T> genericClass;
   private final String path;
   private final String oscalRootName;
-  private final OscalLoader oscalLoader;
-  private final Serializer<T> serializer;
+  private final IBoundLoader oscalLoader;
+  private final ISerializer<T> serializer;
 
   /**
    * Constructs an OscalRepository.
@@ -62,11 +60,10 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     this.path = path;
     this.genericClass = genericClass;
     this.oscalRootName = getOscalRootName(genericClass);
-    this.oscalLoader = new OscalLoader();
-    BindingContext context = BindingContext.newInstance();
-    MutableConfiguration config = new MutableConfiguration().enableFeature(
-            Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
-    this.serializer = context.newSerializer(Format.JSON, genericClass, config);
+    OscalBindingContext context = OscalBindingContext.instance();
+    this.oscalLoader = context.newBoundLoader();
+    this.serializer = context.newSerializer(Format.JSON, genericClass);
+    this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
   }
 
   protected String getOscalRootName(Class<T> genericClass) {
@@ -165,7 +162,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
 
     try {
       return Optional.of(oscalLoader.load(genericClass, new File(pathToOscalFile.get().toUri())));
-    } catch (IOException | BindingException e) {
+    } catch (IOException e) {
       throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
     } catch (OutOfMemoryError e) {
       throw new DataRetrievalFailureException("Could not load Oscal object.", e);
@@ -212,10 +209,12 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       File filePath = pathContents[i];
       try {
         T foundObject = oscalLoader.load(genericClass, filePath);
-        foundObjects.add(foundObject);
-      } catch (UnsupportedOperationException e) {
+        if (foundObject != null) {
+          foundObjects.add(foundObject);
+        }
+      } catch (UnsupportedOperationException | AssertionError e) {
         logger.debug("Unparsable content found at {}", filePath);
-      } catch (FileNotFoundException | BindingException e) {
+      } catch (IOException e) {
         throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
       }
     }

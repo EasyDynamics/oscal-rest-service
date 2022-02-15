@@ -13,7 +13,7 @@
 	<description>Parent for OSCAL data repository implementations</description>
 
 	<properties>
-		<liboscal-java.version>1.0.0</liboscal-java.version>
+		<liboscal-java.version>1.0.1</liboscal-java.version>
 	</properties>
 
 	<dependencies>

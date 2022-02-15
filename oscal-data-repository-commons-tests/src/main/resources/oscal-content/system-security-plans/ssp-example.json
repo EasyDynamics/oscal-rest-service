@@ -41,7 +41,7 @@
       ]
     },
     "import-profile": {
-      "href": "../profiles/NIST_SP-800-53_rev4_MODERATE-baseline_profile.json"
+      "href": "https://raw.githubusercontent.com/usnistgov/oscal-content/v1.0.0/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_MODERATE-baseline_profile.json"
     },
     "system-characteristics": {
       "system-name": "Enterprise Logging and Auditing System",
