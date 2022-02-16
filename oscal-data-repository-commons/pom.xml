@@ -24,10 +24,16 @@
 			<version>${liboscal-java.version}</version>
 			<exclusions>
 			<exclusion>
-				 <groupId>org.apache.logging.log4j</groupId>
-				 <artifactId>*</artifactId>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>*</artifactId>
 			</exclusion>
 			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring-core.version}</version>
 		</dependency>
 
 	</dependencies>
