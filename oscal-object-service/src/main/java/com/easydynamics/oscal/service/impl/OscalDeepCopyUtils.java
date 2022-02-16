@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import gov.nist.secauto.metaschema.datatypes.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;

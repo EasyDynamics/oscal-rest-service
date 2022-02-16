@@ -1,13 +1,12 @@
 package com.easydynamics.oscal.data.marshalling;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import gov.nist.secauto.metaschema.binding.BindingContext;
+import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.Configuration;
 import gov.nist.secauto.metaschema.binding.io.json.DefaultJsonSerializer;
 import gov.nist.secauto.metaschema.binding.io.json.DefaultJsonWritingContext;
-import gov.nist.secauto.metaschema.binding.io.json.JsonWritingContext;
-import gov.nist.secauto.metaschema.binding.model.AssemblyClassBinding;
+import gov.nist.secauto.metaschema.binding.io.json.IJsonWritingContext;
+import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -20,9 +19,9 @@ import java.io.Writer;
  */
 public class IterableJsonSerializer<T> extends DefaultJsonSerializer<T> {
 
-  public IterableJsonSerializer(BindingContext bindingContext, AssemblyClassBinding classBinding,
-      Configuration configuration) {
-    super(bindingContext, classBinding, configuration);
+  public IterableJsonSerializer(IBindingContext bindingContext,
+      IAssemblyClassBinding classBinding) {
+    super(bindingContext, classBinding);
   }
 
   public void serializeIterable(Iterable<T> data, OutputStream out) throws BindingException {
@@ -40,7 +39,7 @@ public class IterableJsonSerializer<T> extends DefaultJsonSerializer<T> {
     JsonGenerator generator = newJsonGenerator(writer);
     try {
       IterableAssemblyClassBinding classBinding = (IterableAssemblyClassBinding) getClassBinding();
-      JsonWritingContext writingContext = new DefaultJsonWritingContext(generator);
+      IJsonWritingContext writingContext = new DefaultJsonWritingContext(generator);
       classBinding.writeRootItems(data, writingContext);
       generator.close();
     } catch (IOException ex) {

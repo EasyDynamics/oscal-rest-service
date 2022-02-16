@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.easydynamics.oscal.data.example.ExampleContent;
 
-import gov.nist.secauto.metaschema.datatypes.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import gov.nist.secauto.oscal.lib.model.Metadata;
 
 /**

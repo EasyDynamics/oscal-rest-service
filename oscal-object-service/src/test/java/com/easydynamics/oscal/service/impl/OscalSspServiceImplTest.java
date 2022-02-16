@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalSspService;
-import gov.nist.secauto.metaschema.datatypes.markup.MarkupLine;
+import gov.nist.secauto.metaschema.model.common.datatype.markup.MarkupLine;
 import gov.nist.secauto.oscal.lib.model.Metadata;
 import gov.nist.secauto.oscal.lib.model.Party;
 import gov.nist.secauto.oscal.lib.model.Property;

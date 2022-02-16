@@ -1,8 +1,8 @@
 package com.easydynamics.oscal.data.marshalling;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import gov.nist.secauto.metaschema.binding.BindingContext;
-import gov.nist.secauto.metaschema.binding.io.json.JsonWritingContext;
+import gov.nist.secauto.metaschema.binding.IBindingContext;
+import gov.nist.secauto.metaschema.binding.io.json.IJsonWritingContext;
 import gov.nist.secauto.metaschema.binding.model.DefaultAssemblyClassBinding;
 import java.io.IOException;
 
@@ -11,12 +11,12 @@ import java.io.IOException;
  */
 public class IterableAssemblyClassBinding extends DefaultAssemblyClassBinding {
 
-  protected IterableAssemblyClassBinding(Class<?> clazz, BindingContext bindingContext) {
+  protected IterableAssemblyClassBinding(Class<?> clazz, IBindingContext bindingContext) {
     super(clazz, bindingContext);
   }
 
   public static IterableAssemblyClassBinding createInstance(
-      Class<?> clazz, BindingContext bindingContext) {
+      Class<?> clazz, IBindingContext bindingContext) {
     IterableAssemblyClassBinding retval = new IterableAssemblyClassBinding(clazz, bindingContext);
     return retval;
   }
@@ -29,7 +29,7 @@ public class IterableAssemblyClassBinding extends DefaultAssemblyClassBinding {
    * @throws IOException when data can't be written
    */
   public void writeRootItems(
-      Iterable<?> instances, JsonWritingContext context)
+      Iterable<?> instances, IJsonWritingContext context)
           throws IOException {
 
     JsonGenerator writer = context.getWriter();

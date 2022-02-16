@@ -4,14 +4,12 @@ import com.easydynamics.oscal.data.marshalling.IterableAssemblyClassBinding;
 import com.easydynamics.oscal.data.marshalling.IterableJsonSerializer;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshallingException;
-import gov.nist.secauto.metaschema.binding.BindingContext;
+import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
-import gov.nist.secauto.metaschema.binding.io.Configuration;
-import gov.nist.secauto.metaschema.binding.io.Deserializer;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.MutableConfiguration;
-import gov.nist.secauto.metaschema.binding.model.AssemblyClassBinding;
+import gov.nist.secauto.metaschema.binding.io.IDeserializer;
+import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -22,7 +20,7 @@ import java.io.OutputStream;
 public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalObjectMarshaller<T> {
 
   private final IterableJsonSerializer<T> serializer;
-  private final Deserializer<T> deserializer;
+  private final IDeserializer<T> deserializer;
 
   /**
    * Constructor for BaseOscalObjectMarshallerLiboscalImpl.
@@ -30,12 +28,13 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
    */
   public BaseOscalObjectMarshallerLiboscalImpl(Class<T> clazz) {
     super();
-    BindingContext context = BindingContext.newInstance();
-    Configuration config = new MutableConfiguration().enableFeature(
-            Feature.SERIALIZE_ROOT).enableFeature(Feature.DESERIALIZE_ROOT);
-    AssemblyClassBinding classBinding = IterableAssemblyClassBinding.createInstance(clazz, context);
-    this.serializer = new IterableJsonSerializer<T>(context, classBinding, config);
-    this.deserializer = context.newDeserializer(Format.JSON, clazz, config);
+    IBindingContext context = IBindingContext.newInstance();
+    IAssemblyClassBinding classBinding =
+        IterableAssemblyClassBinding.createInstance(clazz, context);
+    this.serializer = new IterableJsonSerializer<T>(context, classBinding);
+    this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
+    this.deserializer = context.newDeserializer(Format.JSON, clazz);
+    this.deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
   }
 
   @Override
@@ -59,7 +58,7 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
   @Override
   public T toObject(InputStream inputStream) {
     try {
-      return deserializer.deserialize(inputStream);
+      return deserializer.deserialize(inputStream, null);
     } catch (BindingException e) {
       throw new OscalObjectMarshallingException(e);
     }
