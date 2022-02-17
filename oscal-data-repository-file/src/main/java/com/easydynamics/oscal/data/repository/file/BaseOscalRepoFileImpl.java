@@ -1,12 +1,12 @@
 package com.easydynamics.oscal.data.repository.file;
 
+import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
-import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,9 +61,9 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     this.path = path;
     this.genericClass = genericClass;
     this.oscalRootName = getOscalRootName(genericClass);
-    OscalBindingContext context = OscalBindingContext.instance();
-    this.oscalLoader = context.newBoundLoader();
-    this.serializer = context.newSerializer(Format.JSON, genericClass);
+    IBindingContext bindingContext = IBindingContext.newInstance();
+    this.oscalLoader = bindingContext.newBoundLoader();
+    this.serializer = bindingContext.newSerializer(Format.JSON, genericClass);
     this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
   }
 
@@ -147,6 +148,13 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       throw new InvalidDataAccessResourceUsageException(
           "could not get object UUID", e);
     }
+  }
+
+  protected File getTempFile() throws IOException {
+    String prefix = String.format("%s-%s", genericClass.getName(), UUID.randomUUID());
+    File tempFile = File.createTempFile(prefix, ".json");
+    tempFile.deleteOnExit();
+    return tempFile;
   }
 
   @Override
@@ -234,12 +242,13 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     File oscalFile = new File(pathToOscalFile.get().toUri());
 
     try {
-      if (pathToOscalFile.isEmpty()) {
-        oscalFile.createNewFile();
-      }
+      // Serialize to a temp file
+      File tempFile = getTempFile();
       logger.debug("Serializing {} to path {}",
-          entity.getClass().getSimpleName(), pathToOscalFile.get().toString());
-      serializer.serialize(entity, new File(pathToOscalFile.get().toUri()));
+          entity.getClass().getSimpleName(), tempFile.getAbsolutePath());
+      serializer.serialize(entity, tempFile);
+      // On success replace original file with temp file
+      Files.move(tempFile.toPath(), oscalFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       return entity;
     } catch (BindingException | IOException e) {
       throw new InvalidDataAccessResourceUsageException("Could not serialize to file", e);
