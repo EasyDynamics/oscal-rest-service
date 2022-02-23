@@ -102,4 +102,35 @@ public abstract class BaseOscalController<T> {
         .contentType(MediaType.APPLICATION_JSON)
         .body(responseBody);
   }
+
+  /**
+   * Replaces the OSCAL object of type T with the specified JSON.
+   *
+   * @param id uuid of the file to open.
+   * @param json JSON representation of the object that will replace
+   *     the existing contents.
+   * @return HTTP NO_CONTENT response, or error message and
+   *     status code returned if file cannot be opened.
+   */
+  public ResponseEntity<StreamingResponseBody> put(String id, String json) {
+
+    if (!oscalObjectService.existsById(id)) {
+      throw new OscalObjectNotFoundException(id);
+    }
+
+    T incomingOscalObject = oscalObjectMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    var incomingUuid = oscalObjectService
+        .getUuid(incomingOscalObject)
+        .toString();
+
+    if (incomingUuid != null && !id.equals(incomingUuid)) {
+      throw new OscalObjectConflictException(incomingUuid, id);
+    }
+
+    oscalObjectService.save(incomingOscalObject);
+    
+    return findById(id);
+  }
 }
