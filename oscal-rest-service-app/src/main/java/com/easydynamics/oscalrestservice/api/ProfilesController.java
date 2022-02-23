@@ -5,10 +5,12 @@ import com.easydynamics.oscal.service.OscalProfileService;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,5 +61,20 @@ public class ProfilesController extends BaseOscalController<Profile> {
       @Parameter @PathVariable String id,
       @RequestBody String json) {
     return super.patch(id, json);
+  }
+
+  /**
+   * Defines a PUT request for updating profiles.
+   *
+   * @param id the profile uuid
+   * @param json the profile contents
+   */
+  @PutMapping(value = "/profiles/{id}",
+      consumes = { MediaType.APPLICATION_JSON_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> put(
+      @Parameter @PathVariable String id,
+      @RequestBody String json) {
+    return super.put(id, json);
   }
 }
