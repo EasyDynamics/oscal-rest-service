@@ -113,6 +113,38 @@
             "caption": "Authorization Boundary Diagram"
           }
         ]
+      },
+      "network-architecture": {
+        "description": "The system network architecture",
+        "diagrams": [
+          {
+            "uuid": "7afc375f-de44-452a-a7d2-d38c76713fa5",
+            "description": "Client devices connect to switches which connect to a router which connects to the internet",
+            "links": [
+              {
+                "href": "#e9a5474b-3d71-42df-9e38-f490407336c2",
+                "rel": "diagram"
+              }
+            ],
+            "caption": "Network Architecture Diagram"
+          }
+        ]
+      },
+      "data-flow": {
+        "description": "The system data flow",
+        "diagrams": [
+          {
+            "uuid": "39da80c2-dce7-44e3-971d-b44702e5e9cf",
+            "description": "Data flows throughout the system",
+            "links": [
+              {
+                "href": "#5cfbc4f7-b7f0-4218-b457-ce04c805e2c9",
+                "rel": "diagram"
+              }
+            ],
+            "caption": "Data Flow Diagram"
+          }
+        ]
       }
     },
     "system-implementation": {
@@ -524,6 +556,28 @@
           "rlinks": [
             {
               "href": "../resource-content/authz-boundary.png",
+              "media-type": "image/png"
+            }
+          ]
+        },
+        {
+          "uuid": "e9a5474b-3d71-42df-9e38-f490407336c2",
+          "title": "Network Architecture Diagram 1",
+          "description": "A test network architecture diagram",
+          "rlinks": [
+            {
+              "href": "../resource-content/network-diagram.png",
+              "media-type": "image/png"
+            }
+          ]
+        },
+        {
+          "uuid": "5cfbc4f7-b7f0-4218-b457-ce04c805e2c9",
+          "title": "Data Flow",
+          "description": "A basic data flow diagram",
+          "rlinks": [
+            {
+              "href": "../resource-content/data-flow.png",
               "media-type": "image/png"
             }
           ]
