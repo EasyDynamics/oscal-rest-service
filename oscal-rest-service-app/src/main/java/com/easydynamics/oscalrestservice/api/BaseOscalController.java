@@ -3,7 +3,9 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.BaseOscalObjectService;
 import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.util.UUID;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -41,15 +43,7 @@ public abstract class BaseOscalController<T> {
     T oscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    StreamingResponseBody responseBody = outputStream -> {
-      logger.debug("Starting marshalling of object type: {}", oscalObject.getClass().getName());
-      oscalObjectMarshaller.toJson(oscalObject, outputStream);
-      logger.debug("Marshalling complete");
-    };
-
-    return ResponseEntity.ok()
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(responseBody);
+    return makeResponse(oscalObject);
   }
 
   /**
@@ -76,12 +70,7 @@ public abstract class BaseOscalController<T> {
     logger.debug("{} merge complete, saving via service",
         updatedOscalObject.getClass().getSimpleName());
 
-    oscalObjectService.save(existingOscalObject);
-
-    logger.debug("{} save complete, re-retrieving from service",
-        existingOscalObject.getClass().getSimpleName());
-
-    return findById(id);
+    return makeResponse(oscalObjectService.save(updatedOscalObject));
   }
 
   /**
@@ -90,17 +79,7 @@ public abstract class BaseOscalController<T> {
    * @return HTTP response containing OSCAL objects
    */
   public ResponseEntity<StreamingResponseBody> findAll() {
-    Iterable<T> oscalObjects = oscalObjectService.findAll();
-
-    StreamingResponseBody responseBody = outputStream -> {
-      logger.debug("Starting marshalling of objects");
-      oscalObjectMarshaller.toJson(oscalObjects, outputStream);
-      logger.debug("Marshalling complete");
-    };
-
-    return ResponseEntity.ok()
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(responseBody);
+    return makeResponse(oscalObjectService.findAll());
   }
 
   /**
@@ -114,10 +93,6 @@ public abstract class BaseOscalController<T> {
    */
   public ResponseEntity<StreamingResponseBody> put(String id, String json) {
 
-    if (!oscalObjectService.existsById(id)) {
-      throw new OscalObjectNotFoundException(id);
-    }
-
     T incomingOscalObject = oscalObjectMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
@@ -129,8 +104,37 @@ public abstract class BaseOscalController<T> {
       throw new OscalObjectConflictException(incomingUuid, id);
     }
 
-    oscalObjectService.save(incomingOscalObject);
+    if (!oscalObjectService.existsById(id)) {
+      throw new OscalObjectNotFoundException(id);
+    }
+
+    return makeResponse(oscalObjectService.save(incomingOscalObject));
+  }
+
+  private ResponseEntity<StreamingResponseBody> makeResponse(Object typeErasedOscalObject) {
+
+    // Need to suppress warnings here because the type cast is considered unsafe.
+    // However since it's a private method, and we know when it's going to be used
+    // this should be ok.
+    @SuppressWarnings("unchecked")
+    Consumer<OutputStream> marshallingTask = (typeErasedOscalObject instanceof Iterable) 
+        ? (outputStream) -> oscalObjectMarshaller.toJson((Iterable<T>)typeErasedOscalObject,
+            outputStream)
+        : (outputStream) -> oscalObjectMarshaller.toJson((T)typeErasedOscalObject,
+            outputStream);
     
-    return findById(id);
+    StreamingResponseBody responseBody = outputStream -> {
+      logger.debug("Starting marshalling of object type: {}", 
+          typeErasedOscalObject.getClass().getName());
+      marshallingTask.accept(outputStream);
+      logger.debug("Marshalling complete");
+    };
+
+    logger.debug("Returning wrapped response of type: {}", 
+        typeErasedOscalObject.getClass().getName());
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(responseBody);
   }
 }
