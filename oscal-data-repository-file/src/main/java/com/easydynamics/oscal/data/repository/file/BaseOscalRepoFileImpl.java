@@ -204,7 +204,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
   }
 
   public boolean existsById(String id) {
-    throw new UnsupportedOperationException("operation not permitted.");
+    return !getValidatedPathToOscalFile(id).isEmpty();
   }
 
   /**
