@@ -43,3 +43,15 @@ You can view the api documentation in swagger-ui by pointing to
 http://localhost:8080/swagger-ui/index.html
 
 Change default port value in application.properties
+
+## Contributing
+
+For the process of Contributing to the project, please review
+[CONTRIBUTING.md](https://github.com/EasyDynamics/.github/CONTRIBUTING.md)
+and adhere to the
+[Code of Conduct](https://github.com/EasyDynamics/.github/CODE_OF_CONDUCT.md).
+
+## Licensing
+
+For information on the project's license, please review the [LICENSE](/LICENSE) file.
+
