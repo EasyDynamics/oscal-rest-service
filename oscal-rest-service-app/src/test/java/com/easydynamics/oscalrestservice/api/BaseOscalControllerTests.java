@@ -244,7 +244,7 @@ public abstract class BaseOscalControllerTests {
 
   @Test 
   public void testPutOscalObjectNotFound() throws Exception {
-    String id = "NOT-A-UUID";
+    String id = "0300753c-563b-4956-b6f6-3a68950a5279";
     this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", id)
       .contentType(MediaType.APPLICATION_JSON_VALUE)
       .accept(MediaType.APPLICATION_JSON)
