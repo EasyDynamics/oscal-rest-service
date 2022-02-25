@@ -47,6 +47,26 @@ public abstract class BaseOscalController<T> {
   }
 
   /**
+   * Checks that the given id matches the UUID in the given json.
+   *
+   * @param id the request path id
+   * @param json the request body json
+   * @return the unmarshalled object
+   * @throws OscalObjectConflictException when the path ID does not match the body ID
+   */
+  protected T unmarshallAndValidateId(String id, String json) {
+    T incomingOscalObject = oscalObjectMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    UUID incomingUuid = oscalObjectService.getUuid(incomingOscalObject);
+    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
+      throw new OscalObjectConflictException(incomingUuid.toString(), id);
+    }
+
+    return incomingOscalObject;
+  }
+
+  /**
    * Defines how a get request is handled by an Oscal controller.
    *
    * @param id uuid of the file to open
@@ -54,16 +74,10 @@ public abstract class BaseOscalController<T> {
    *     status code returned if file cannot be opened.
    */
   public ResponseEntity<StreamingResponseBody> patch(String id, String json) {
-    T incomingOscalObject = oscalObjectMarshaller.toObject(
-        new ByteArrayInputStream(json.getBytes()));
+    T incomingOscalObject = unmarshallAndValidateId(id, json);
 
     T existingOscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
-
-    UUID incomingUuid = oscalObjectService.getUuid(incomingOscalObject);
-    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
-      throw new OscalObjectConflictException("object UUID did not match path UUID");
-    }
 
     T updatedOscalObject = oscalObjectService.merge(incomingOscalObject, existingOscalObject);
 
@@ -92,17 +106,7 @@ public abstract class BaseOscalController<T> {
    *     status code returned if file cannot be opened.
    */
   public ResponseEntity<StreamingResponseBody> put(String id, String json) {
-
-    T incomingOscalObject = oscalObjectMarshaller.toObject(
-        new ByteArrayInputStream(json.getBytes()));
-
-    var incomingUuid = oscalObjectService
-        .getUuid(incomingOscalObject)
-        .toString();
-
-    if (incomingUuid != null && !id.equals(incomingUuid)) {
-      throw new OscalObjectConflictException(incomingUuid, id);
-    }
+    T incomingOscalObject = unmarshallAndValidateId(id, json);
 
     if (!oscalObjectService.existsById(id)) {
       throw new OscalObjectNotFoundException(id);
@@ -117,20 +121,20 @@ public abstract class BaseOscalController<T> {
     // However since it's a private method, and we know when it's going to be used
     // this should be ok.
     @SuppressWarnings("unchecked")
-    Consumer<OutputStream> marshallingTask = (typeErasedOscalObject instanceof Iterable) 
+    Consumer<OutputStream> marshallingTask = (typeErasedOscalObject instanceof Iterable)
         ? (outputStream) -> oscalObjectMarshaller.toJson((Iterable<T>)typeErasedOscalObject,
             outputStream)
         : (outputStream) -> oscalObjectMarshaller.toJson((T)typeErasedOscalObject,
             outputStream);
-    
+
     StreamingResponseBody responseBody = outputStream -> {
-      logger.debug("Starting marshalling of object type: {}", 
+      logger.debug("Starting marshalling of object type: {}",
           typeErasedOscalObject.getClass().getName());
       marshallingTask.accept(outputStream);
       logger.debug("Marshalling complete");
     };
 
-    logger.debug("Returning wrapped response of type: {}", 
+    logger.debug("Returning wrapped response of type: {}",
         typeErasedOscalObject.getClass().getName());
 
     return ResponseEntity.ok()
