@@ -102,8 +102,7 @@ public abstract class BaseOscalController<T> {
    * @param id uuid of the file to open.
    * @param json JSON representation of the object that will replace
    *     the existing contents.
-   * @return HTTP NO_CONTENT response, or error message and
-   *     status code returned if file cannot be opened.
+   * @return HTTP response containing OSCAL objects
    */
   public ResponseEntity<StreamingResponseBody> put(String id, String json) {
     T incomingOscalObject = unmarshallAndValidateId(id, json);

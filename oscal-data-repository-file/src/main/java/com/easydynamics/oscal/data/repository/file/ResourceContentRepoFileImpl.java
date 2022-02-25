@@ -12,13 +12,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 /**
  * File-based implementation of ResourceContentRepo.
  */
 @PropertySource("classpath:application.properties")
-@Service
+@Repository
 public class ResourceContentRepoFileImpl
     implements ResourceContentRepo {
 
