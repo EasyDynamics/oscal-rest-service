@@ -52,6 +52,7 @@ public abstract class BaseOscalController<T> {
    * @param id the request path id
    * @param json the request body json
    * @return the unmarshalled object
+   * @throws OscalObjectConflictException when the path ID does not match the body ID
    */
   protected T unmarshallAndValidateId(String id, String json) {
     T incomingOscalObject = oscalObjectMarshaller.toObject(
