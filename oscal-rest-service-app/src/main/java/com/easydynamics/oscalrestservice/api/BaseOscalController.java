@@ -43,7 +43,7 @@ public abstract class BaseOscalController<T> {
     T oscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    return makeResponse(oscalObject);
+    return makeObjectResponse(oscalObject);
   }
 
   /**
@@ -84,7 +84,7 @@ public abstract class BaseOscalController<T> {
     logger.debug("{} merge complete, saving via service",
         updatedOscalObject.getClass().getSimpleName());
 
-    return makeResponse(oscalObjectService.save(updatedOscalObject));
+    return makeObjectResponse(oscalObjectService.save(updatedOscalObject));
   }
 
   /**
@@ -93,7 +93,7 @@ public abstract class BaseOscalController<T> {
    * @return HTTP response containing OSCAL objects
    */
   public ResponseEntity<StreamingResponseBody> findAll() {
-    return makeResponse(oscalObjectService.findAll());
+    return makeIterableResponse(oscalObjectService.findAll());
   }
 
   /**
@@ -111,30 +111,35 @@ public abstract class BaseOscalController<T> {
       throw new OscalObjectNotFoundException(id);
     }
 
-    return makeResponse(oscalObjectService.save(incomingOscalObject));
+    return makeObjectResponse(oscalObjectService.save(incomingOscalObject));
   }
 
-  private ResponseEntity<StreamingResponseBody> makeResponse(Object typeErasedOscalObject) {
+  private ResponseEntity<StreamingResponseBody> makeIterableResponse(
+      Iterable<T> oscalObjectCollection) {
+    return makeResponse(
+      (outputStream) -> oscalObjectMarshaller.toJson(oscalObjectCollection, outputStream),
+      oscalObjectCollection.getClass());  
+  }
 
-    // Need to suppress warnings here because the type cast is considered unsafe.
-    // However since it's a private method, and we know when it's going to be used
-    // this should be ok.
-    @SuppressWarnings("unchecked")
-    Consumer<OutputStream> marshallingTask = (typeErasedOscalObject instanceof Iterable)
-        ? (outputStream) -> oscalObjectMarshaller.toJson((Iterable<T>)typeErasedOscalObject,
-            outputStream)
-        : (outputStream) -> oscalObjectMarshaller.toJson((T)typeErasedOscalObject,
-            outputStream);
+  private ResponseEntity<StreamingResponseBody> makeObjectResponse(T oscalObject) {
+    return makeResponse(
+      (outputStream) -> oscalObjectMarshaller.toJson(oscalObject, outputStream),
+      oscalObject.getClass());  
+  }
+
+  private ResponseEntity<StreamingResponseBody> makeResponse(
+      Consumer<OutputStream> marshallingTask, 
+      Class<?> clazz) {
 
     StreamingResponseBody responseBody = outputStream -> {
       logger.debug("Starting marshalling of object type: {}",
-          typeErasedOscalObject.getClass().getName());
+          clazz.getName());
       marshallingTask.accept(outputStream);
       logger.debug("Marshalling complete");
     };
 
     logger.debug("Returning wrapped response of type: {}",
-        typeErasedOscalObject.getClass().getName());
+        clazz.getName());
 
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
