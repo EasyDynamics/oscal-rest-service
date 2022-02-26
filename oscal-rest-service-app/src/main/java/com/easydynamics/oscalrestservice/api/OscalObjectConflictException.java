@@ -12,4 +12,8 @@ public class OscalObjectConflictException extends RuntimeException {
     super(message);
   }
 
+  OscalObjectConflictException(String objectId, String pathId) {
+    super(String.format("object UUID (%s) did not match path UUID (%s)",
+        objectId, pathId));
+  }
 }

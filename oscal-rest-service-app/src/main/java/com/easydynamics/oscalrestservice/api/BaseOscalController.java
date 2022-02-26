@@ -3,7 +3,9 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.BaseOscalObjectService;
 import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.util.UUID;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -41,15 +43,27 @@ public abstract class BaseOscalController<T> {
     T oscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    StreamingResponseBody responseBody = outputStream -> {
-      logger.debug("Starting marshalling of object type: {}", oscalObject.getClass().getName());
-      oscalObjectMarshaller.toJson(oscalObject, outputStream);
-      logger.debug("Marshalling complete");
-    };
+    return makeObjectResponse(oscalObject);
+  }
 
-    return ResponseEntity.ok()
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(responseBody);
+  /**
+   * Checks that the given id matches the UUID in the given json.
+   *
+   * @param id the request path id
+   * @param json the request body json
+   * @return the unmarshalled object
+   * @throws OscalObjectConflictException when the path ID does not match the body ID
+   */
+  protected T unmarshallAndValidateId(String id, String json) {
+    T incomingOscalObject = oscalObjectMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    UUID incomingUuid = oscalObjectService.getUuid(incomingOscalObject);
+    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
+      throw new OscalObjectConflictException(incomingUuid.toString(), id);
+    }
+
+    return incomingOscalObject;
   }
 
   /**
@@ -60,28 +74,17 @@ public abstract class BaseOscalController<T> {
    *     status code returned if file cannot be opened.
    */
   public ResponseEntity<StreamingResponseBody> patch(String id, String json) {
-    T incomingOscalObject = oscalObjectMarshaller.toObject(
-        new ByteArrayInputStream(json.getBytes()));
+    T incomingOscalObject = unmarshallAndValidateId(id, json);
 
     T existingOscalObject = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
-
-    UUID incomingUuid = oscalObjectService.getUuid(incomingOscalObject);
-    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
-      throw new OscalObjectConflictException("object UUID did not match path UUID");
-    }
 
     T updatedOscalObject = oscalObjectService.merge(incomingOscalObject, existingOscalObject);
 
     logger.debug("{} merge complete, saving via service",
         updatedOscalObject.getClass().getSimpleName());
 
-    oscalObjectService.save(existingOscalObject);
-
-    logger.debug("{} save complete, re-retrieving from service",
-        existingOscalObject.getClass().getSimpleName());
-
-    return findById(id);
+    return makeObjectResponse(oscalObjectService.save(updatedOscalObject));
   }
 
   /**
@@ -90,13 +93,53 @@ public abstract class BaseOscalController<T> {
    * @return HTTP response containing OSCAL objects
    */
   public ResponseEntity<StreamingResponseBody> findAll() {
-    Iterable<T> oscalObjects = oscalObjectService.findAll();
+    return makeIterableResponse(oscalObjectService.findAll());
+  }
+
+  /**
+   * Replaces the OSCAL object of type T with the specified JSON.
+   *
+   * @param id uuid of the file to open.
+   * @param json JSON representation of the object that will replace
+   *     the existing contents.
+   * @return HTTP response containing OSCAL objects
+   */
+  public ResponseEntity<StreamingResponseBody> put(String id, String json) {
+    T incomingOscalObject = unmarshallAndValidateId(id, json);
+
+    if (!oscalObjectService.existsById(id)) {
+      throw new OscalObjectNotFoundException(id);
+    }
+
+    return makeObjectResponse(oscalObjectService.save(incomingOscalObject));
+  }
+
+  private ResponseEntity<StreamingResponseBody> makeIterableResponse(
+      Iterable<T> oscalObjectCollection) {
+    return makeResponse(
+      (outputStream) -> oscalObjectMarshaller.toJson(oscalObjectCollection, outputStream),
+      oscalObjectCollection.getClass());  
+  }
+
+  private ResponseEntity<StreamingResponseBody> makeObjectResponse(T oscalObject) {
+    return makeResponse(
+      (outputStream) -> oscalObjectMarshaller.toJson(oscalObject, outputStream),
+      oscalObject.getClass());  
+  }
+
+  private ResponseEntity<StreamingResponseBody> makeResponse(
+      Consumer<OutputStream> marshallingTask, 
+      Class<?> clazz) {
 
     StreamingResponseBody responseBody = outputStream -> {
-      logger.debug("Starting marshalling of objects");
-      oscalObjectMarshaller.toJson(oscalObjects, outputStream);
+      logger.debug("Starting marshalling of object type: {}",
+          clazz.getName());
+      marshallingTask.accept(outputStream);
       logger.debug("Marshalling complete");
     };
+
+    logger.debug("Returning wrapped response of type: {}",
+        clazz.getName());
 
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)

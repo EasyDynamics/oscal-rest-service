@@ -1,8 +1,10 @@
 package com.easydynamics.oscal.data.repository.file;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -126,5 +128,15 @@ public abstract class BaseOscalRepositoryTests<T extends Object> {
       .orElse(null);
 
     assertNotNull(foundObject);
+  }
+
+  @Test
+  public void testExistsByIdForValidId() throws Exception {
+    assertTrue(repository.existsById(exampleContent.uuid));
+  }
+
+  @Test
+  public void testExistsByIdForInvalidId() throws Exception {
+    assertFalse(repository.existsById("NOT-A-UUID"));
   }
 }
