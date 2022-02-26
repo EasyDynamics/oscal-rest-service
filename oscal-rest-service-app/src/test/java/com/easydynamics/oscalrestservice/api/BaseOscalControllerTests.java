@@ -277,6 +277,18 @@ public abstract class BaseOscalControllerTests {
   }
 
   @Test 
+  public void testPutNullIdMismatchOscalObject() throws Exception {
+    String badId = null;
+    this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .characterEncoding("UTF-8")
+      .content(generateOscalObject(oscalObjectType.jsonField, badId)))
+      .andExpect(status().isBadRequest());
+  }
+
+
+  @Test 
   public void testPutOscalObjectSuccess() throws Exception {
     this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
       .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -289,7 +301,7 @@ public abstract class BaseOscalControllerTests {
   private static String generateOscalObject(String objectType, String id) {
       return "{\n"
       + "  \"" + objectType + "\": {\n"
-      + "    \"uuid\": \"" + id + "\",\n"
+      + "    \"uuid\":" + (id == null? "null" : "\"" + id + "\"") + ",\n"
       + "    \"metadata\": {\n"
       + "      \"title\": \"Some New Title\",\n"
       + "      \"version\": \"2.0.0\",\n"

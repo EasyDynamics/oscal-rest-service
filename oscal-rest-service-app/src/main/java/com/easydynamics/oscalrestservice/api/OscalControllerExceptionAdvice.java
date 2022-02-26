@@ -1,5 +1,6 @@
 package com.easydynamics.oscalrestservice.api;
 
+import com.easydynamics.oscal.data.marshalling.OscalObjectMarshallingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,13 @@ public class OscalControllerExceptionAdvice {
   @ExceptionHandler(OscalObjectConflictException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   String oscalObjectConflictHandler(OscalObjectConflictException exception) {
+    return exception.getMessage();
+  }
+
+  @ResponseBody
+  @ExceptionHandler(OscalObjectMarshallingException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  String oscalObjectMarshallingHandler(OscalObjectMarshallingException exception) {
     return exception.getMessage();
   }
 }
