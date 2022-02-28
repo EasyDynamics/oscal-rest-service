@@ -1,5 +1,6 @@
 # OSCAL REST Service
-Initial implementation of the OSCAL REST API
+Initial implementation of some the [OSCAL REST API](https://github.com/EasyDynamics/oscal-rest)
+which persists data as files in local directories.
 
 ## Project Organization
 
@@ -20,10 +21,9 @@ JSON files.
 
 ### oscal-data-repository-commons
 
-A lower-level repository dependency that defines the OSCAL POJOs.
-
-Note that this is likely to instead leverage [liboscal-java](https://github.com/usnistgov/liboscal-java) in the near
-future.
+A lower-level repository dependency that
+leverages [liboscal-java](https://github.com/usnistgov/liboscal-java)
+to define the OSCAL POJOs.
 
 ## Local Development
 
