@@ -1,6 +1,6 @@
 # OSCAL REST Service
-Initial implementation of the [OSCAL REST API](https://github.com/EasyDynamics/oscal-rest) which
-persists data as files in local directories.
+Initial implementation of some the [OSCAL REST API](https://github.com/EasyDynamics/oscal-rest)
+which persists data as files in local directories.
 
 ## Project Organization
 
