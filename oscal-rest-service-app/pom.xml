@@ -19,6 +19,8 @@
 		<oscal-object-service.version>0.0.1-SNAPSHOT</oscal-object-service.version>
 		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
 		<maven.deploy.skip>false</maven.deploy.skip>
+		<maven.download-plugin.version>1.6.8</maven.download-plugin.version>
+		<oscal-rest.branch>develop</oscal-rest.branch>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -95,6 +97,24 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<version>${maven.download-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://raw.githubusercontent.com/EasyDynamics/oscal-rest/${oscal-rest.branch}/openapi.yaml</url>
+							<outputFileName>openapi.yaml</outputFileName>
+							<outputDirectory>${project.build.directory}/classes/static</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
