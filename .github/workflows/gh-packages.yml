@@ -12,7 +12,7 @@ jobs:
       packages: write
     steps:
       - name: Delete previous oscal-rest-service version
-        uses: actions/delete-package-versions@v2
+        uses: actions/delete-package-versions@v3
         with:
           package-name: com.easydynamics.oscal-rest-service-app
       - name: Checkout code
