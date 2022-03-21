@@ -15,7 +15,7 @@
 	<properties>
 		<oscal-data-repository-commons.version>0.0.1-SNAPSHOT</oscal-data-repository-commons.version>
 		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
-		<org.json.version>20211205</org.json.version>
+		<org.json.version>20220320</org.json.version>
 	</properties>
 
 	<dependencyManagement>
