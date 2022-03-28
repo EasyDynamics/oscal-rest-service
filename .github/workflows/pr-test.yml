@@ -7,14 +7,18 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        java: [11, 17]
+    runs-on: ubuntu-latest
+    name: "Build and test on Java ${{ matrix.java }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
+          java-version: "${{ matrix.java }}"
           distribution: 'temurin'
           cache: 'maven'
       - name: Build and test
