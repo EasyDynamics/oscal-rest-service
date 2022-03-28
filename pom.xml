@@ -13,7 +13,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<validation-api.version>2.0.1.Final</validation-api.version>
-		<spring-boot-starter-data-jpa.version>2.6.4</spring-boot-starter-data-jpa.version>
+		<spring-boot-starter-data-jpa.version>2.6.5</spring-boot-starter-data-jpa.version>
 		<spring-core.version>5.3.17</spring-core.version>
 		<spring-test.version>5.3.16</spring-test.version>
 		<junit.version>5.8.2</junit.version>
