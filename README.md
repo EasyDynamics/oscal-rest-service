@@ -27,7 +27,15 @@ to define the OSCAL POJOs.
 
 ## Local Development
 
+### Prerequisites
+
+ - Java 11 or newer
+ - Maven
+
+### Building and Running
+
 To build and install all of the above artifacts, from the `oscal-rest-service` root dir run:
+
 ```
 mvn clean install
 ```
@@ -37,7 +45,6 @@ To then launch the Spring Boot app:
 cd oscal-rest-service-app
 mvn spring-boot:run
 ```
-
 
 You can view the api documentation in swagger-ui by pointing to
 http://localhost:8080/swagger-ui/index.html
