@@ -10,8 +10,6 @@
 	<description>Initial OSCAL REST API Parent</description>
 	<properties>
 		<java.version>11</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<spring-boot-starter-data-jpa.version>2.6.5</spring-boot-starter-data-jpa.version>
 		<spring-core.version>5.3.17</spring-core.version>
@@ -19,6 +17,7 @@
 		<junit.version>5.8.2</junit.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 	<distributionManagement>
@@ -40,27 +39,36 @@
 	<build>
 		<plugins>
 			<plugin>
-				 <groupId>org.apache.maven.plugins</groupId>
-				 <artifactId>maven-checkstyle-plugin</artifactId>
-				 <version>${maven-checkstyle-plugin.version}</version>
-				 <configuration>
-					 <configLocation>google_checks.xml</configLocation>
-					 <encoding>UTF-8</encoding>
-					 <consoleOutput>true</consoleOutput>
-					 <failsOnError>true</failsOnError>
-					 <violationSeverity>warning</violationSeverity>
-					 <linkXRef>false</linkXRef>
-				 </configuration>
-				 <executions>
-					 <execution>
-						 <id>validate</id>
-						 <phase>validate</phase>
-						 <goals>
-							 <goal>check</goal>
-						 </goals>
-					 </execution>
-				 </executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${maven-checkstyle-plugin.version}</version>
+				<configuration>
+					<configLocation>google_checks.xml</configLocation>
+					<encoding>UTF-8</encoding>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>true</failsOnError>
+					<violationSeverity>warning</violationSeverity>
+					<linkXRef>false</linkXRef>
+				</configuration>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<release>${java.version}</release>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
