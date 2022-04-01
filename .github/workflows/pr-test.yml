@@ -1,6 +1,7 @@
 name: Run tests
 on:
   pull_request:
+  push:
     branches:
       - develop
       - main
@@ -9,17 +10,27 @@ jobs:
   test:
     strategy:
       matrix:
-        java: [11, 17]
+        java:
+          # We need to test both the version of javac itself (well, technically the version of
+          # the JDK providing `javax.tools.JavaCompiler`), below called `actual` and the version
+          # passed to the `--release` flag, below called `target`. We check the two most recent
+          # LTS releases and the latest stable release. We check that both LTSes can target
+          # themselves and the oldest supported LTS, and that the latest stable release can
+          # target itself. We do not test against EA builds.
+          - { actual: 11, target: 11 } # Oldest supported LTS
+          - { actual: 17, target: 17 } # Latest LTS
+          - { actual: 17, target: 11 } # Latest LTS, targeting the oldest
+          - { actual: 18, target: 18 } # Latest stable release
     runs-on: ubuntu-latest
-    name: "Build and test on Java ${{ matrix.java }}"
+    name: "Build and test on Java ${{ matrix.java.actual }} targeting ${{ matrix.java.target }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: "${{ matrix.java }}"
+          java-version: "${{ matrix.java.actual }}"
           distribution: 'temurin'
           cache: 'maven'
       - name: Build and test
-        run: mvn package
+        run: mvn -Djava.version=${{ matrix.java.target }} clean package
