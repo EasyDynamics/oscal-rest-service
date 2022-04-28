@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.7</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.easydynamics</groupId>
+		<artifactId>oscal-rest-service-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../</relativePath>
 	</parent>
 	<groupId>com.easydynamics</groupId>
 	<artifactId>oscal-rest-service-app</artifactId>
@@ -14,12 +14,10 @@
 	<name>oscal-rest-service-app</name>
 	<description>Initial OSCAL REST API</description>
 	<properties>
-		<java.version>11</java.version>
 		<springfox.version>3.0.0</springfox.version>
 		<oscal-object-service.version>0.0.1-SNAPSHOT</oscal-object-service.version>
 		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
 		<maven.deploy.skip>false</maven.deploy.skip>
-		<maven.download-plugin.version>1.6.8</maven.download-plugin.version>
 		<oscal-rest.branch>develop</oscal-rest.branch>
 	</properties>
 	<distributionManagement>
@@ -103,7 +101,7 @@
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
-				<version>${maven.download-plugin.version}</version>
+				<version>${maven-download-plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>process-resources</phase>
