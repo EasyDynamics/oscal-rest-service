@@ -12,4 +12,28 @@
 	<name>oscal-data-repository-commons-tests</name>
 	<description>Parent tests and test data for OSCAL data repository implementations</description>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<version>${maven-download-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://github.com/EasyDynamics/oscal-demo-content/archive/refs/heads/main.zip</url>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<unpack>true</unpack>
+							<followRedirects>true</followRedirects>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
