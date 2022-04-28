@@ -48,7 +48,7 @@ public abstract class BaseOscalControllerTests {
   @BeforeEach
   public void setup() throws IOException {
     originalFileContents = Files.readString(Paths.get(
-        "target/oscal-content",
+        "target/oscal-demo-content-main",
         oscalObjectType.jsonField + "s",
         exampleContent.fileName), 
         Charset.forName("UTF-8"));
@@ -57,7 +57,7 @@ public abstract class BaseOscalControllerTests {
   @AfterEach
   public void reset() throws IOException {
     Files.writeString(Paths.get(
-        "target/oscal-content",
+        "target/oscal-demo-content-main",
         oscalObjectType.jsonField + "s",
         exampleContent.fileName), 
         originalFileContents, Charset.forName("UTF-8"));
