@@ -35,7 +35,7 @@ public class MisconfiguredRepoTests {
    */
   @Test
   public void findByIdPathIsFile() {
-    repository = new OscalCatalogRepoFileImpl("target/oscal-content/README.md");
+    repository = new OscalCatalogRepoFileImpl("target/oscal-demo-content-main/README.md");
     assertThrows(DataRetrievalFailureException.class, () -> repository.findById("any-id"));
   }
 }

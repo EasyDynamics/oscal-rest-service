@@ -88,7 +88,7 @@
 									<artifactId>oscal-data-repository-commons-tests</artifactId>
 									<version>${oscal-data-repository-commons-tests.version}</version>
 									<type>jar</type>
-									<includes>oscal-content/**</includes>
+									<includes>oscal-demo-content-main/**</includes>
 									<outputDirectory>${project.build.directory}</outputDirectory>
 								</artifactItem>
 							</artifactItems>
