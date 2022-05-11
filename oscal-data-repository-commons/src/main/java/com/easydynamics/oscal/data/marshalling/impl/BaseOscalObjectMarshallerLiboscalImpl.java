@@ -10,6 +10,7 @@ import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.json.DefaultJsonDeserializer;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -34,14 +35,14 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
     this.serializer = new IterableJsonSerializer<T>(context, classBinding);
     this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
     this.deserializer = new DefaultJsonDeserializer<T>(context, classBinding);
-    this.deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
+    this.deserializer.enableFeature(Feature.DESERIALIZE_JSON_ROOT_PROPERTY);
   }
 
   @Override
   public void toJson(T oscalObject, OutputStream outputStream) {
     try {
       serializer.serialize(oscalObject, outputStream);
-    } catch (BindingException e) {
+    } catch (IOException e) {
       throw new OscalObjectMarshallingException(e);
     }
   }
@@ -59,7 +60,7 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
   public T toObject(InputStream inputStream) {
     try {
       return deserializer.deserialize(inputStream, null);
-    } catch (BindingException e) {
+    } catch (IOException e) {
       throw new OscalObjectMarshallingException(e);
     }
   }

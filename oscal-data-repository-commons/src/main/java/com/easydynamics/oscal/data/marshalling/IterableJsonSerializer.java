@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Extends DefaultJsonSerializer to serialize root items as an array.
@@ -36,8 +37,8 @@ public class IterableJsonSerializer<T> extends DefaultJsonSerializer<T> {
    * @throws BindingException thrown when the class binding fails
    */
   public void serializeIterable(Iterable<T> data, Writer writer) throws BindingException {
-    JsonGenerator generator = newJsonGenerator(writer);
     try {
+      JsonGenerator generator = newJsonGenerator(writer);
       IterableAssemblyClassBinding classBinding = (IterableAssemblyClassBinding) getClassBinding();
       IJsonWritingContext writingContext = new DefaultJsonWritingContext(generator);
       classBinding.writeRootItems(data, writingContext);
@@ -45,6 +46,19 @@ public class IterableJsonSerializer<T> extends DefaultJsonSerializer<T> {
     } catch (IOException ex) {
       throw new BindingException(ex);
     }
+  }
+
+  /**
+   * Need to override here to prevent calling writer.flush
+   */
+  @Override
+  public void serialize(@NotNull T data, @NotNull OutputStream os) throws IOException {
+    OutputStreamWriter writer = new OutputStreamWriter(os);
+    serialize(data, writer);
+    // Stream is already closed after
+    // RootAssemblyDefinition.writeRoot > WriterBasedJsonGenerator.writeEndObject) returns
+    // so below fails with 'stream closed'
+    // writer.flush();
   }
 
 }
