@@ -7,8 +7,8 @@ import com.easydynamics.oscal.data.marshalling.OscalObjectMarshallingException;
 import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
-import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
+import gov.nist.secauto.metaschema.binding.io.json.DefaultJsonDeserializer;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,7 +33,7 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
         IterableAssemblyClassBinding.createInstance(clazz, context);
     this.serializer = new IterableJsonSerializer<T>(context, classBinding);
     this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
-    this.deserializer = context.newDeserializer(Format.JSON, clazz);
+    this.deserializer = new DefaultJsonDeserializer<T>(context, classBinding);
     this.deserializer.enableFeature(Feature.DESERIALIZE_ROOT);
   }
 

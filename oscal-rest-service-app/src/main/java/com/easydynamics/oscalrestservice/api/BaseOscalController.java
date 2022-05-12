@@ -21,8 +21,8 @@ public abstract class BaseOscalController<T> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private final BaseOscalObjectService<T> oscalObjectService;
-  private final OscalObjectMarshaller<T> oscalObjectMarshaller;
+  protected final BaseOscalObjectService<T> oscalObjectService;
+  protected final OscalObjectMarshaller<T> oscalObjectMarshaller;
 
   protected BaseOscalController(
       BaseOscalObjectService<T> oscalObjectService,
@@ -114,21 +114,21 @@ public abstract class BaseOscalController<T> {
     return makeObjectResponse(oscalObjectService.save(incomingOscalObject));
   }
 
-  private ResponseEntity<StreamingResponseBody> makeIterableResponse(
+  protected ResponseEntity<StreamingResponseBody> makeIterableResponse(
       Iterable<T> oscalObjectCollection) {
     return makeResponse(
       (outputStream) -> oscalObjectMarshaller.toJson(oscalObjectCollection, outputStream),
-      oscalObjectCollection.getClass());  
+      oscalObjectCollection.getClass());
   }
 
-  private ResponseEntity<StreamingResponseBody> makeObjectResponse(T oscalObject) {
+  protected ResponseEntity<StreamingResponseBody> makeObjectResponse(T oscalObject) {
     return makeResponse(
       (outputStream) -> oscalObjectMarshaller.toJson(oscalObject, outputStream),
-      oscalObject.getClass());  
+      oscalObject.getClass());
   }
 
-  private ResponseEntity<StreamingResponseBody> makeResponse(
-      Consumer<OutputStream> marshallingTask, 
+  protected ResponseEntity<StreamingResponseBody> makeResponse(
+      Consumer<OutputStream> marshallingTask,
       Class<?> clazz) {
 
     StreamingResponseBody responseBody = outputStream -> {
