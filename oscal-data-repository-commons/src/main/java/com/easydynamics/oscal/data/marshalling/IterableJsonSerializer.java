@@ -25,7 +25,7 @@ public class IterableJsonSerializer<T> extends DefaultJsonSerializer<T> {
     super(bindingContext, classBinding);
   }
 
-  public void serializeIterable(Iterable<T> data, OutputStream out) throws BindingException {
+  public void serializeIterable(Iterable<T> data, OutputStream out) throws IOException {
     serializeIterable(data, new OutputStreamWriter(out));
   }
 
@@ -36,15 +36,12 @@ public class IterableJsonSerializer<T> extends DefaultJsonSerializer<T> {
    * @param writer the writer to write to
    * @throws BindingException thrown when the class binding fails
    */
-  public void serializeIterable(Iterable<T> data, Writer writer) throws BindingException {
-    try {
-      JsonGenerator generator = newJsonGenerator(writer);
+  public void serializeIterable(Iterable<T> data, Writer writer) throws IOException {
+    try (JsonGenerator generator = newJsonGenerator(writer)) {
       IterableAssemblyClassBinding classBinding = (IterableAssemblyClassBinding) getClassBinding();
       IJsonWritingContext writingContext = new DefaultJsonWritingContext(generator);
       classBinding.writeRootItems(data, writingContext);
       generator.close();
-    } catch (IOException ex) {
-      throw new BindingException(ex);
     }
   }
 

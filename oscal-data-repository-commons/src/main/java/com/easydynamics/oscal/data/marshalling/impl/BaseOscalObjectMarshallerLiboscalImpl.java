@@ -5,7 +5,6 @@ import com.easydynamics.oscal.data.marshalling.IterableJsonSerializer;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshallingException;
 import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.json.DefaultJsonDeserializer;
@@ -51,7 +50,7 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
   public void toJson(Iterable<T> oscalObjects, OutputStream outputStream) {
     try {
       serializer.serializeIterable(oscalObjects, outputStream);
-    } catch (BindingException e) {
+    } catch (IOException e) {
       throw new OscalObjectMarshallingException(e);
     }
   }
