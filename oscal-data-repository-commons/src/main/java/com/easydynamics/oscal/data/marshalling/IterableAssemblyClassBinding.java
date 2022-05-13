@@ -8,7 +8,6 @@ import gov.nist.secauto.oscal.lib.model.ImplementedRequirement;
 import java.io.IOException;
 import java.util.Map;
 import javax.xml.namespace.QName;
-import org.apache.commons.collections4.map.HashedMap;
 
 /**
  * Extends DefaultAssemblyClassBinding to add writing of root items as an array.
@@ -19,13 +18,9 @@ public class IterableAssemblyClassBinding extends DefaultAssemblyClassBinding {
    * Map of objects that are not declared as root in liboscal-java,
    * but we want to treat them as such.
    */
-  private static final Map<Class<?>, QName> secondaryRootObjects;
-
-  static {
-    secondaryRootObjects = new HashedMap<>();
-    secondaryRootObjects.put(ImplementedRequirement.class,
-        new QName("implemented-requirement"));
-  }
+  private static final Map<Class<?>, QName> secondaryRootObjects = Map.ofEntries(
+      Map.entry(ImplementedRequirement.class, new QName("implemented-requirement"))
+  );
 
   protected IterableAssemblyClassBinding(Class<?> clazz, IBindingContext bindingContext) {
     super(clazz, bindingContext);
@@ -72,10 +67,7 @@ public class IterableAssemblyClassBinding extends DefaultAssemblyClassBinding {
 
   @Override
   public QName getRootXmlQName() {
-    if (secondaryRootObjects.containsKey(getBoundClass())) {
-      return secondaryRootObjects.get(getBoundClass());
-    }
-    return super.getRootXmlQName();
+    return secondaryRootObjects.getOrDefault(getBoundClass(), super.getRootXmlQName());
   }
 
 }
