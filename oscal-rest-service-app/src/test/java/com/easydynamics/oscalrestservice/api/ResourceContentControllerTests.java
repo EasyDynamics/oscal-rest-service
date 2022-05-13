@@ -17,10 +17,10 @@ import org.springframework.test.web.servlet.MvcResult;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-public abstract class ResourceContentControllerTests {
+public class ResourceContentControllerTests {
 
   private static final String EXPECTED_NAME = "authz-boundary.png";
-  private static final String EXPECTED_TYPE = "application/octet-stream";
+  private static final String EXPECTED_TYPE = "image/png";
 
   @Autowired
   private MockMvc mockMvc;
@@ -34,8 +34,8 @@ public abstract class ResourceContentControllerTests {
   @Test
   public void testGetOscalObject() throws Exception {
     // With StreamingResponseBody this is async so we start the request here
-    MvcResult asyncResult = this.mockMvc.perform(get("/oscal/v1/resource-content"
-        + "/{id}", EXPECTED_NAME))
+    MvcResult asyncResult = this.mockMvc
+        .perform(get("/oscal/v1/resource-content/{id}", EXPECTED_NAME))
         .andExpect(request().asyncStarted())
         .andReturn();
 
