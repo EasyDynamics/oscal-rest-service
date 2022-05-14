@@ -22,6 +22,8 @@ import com.easydynamics.oscal.data.example.ExampleContent;
  */
 public class SspControllerTests extends BaseOscalControllerTests {
 
+  private static final String ADD_SSP_IMPL_REQ_URL =
+      "/oscal/v1/system-security-plans/{id}/control-implementation/implemented-requirements";
   private static final String UPDATE_SSP_IMPL_REQ_URL =
       "/oscal/v1/system-security-plans/{id}/control-implementation/implemented-requirements/{implementedRequirementId}";
   private static final String EXISTING_IMPL_REQ_UUID = "aaadb3ff-6ae8-4332-92db-211468c52af2";
@@ -128,9 +130,8 @@ public class SspControllerTests extends BaseOscalControllerTests {
         .andExpect(expectedStatus);
     } else if (httpMethod.equals(HttpMethod.POST)){
       this.mockMvc.perform(
-          post(UPDATE_SSP_IMPL_REQ_URL,
-              exampleContent.uuid,
-              implReqUuid)
+          post(ADD_SSP_IMPL_REQ_URL,
+              exampleContent.uuid)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaType.APPLICATION_JSON)
         .characterEncoding("UTF-8")
