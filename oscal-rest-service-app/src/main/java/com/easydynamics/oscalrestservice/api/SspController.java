@@ -113,6 +113,32 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     return incomingOscalObject;
   }
 
+ /**
+  *
+  * Helper function to add a new Implemented Requirement to the list
+  * of Implemented Requirements in a given SSP.
+  *
+  * @param existingSsp the SSP object to update
+  * @param incomingImplReq the new Implemented Requirement to add
+  *
+  */
+  private void addImplReqToList(
+    SystemSecurityPlan existingSsp,
+    ImplementedRequirement incomingImplReq
+  ){
+      ControlImplementation controlImplementation = existingSsp.getControlImplementation();
+      if (controlImplementation == null) {
+        controlImplementation = new ControlImplementation();
+        existingSsp.setControlImplementation(controlImplementation);
+      }
+      List<ImplementedRequirement> implReqs = controlImplementation.getImplementedRequirements();
+      if (implReqs == null) {
+        implReqs = new ArrayList<>();
+        controlImplementation.setImplementedRequirements(implReqs);
+      }
+      implReqs.add(incomingImplReq);
+  }
+
   /**
    * Does the work of finding an existing SSP and updating it with the
    * given Implemented Requirement.
@@ -126,8 +152,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   private ResponseEntity<StreamingResponseBody> updateImplementedRequirement(
       String id,
       String implementedRequirementId,
-      String json,
-      boolean isCreateOnly) {
+      String json) {
     SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
@@ -143,21 +168,8 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
           .findAny()
           .orElse(null);
     }
-    if (existingImplReq != null && isCreateOnly) {
-      throw new OscalObjectConflictException("Implented Requirement already exists");
-    }
     if (existingImplReq == null) {
-      ControlImplementation controlImplementation = existingSsp.getControlImplementation();
-      if (controlImplementation == null) {
-        controlImplementation = new ControlImplementation();
-        existingSsp.setControlImplementation(controlImplementation);
-      }
-      List<ImplementedRequirement> implReqs = controlImplementation.getImplementedRequirements();
-      if (implReqs == null) {
-        implReqs = new ArrayList<>();
-        controlImplementation.setImplementedRequirements(implReqs);
-      }
-      implReqs.add(incomingImplReq);
+      addImplReqToList(existingSsp, incomingImplReq);
     } else {
       try {
         OscalDeepCopyUtils.deepCopyProperties(existingImplReq, incomingImplReq);
@@ -173,7 +185,39 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   }
 
   /**
-   * Defines a POST request for updating SSPs control implementation
+   * Does the work of finding an existing SSP and adding the 
+   * new Implemented Requirement.
+   *
+   * @param id the SSP UUID
+   * @param json the Implemented Requirement JSON
+   * @return the response
+   */
+  private ResponseEntity<StreamingResponseBody> addImplementedRequirement(
+      String id,
+      String json) {
+    SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
+        .orElseThrow(() -> new OscalObjectNotFoundException(id));
+
+    ImplementedRequirement incomingImplReq = oscalSspImplReqtMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    // Throw an exception if the Implemented Requirement alrady exists
+    if (existingSsp.getControlImplementation() != null
+      && existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements().stream()
+            .anyMatch(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))){
+          throw new OscalObjectConflictException("Implented Requirement already exists");
+    }
+    
+    addImplReqToList(existingSsp, incomingImplReq);
+
+    logger.debug("SSP ImplementedRequiremnt updated, saving via service");
+
+    return makeObjectResponse(oscalObjectService.save(existingSsp));
+  }
+
+  /**
+   * Defines a POST request for adding SSPs control implementation
    * implemented requirements.
    *
    * @param id the SSP uuid
@@ -181,14 +225,13 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * @param json the SSP contents
    */
   @PostMapping(value = "/system-security-plans/{id}/control-implementation/"
-      + "implemented-requirements/{implementedRequirementId}",
+      + "implemented-requirements",
       consumes = { MediaType.APPLICATION_JSON_VALUE },
       produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<StreamingResponseBody> updateImplementedRequirementPost(
       @Parameter @PathVariable String id,
-      @Parameter @PathVariable String implementedRequirementId,
       @RequestBody String json) {
-    return updateImplementedRequirement(id, implementedRequirementId, json, true);
+    return addImplementedRequirement(id, json);
   }
 
   /**
@@ -207,6 +250,6 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       @Parameter @PathVariable String id,
       @Parameter @PathVariable String implementedRequirementId,
       @RequestBody String json) {
-    return updateImplementedRequirement(id, implementedRequirementId, json, false);
+    return updateImplementedRequirement(id, implementedRequirementId, json);
   }
 }
