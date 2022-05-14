@@ -113,8 +113,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     return incomingOscalObject;
   }
 
- /**
-  *
+  /**
   * Helper function to add a new Implemented Requirement to the list
   * of Implemented Requirements in a given SSP.
   *
@@ -123,20 +122,20 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   *
   */
   private void addImplReqToList(
-    SystemSecurityPlan existingSsp,
-    ImplementedRequirement incomingImplReq
-  ){
-      ControlImplementation controlImplementation = existingSsp.getControlImplementation();
-      if (controlImplementation == null) {
-        controlImplementation = new ControlImplementation();
-        existingSsp.setControlImplementation(controlImplementation);
-      }
-      List<ImplementedRequirement> implReqs = controlImplementation.getImplementedRequirements();
-      if (implReqs == null) {
-        implReqs = new ArrayList<>();
-        controlImplementation.setImplementedRequirements(implReqs);
-      }
-      implReqs.add(incomingImplReq);
+      SystemSecurityPlan existingSsp,
+      ImplementedRequirement incomingImplReq
+  ) {
+    ControlImplementation controlImplementation = existingSsp.getControlImplementation();
+    if (controlImplementation == null) {
+      controlImplementation = new ControlImplementation();
+      existingSsp.setControlImplementation(controlImplementation);
+    }
+    List<ImplementedRequirement> implReqs = controlImplementation.getImplementedRequirements();
+    if (implReqs == null) {
+      implReqs = new ArrayList<>();
+      controlImplementation.setImplementedRequirements(implReqs);
+    }
+    implReqs.add(incomingImplReq);
   }
 
   /**
@@ -203,10 +202,10 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
     // Throw an exception if the Implemented Requirement alrady exists
     if (existingSsp.getControlImplementation() != null
-      && existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
-            .anyMatch(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))){
-          throw new OscalObjectConflictException("Implented Requirement already exists");
+          .anyMatch(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))) {
+      throw new OscalObjectConflictException("Implented Requirement already exists");
     }
     
     addImplReqToList(existingSsp, incomingImplReq);
@@ -221,7 +220,6 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * implemented requirements.
    *
    * @param id the SSP uuid
-   * @param implementedRequirementId the Implemented Requirement uuid
    * @param json the SSP contents
    */
   @PostMapping(value = "/system-security-plans/{id}/control-implementation/"
