@@ -179,8 +179,8 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     }
 
     logger.debug("SSP ImplementedRequiremnt updated, saving via service");
-
-    return makeObjectResponse(oscalObjectService.save(existingSsp));
+    oscalObjectService.save(existingSsp);
+    return makeObjectResponse(incomingImplReq, oscalSspImplReqtMarshaller);
   }
 
   /**

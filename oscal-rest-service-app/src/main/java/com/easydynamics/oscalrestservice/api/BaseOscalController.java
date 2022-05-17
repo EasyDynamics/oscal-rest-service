@@ -14,8 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 /**
  * BaseOscalController is the superclass for all Controllers that handles request to an Oscal
- * endpoint. It uses its repository field to perform CRUD operations on files of the
- * corresponding Oscal type.
+ * endpoint. It uses its repository field to perform CRUD operations on files of the corresponding
+ * Oscal type.
  */
 public abstract class BaseOscalController<T> {
 
@@ -114,32 +114,79 @@ public abstract class BaseOscalController<T> {
     return makeObjectResponse(oscalObjectService.save(incomingOscalObject));
   }
 
+  /**
+   * Marshall an iterable collection of OSCAL objects to a response object.
+   *
+   * <p>In particular, this is useful for secondary objects. For root objects in the OSCAL
+   * hierarchy (and especially for objects of {@code <T>}), consider using
+   * {@link #makeIterableResponse(Iterable)}.
+   *
+   * @param <S> the type of OSCAL objects within the collection
+   * @param oscalObjectCollection the collection of OSCAL objects
+   * @param marshaller the marshaller that can convert objects of {@code <S>} to JSON
+   * @return HTTP response with the objects as JSON
+   */
+  protected <S> ResponseEntity<StreamingResponseBody> makeIterableResponse(
+      Iterable<S> oscalObjectCollection, OscalObjectMarshaller<S> marshaller) {
+    return makeResponse((outputStream) -> marshaller.toJson(oscalObjectCollection, outputStream),
+        oscalObjectCollection.getClass());
+  }
+
+  /**
+   * Marshall an iterable collection of OSCAL objects to a response object.
+   * 
+   * @param oscalObjectCollection The collection of OSCAL objects
+   * @return HTTP response with the objects as JSON
+   */
   protected ResponseEntity<StreamingResponseBody> makeIterableResponse(
       Iterable<T> oscalObjectCollection) {
-    return makeResponse(
-      (outputStream) -> oscalObjectMarshaller.toJson(oscalObjectCollection, outputStream),
-      oscalObjectCollection.getClass());
+    return makeIterableResponse(oscalObjectCollection, oscalObjectMarshaller);
   }
 
+  /**
+   * Marshall single JSON object to an HTTP response.
+   *
+   * <p>In particular, this is useful for secondary objects. For root objects in the OSCAL
+   * hierarchy (and especially for objects of {@code <T>}), consider using
+   * {@link #makeObjectResponse(T)}.
+   *
+   * @param <S> the type of the OSCAL object to return
+   * @param oscalObject the object to include in the response
+   * @param marshaller the marshaller that can convert objects of {@code <S>} to JSON
+   * @return HTTP response with the given object as JSON
+   */
+  protected <S> ResponseEntity<StreamingResponseBody> makeObjectResponse(S oscalObject,
+      OscalObjectMarshaller<S> marshaller) {
+    return makeResponse((outputStream) -> marshaller.toJson(oscalObject, outputStream),
+        oscalObject.getClass());
+  }
+
+  /**
+   * Marshall single JSON object to an HTTP response.
+   *
+   * @param oscalObject the object to include in the response
+   * @return HTTP response with the given object as JSON
+   */
   protected ResponseEntity<StreamingResponseBody> makeObjectResponse(T oscalObject) {
-    return makeResponse(
-      (outputStream) -> oscalObjectMarshaller.toJson(oscalObject, outputStream),
-      oscalObject.getClass());
+    return makeObjectResponse(oscalObject, oscalObjectMarshaller);
   }
 
+  /**
+   * Create a Response object from any class given a valid marshaller to do so.
+   *
+   * @param marshallingTask the Consumer that will perform the marshalling
+   * @param clazz the Class object for the object being marshalled
+   */
   protected ResponseEntity<StreamingResponseBody> makeResponse(
-      Consumer<OutputStream> marshallingTask,
-      Class<?> clazz) {
+      Consumer<OutputStream> marshallingTask, Class<?> clazz) {
 
     StreamingResponseBody responseBody = outputStream -> {
-      logger.debug("Starting marshalling of object type: {}",
-          clazz.getName());
+      logger.debug("Starting marshalling of object type: {}", clazz.getName());
       marshallingTask.accept(outputStream);
       logger.debug("Marshalling complete");
     };
 
-    logger.debug("Returning wrapped response of type: {}",
-        clazz.getName());
+    logger.debug("Returning wrapped response of type: {}", clazz.getName());
 
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
