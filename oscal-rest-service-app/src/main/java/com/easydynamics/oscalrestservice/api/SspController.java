@@ -36,7 +36,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 @RestController
 public class SspController extends BaseOscalController<SystemSecurityPlan> {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-  private final OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqtMarshaller;
+  private final OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqMarshaller;
 
   @Autowired(required = true)
   public SspController(
@@ -45,7 +45,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqtMarshaller
   ) {
     super(sspService, marshaller);
-    this.oscalSspImplReqtMarshaller = oscalSspImplReqtMarshaller;
+    this.oscalSspImplReqMarshaller = oscalSspImplReqtMarshaller;
   }
 
   @GetMapping("/system-security-plans")
@@ -102,7 +102,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * @throws OscalObjectConflictException when the path ID does not match the body ID
    */
   protected ImplementedRequirement unmarshallImplReqAndValidateId(String id, String json) {
-    ImplementedRequirement incomingOscalObject = oscalSspImplReqtMarshaller.toObject(
+    ImplementedRequirement incomingOscalObject = oscalSspImplReqMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
     UUID incomingUuid = incomingOscalObject.getUuid();
@@ -180,11 +180,11 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
     logger.debug("SSP ImplementedRequiremnt updated, saving via service");
     oscalObjectService.save(existingSsp);
-    return makeObjectResponse(incomingImplReq, oscalSspImplReqtMarshaller);
+    return makeObjectResponse(incomingImplReq, oscalSspImplReqMarshaller);
   }
 
   /**
-   * Does the work of finding an existing SSP and adding the 
+   * Does the work of finding an existing SSP and adding the
    * new Implemented Requirement.
    *
    * @param id the SSP UUID
@@ -197,7 +197,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    ImplementedRequirement incomingImplReq = oscalSspImplReqtMarshaller.toObject(
+    ImplementedRequirement incomingImplReq = oscalSspImplReqMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
     // Throw an exception if the Implemented Requirement alrady exists
@@ -205,9 +205,9 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
           .anyMatch(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))) {
-      throw new OscalObjectConflictException("Implented Requirement already exists");
+      throw new OscalObjectConflictException("Implemented Requirement already exists");
     }
-    
+
     addImplReqToList(existingSsp, incomingImplReq);
 
     logger.debug("SSP ImplementedRequiremnt updated, saving via service");
