@@ -38,7 +38,7 @@ import net.minidev.json.JSONArray;
 public abstract class BaseOscalControllerTests {
 
   @Autowired
-  private MockMvc mockMvc;
+  protected MockMvc mockMvc;
 
   protected OscalObjectType oscalObjectType;
   protected ExampleContent exampleContent;
@@ -50,7 +50,7 @@ public abstract class BaseOscalControllerTests {
     originalFileContents = Files.readString(Paths.get(
         "target/oscal-demo-content-main",
         oscalObjectType.jsonField + "s",
-        exampleContent.fileName), 
+        exampleContent.fileName),
         Charset.forName("UTF-8"));
   }
 
@@ -59,9 +59,9 @@ public abstract class BaseOscalControllerTests {
     Files.writeString(Paths.get(
         "target/oscal-demo-content-main",
         oscalObjectType.jsonField + "s",
-        exampleContent.fileName), 
+        exampleContent.fileName),
         originalFileContents, Charset.forName("UTF-8"));
-  } 
+  }
 
   /**
    * Tests if the GET Request to /<oscalType>/{id} will retrieve a valid default <oscalType> object.
@@ -242,7 +242,7 @@ public abstract class BaseOscalControllerTests {
         .andExpect(jsonPath("$[0].*.uuid").value(exampleContent.uuid));
   }
 
-  @Test 
+  @Test
   public void testPutOscalObjectNotFound() throws Exception {
     String id = "0300753c-563b-4956-b6f6-3a68950a5279";
     this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", id)
@@ -253,7 +253,7 @@ public abstract class BaseOscalControllerTests {
       .andExpect(status().isNotFound());
   }
 
-  @Test 
+  @Test
   public void testPutOscalObjectUnsupportedMediaType() throws Exception {
     this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
       .contentType(MediaType.APPLICATION_XML_VALUE)
@@ -263,7 +263,7 @@ public abstract class BaseOscalControllerTests {
       .andExpect(status().isUnsupportedMediaType());
   }
 
-  @Test 
+  @Test
   public void testPutMismatchOscalObject() throws Exception {
     String badId = "8A7D0A6D-024E-416A-956A-FDEB8816EEA1";
     this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
@@ -271,12 +271,12 @@ public abstract class BaseOscalControllerTests {
       .accept(MediaType.APPLICATION_JSON)
       .characterEncoding("UTF-8")
       .content(generateOscalObject(oscalObjectType.jsonField, badId)))
-      .andExpect(status().isBadRequest())
+      .andExpect(status().isConflict())
       .andExpect(content().string(containsStringIgnoringCase(badId)))
       .andExpect(content().string(containsStringIgnoringCase(exampleContent.uuid)));
   }
 
-  @Test 
+  @Test
   public void testPutNullIdMismatchOscalObject() throws Exception {
     String badId = null;
     this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
@@ -288,7 +288,7 @@ public abstract class BaseOscalControllerTests {
   }
 
 
-  @Test 
+  @Test
   public void testPutOscalObjectSuccess() throws Exception {
     this.mockMvc.perform(put("/oscal/v1/" + oscalObjectType.restPath + "/{id}", exampleContent.uuid)
       .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -310,7 +310,7 @@ public abstract class BaseOscalControllerTests {
       + "  }\n"
       + "}";
   }
-  
+
   class DateGreaterMatcher extends BaseMatcher<ZonedDateTime> {
     private ZonedDateTime floor;
     DateGreaterMatcher(ZonedDateTime floor) {

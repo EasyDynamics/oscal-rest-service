@@ -22,7 +22,7 @@ public class OscalControllerExceptionAdvice {
 
   @ResponseBody
   @ExceptionHandler(OscalObjectConflictException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(HttpStatus.CONFLICT)
   String oscalObjectConflictHandler(OscalObjectConflictException exception) {
     return exception.getMessage();
   }

@@ -4,12 +4,23 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.json.IJsonWritingContext;
 import gov.nist.secauto.metaschema.binding.model.DefaultAssemblyClassBinding;
+import gov.nist.secauto.oscal.lib.model.ImplementedRequirement;
 import java.io.IOException;
+import java.util.Map;
+import javax.xml.namespace.QName;
 
 /**
  * Extends DefaultAssemblyClassBinding to add writing of root items as an array.
  */
 public class IterableAssemblyClassBinding extends DefaultAssemblyClassBinding {
+
+  /**
+   * Map of objects that are not declared as root in liboscal-java,
+   * but we want to treat them as such.
+   */
+  private static final Map<Class<?>, QName> secondaryRootObjects = Map.ofEntries(
+      Map.entry(ImplementedRequirement.class, new QName("implemented-requirement"))
+  );
 
   protected IterableAssemblyClassBinding(Class<?> clazz, IBindingContext bindingContext) {
     super(clazz, bindingContext);
@@ -48,4 +59,15 @@ public class IterableAssemblyClassBinding extends DefaultAssemblyClassBinding {
 
     writer.writeEndArray();
   }
+
+  @Override
+  public boolean isRoot() {
+    return (super.isRoot() || secondaryRootObjects.containsKey(getBoundClass()));
+  }
+
+  @Override
+  public QName getRootXmlQName() {
+    return secondaryRootObjects.getOrDefault(getBoundClass(), super.getRootXmlQName());
+  }
+
 }
