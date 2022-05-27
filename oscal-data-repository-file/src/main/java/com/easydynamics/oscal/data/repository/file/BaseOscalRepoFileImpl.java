@@ -1,7 +1,6 @@
 package com.easydynamics.oscal.data.repository.file;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.io.BindingException;
 import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
@@ -223,7 +222,14 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       } catch (UnsupportedOperationException | AssertionError e) {
         logger.debug("Unparsable content found at {}", filePath);
       } catch (IOException e) {
-        throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
+        if (e.getMessage() != null
+            && e.getMessage().equals(
+                "java.io.IOException: Expected FIELD_NAME token, found 'VALUE_STRING'")) {
+          // We assume/hope this specific nested IOException is non-OSCAL content
+          logger.debug("Unparsable content found at {}", filePath);
+        } else {
+          throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
+        }
       }
     }
     return foundObjects;
@@ -250,7 +256,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       // On success replace original file with temp file
       Files.move(tempFile.toPath(), oscalFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       return entity;
-    } catch (BindingException | IOException e) {
+    } catch (IOException e) {
       throw new InvalidDataAccessResourceUsageException("Could not serialize to file", e);
     }
   }
