@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ViewerAppController {
 
-  @GetMapping({"/system-security-plan","/catalog","/component-definition","/profile"})
-  public String getSystemSecurityPlan() {
-    return "index.html";
+  @GetMapping({"/system-security-plan/**","/catalog/**","/component-definition/**","/profile/**"})
+  public String getViewerPage() {
+    return "/index.html";
   }
 
 }
