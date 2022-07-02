@@ -24,25 +24,18 @@ public class ViewerAppController {
         (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
     String wildcardComponent =
         new AntPathMatcher().extractPathWithinPattern(baseMapping, fullRequestPath);
-   
-    // This does a few things that are not exactly obvious why they are
-    // necessary to be done. 
-    //
-    // UUID.fromString throws an exception when attempting to parse an invalud
-    // UUID. So upon successfully parsing a uuid from the wildcard, /index.html
-    // is returned. 
-    //
-    // When a uuid is not passed, there are two options to deal with. If a
-    // "/" was added on the end with no actual wildcard, we just return
-    // /index.html. In the case where something other than a uuid is in the
-    // wildcard, we return /index.html/{wildCard} and let that get mapped if
-    // needed.  
-    //
-    // All files returned must be prepended with "/". This is due to some
-    // wonkiness with things being returned as absolute paths.
-    //
-    // Another very important thing to note is that if we try to add anything 
-    // after the uuid, this will fail. 
+
+    // This rewrites requests for the viewer/editor application (built as a single-page
+    // application), making a few assumptiong along the way. First, the assumption is that every
+    // valid route in the will begin with one of above base paths and end with an empty string or
+    // a UUID and second, that every other path is a supporting static asset that needs to be
+    // returned as an absolute URL (as a relative URL will be interpreted relative to the matching
+    // base path, resulting in recursive/looping calls to this handler).
+    // This logic will require reworking if the viewer application adds futher embedded paths or
+    // non-UUID-ending paths.
+    // An alternative solution might be to have a set of file extensions that are expected to be
+    // static assets instead and to somewhat invert the logic; however, that would require an
+    // expected set of asset extensions or prefixes.
     try {
       UUID.fromString(wildcardComponent);
       return "/index.html";
