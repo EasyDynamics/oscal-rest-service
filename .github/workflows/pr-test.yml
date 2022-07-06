@@ -32,5 +32,8 @@ jobs:
           java-version: "${{ matrix.java.actual }}"
           distribution: 'temurin'
           cache: 'maven'
+      - name: Delete cached demo content and API
+        run: |
+          rm -rf ~/.m2/repository/.cache/download-maven-plugin/
       - name: Build and test
         run: mvn -Djava.version=${{ matrix.java.target }} clean package
