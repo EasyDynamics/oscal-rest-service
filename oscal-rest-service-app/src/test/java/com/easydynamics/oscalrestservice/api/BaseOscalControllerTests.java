@@ -1,6 +1,7 @@
 package com.easydynamics.oscalrestservice.api;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -239,7 +240,7 @@ public abstract class BaseOscalControllerTests {
     this.mockMvc.perform(asyncDispatch(asyncResult))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(jsonPath("$[0].*.uuid").value(exampleContent.uuid));
+        .andExpect(jsonPath("$[*].*.uuid", hasItem(exampleContent.uuid)));
   }
 
   @Test
