@@ -23,6 +23,9 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: 'maven'
+      - name: Delete cached demo content and API
+        run: |
+          rm -rf ~/.m2/repository/.cache/download-maven-plugin/
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
