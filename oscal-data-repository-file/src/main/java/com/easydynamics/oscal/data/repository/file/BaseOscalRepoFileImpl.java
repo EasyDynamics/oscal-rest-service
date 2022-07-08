@@ -84,7 +84,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       logger.info("configured path {} does not exist", path);
       return new File[]{};
     }
-    File[] pathContents = pathFile.listFiles();
+    File[] pathContents = pathFile.listFiles(File::isFile);
     if (pathContents == null) {
       throw new DataRetrievalFailureException("The provided path is not a directory.");
     }
