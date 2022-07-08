@@ -222,7 +222,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       } catch (UnsupportedOperationException | AssertionError e) {
         logger.debug("Unparsable content found at {}", filePath);
       } catch (IOException e) {
-        logger.debug("Exception when loading {}: {}", filePath, e.getMessage());
+        logger.debug("Unable to parse content from {}: {}", filePath, e.getMessage());
         }
       }
     }
