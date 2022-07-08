@@ -223,7 +223,6 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
         logger.debug("Unparsable content found at {}", filePath);
       } catch (IOException e) {
         logger.debug("Unable to parse content from {}: {}", filePath, e.getMessage());
-        }
       }
     }
     return foundObjects;
