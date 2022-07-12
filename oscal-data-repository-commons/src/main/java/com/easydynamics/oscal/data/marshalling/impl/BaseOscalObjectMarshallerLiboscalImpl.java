@@ -5,9 +5,8 @@ import com.easydynamics.oscal.data.marshalling.IterableJsonSerializer;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshallingException;
 import gov.nist.secauto.metaschema.binding.IBindingContext;
-import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
+import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
-import gov.nist.secauto.metaschema.binding.io.SerializationFeature;
 import gov.nist.secauto.metaschema.binding.io.json.DefaultJsonDeserializer;
 import gov.nist.secauto.metaschema.binding.model.IAssemblyClassBinding;
 import java.io.IOException;
@@ -29,13 +28,13 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
    */
   public BaseOscalObjectMarshallerLiboscalImpl(Class<T> clazz) {
     super();
-    IBindingContext context = IBindingContext.instance();
+    IBindingContext context = IBindingContext.newInstance();
     IAssemblyClassBinding classBinding =
         IterableAssemblyClassBinding.createInstance(clazz, context);
     this.serializer = new IterableJsonSerializer<T>(context, classBinding);
-    this.serializer.enableFeature(SerializationFeature.SERIALIZE_ROOT);
+    this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
     this.deserializer = new DefaultJsonDeserializer<T>(context, classBinding);
-    this.deserializer.enableFeature(DeserializationFeature.DESERIALIZE_JSON_ROOT_PROPERTY);
+    this.deserializer.enableFeature(Feature.DESERIALIZE_JSON_ROOT_PROPERTY);
   }
 
   @Override

@@ -1,10 +1,10 @@
 package com.easydynamics.oscal.data.repository.file;
 
 import gov.nist.secauto.metaschema.binding.IBindingContext;
+import gov.nist.secauto.metaschema.binding.io.Feature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
-import gov.nist.secauto.metaschema.binding.io.SerializationFeature;
 import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
 import java.io.File;
 import java.io.IOException;
@@ -60,10 +60,10 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     this.path = path;
     this.genericClass = genericClass;
     this.oscalRootName = getOscalRootName(genericClass);
-    IBindingContext bindingContext = IBindingContext.instance();
+    IBindingContext bindingContext = IBindingContext.newInstance();
     this.oscalLoader = bindingContext.newBoundLoader();
     this.serializer = bindingContext.newSerializer(Format.JSON, genericClass);
-    this.serializer.enableFeature(SerializationFeature.SERIALIZE_ROOT);
+    this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
   }
 
   protected String getOscalRootName(Class<T> genericClass) {
