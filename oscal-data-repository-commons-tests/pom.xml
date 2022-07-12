@@ -29,7 +29,6 @@
 							<outputDirectory>${project.build.directory}/classes</outputDirectory>
 							<unpack>true</unpack>
 							<followRedirects>true</followRedirects>
-							<download.cache.skip>true</download.cache.skip>
 						</configuration>
 					</execution>
 				</executions>
