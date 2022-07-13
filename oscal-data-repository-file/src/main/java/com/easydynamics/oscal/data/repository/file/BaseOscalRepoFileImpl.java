@@ -84,7 +84,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       logger.info("configured path {} does not exist", path);
       return new File[]{};
     }
-    File[] pathContents = pathFile.listFiles();
+    File[] pathContents = pathFile.listFiles(File::isFile);
     if (pathContents == null) {
       throw new DataRetrievalFailureException("The provided path is not a directory.");
     }
@@ -222,14 +222,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
       } catch (UnsupportedOperationException | AssertionError e) {
         logger.debug("Unparsable content found at {}", filePath);
       } catch (IOException e) {
-        if (e.getMessage() != null
-            && e.getMessage().equals(
-                "java.io.IOException: Expected FIELD_NAME token, found 'VALUE_STRING'")) {
-          // We assume/hope this specific nested IOException is non-OSCAL content
-          logger.debug("Unparsable content found at {}", filePath);
-        } else {
-          throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
-        }
+        logger.debug("Unable to parse content from {}: {}", filePath, e.getMessage());
       }
     }
     return foundObjects;
