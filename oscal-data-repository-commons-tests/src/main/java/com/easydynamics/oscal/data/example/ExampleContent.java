@@ -5,7 +5,7 @@ package com.easydynamics.oscal.data.example;
  */
 public enum ExampleContent {
 
-  CATALOG_80053r5("613fca2d-704a-42e7-8e2b-b206fb92b456",
+  CATALOG_80053r5("1da16966-2d5b-4e8a-9056-0fe09d35412b",
       "NIST_SP-800-53_rev5_catalog.json"),
   COMPONENT_EXAMPLE("8223d65f-57a9-4689-8f06-2a975ae2ad72",
       "example-component.json"),
