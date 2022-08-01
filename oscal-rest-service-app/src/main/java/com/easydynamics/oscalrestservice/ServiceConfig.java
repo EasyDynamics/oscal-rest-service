@@ -4,12 +4,16 @@ import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.data.marshalling.impl.OscalCatalogMarshallerImpl;
 import com.easydynamics.oscal.data.marshalling.impl.OscalComponentMarshallerImpl;
 import com.easydynamics.oscal.data.marshalling.impl.OscalProfileMarshallerImpl;
+import com.easydynamics.oscal.data.marshalling.impl.OscalSspByComponentMarshallerImpl;
 import com.easydynamics.oscal.data.marshalling.impl.OscalSspImplReqMarshallerImpl;
 import com.easydynamics.oscal.data.marshalling.impl.OscalSspMarshallerImpl;
+import com.easydynamics.oscal.data.marshalling.impl.OscalSspStatementMarshallerImpl;
+import gov.nist.secauto.oscal.lib.model.ByComponent;
 import gov.nist.secauto.oscal.lib.model.Catalog;
 import gov.nist.secauto.oscal.lib.model.ComponentDefinition;
 import gov.nist.secauto.oscal.lib.model.ImplementedRequirement;
 import gov.nist.secauto.oscal.lib.model.Profile;
+import gov.nist.secauto.oscal.lib.model.Statement;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -45,5 +49,15 @@ public class ServiceConfig {
   @Bean
   public OscalObjectMarshaller<ImplementedRequirement> sspImplReqMarshaller() {
     return new OscalSspImplReqMarshallerImpl();
+  }
+
+  @Bean
+  public OscalObjectMarshaller<Statement> sspStatementMarshaller() {
+    return new OscalSspStatementMarshallerImpl();
+  }
+
+  @Bean
+  public OscalObjectMarshaller<ByComponent> sspByComponentMarshaller() {
+    return new OscalSspByComponentMarshallerImpl();
   }
 }
