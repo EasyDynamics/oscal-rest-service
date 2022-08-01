@@ -3,8 +3,10 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalSspService;
 import com.easydynamics.oscal.service.impl.OscalDeepCopyUtils;
+import gov.nist.secauto.oscal.lib.model.ByComponent;
 import gov.nist.secauto.oscal.lib.model.ControlImplementation;
 import gov.nist.secauto.oscal.lib.model.ImplementedRequirement;
+import gov.nist.secauto.oscal.lib.model.Statement;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.io.ByteArrayInputStream;
@@ -37,15 +39,30 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class SspController extends BaseOscalController<SystemSecurityPlan> {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqMarshaller;
+  private final OscalObjectMarshaller<Statement> oscalSspStatementMarshaller;
+  private final OscalObjectMarshaller<ByComponent> oscalSspByComponentMarshaller;
 
+  /**
+   * This is the constructor for the SspController.
+   * 
+   * @param sspService A service for the Ssp.
+   * @param marshaller SSP marshaller serializing JSON data.
+   * @param oscalSspImplReqtMarshaller Implemented Request marshaller serializing JSON data.
+   * @param oscalSspStatementMarshaller Statement marshaller serializing JSON data.
+   * @param oscalSspByComponentMarshaller ByComponent marshaller serializing JSON data.
+   */
   @Autowired(required = true)
   public SspController(
       OscalSspService sspService,
       OscalObjectMarshaller<SystemSecurityPlan> marshaller,
-      OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqtMarshaller
+      OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqtMarshaller,
+      OscalObjectMarshaller<Statement> oscalSspStatementMarshaller,
+      OscalObjectMarshaller<ByComponent> oscalSspByComponentMarshaller
   ) {
     super(sspService, marshaller);
     this.oscalSspImplReqMarshaller = oscalSspImplReqtMarshaller;
+    this.oscalSspStatementMarshaller = oscalSspStatementMarshaller;
+    this.oscalSspByComponentMarshaller = oscalSspByComponentMarshaller;
   }
 
   @GetMapping("/system-security-plans")
@@ -67,7 +84,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   /**
    * Defines a PATCH request for updating SSPs.
    *
-   * @param id the SSP uuid
+   * @param id   the SSP uuid
    * @param json the SSP contents
    */
   @PatchMapping("/system-security-plans/{id}")
@@ -80,7 +97,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   /**
    * Defines a PUT request for updating SSPs.
    *
-   * @param id the SSP uuid
+   * @param id   the SSP uuid
    * @param json the SSP contents
    */
   @PutMapping(value = "/system-security-plans/{id}",
@@ -96,10 +113,11 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * Similar to unmarshallAndValidateId, checks that the given id
    * matches the UUID in the given json.
    *
-   * @param id the request path id
+   * @param id   the request path id
    * @param json the request body json
    * @return the unmarshalled object
-   * @throws OscalObjectConflictException when the path ID does not match the body ID
+   * @throws OscalObjectConflictException when the path ID does not match the body
+   *                                      ID
    */
   protected ImplementedRequirement unmarshallImplReqAndValidateId(String id, String json) {
     ImplementedRequirement incomingOscalObject = oscalSspImplReqMarshaller.toObject(
@@ -114,17 +132,16 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   }
 
   /**
-  * Helper function to add a new Implemented Requirement to the list
-  * of Implemented Requirements in a given SSP.
-  *
-  * @param existingSsp the SSP object to update
-  * @param incomingImplReq the new Implemented Requirement to add
-  *
-  */
+   * Helper function to add a new Implemented Requirement to the list
+   * of Implemented Requirements in a given SSP.
+   *
+   * @param existingSsp     the SSP object to update
+   * @param incomingImplReq the new Implemented Requirement to add
+   *
+   */
   private void addImplReqToList(
       SystemSecurityPlan existingSsp,
-      ImplementedRequirement incomingImplReq
-  ) {
+      ImplementedRequirement incomingImplReq) {
     ControlImplementation controlImplementation = existingSsp.getControlImplementation();
     if (controlImplementation == null) {
       controlImplementation = new ControlImplementation();
@@ -142,10 +159,11 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * Does the work of finding an existing SSP and updating it with the
    * given Implemented Requirement.
    *
-   * @param id the SSP UUID
+   * @param id                       the SSP UUID
    * @param implementedRequirementId the impl req UUID
-   * @param json the Implemented Requirement JSON
-   * @param isCreateOnly requires no impl req with the same UUID exist when true
+   * @param json                     the Implemented Requirement JSON
+   * @param isCreateOnly             requires no impl req with the same UUID exist
+   *                                 when true
    * @return the response
    */
   private ResponseEntity<StreamingResponseBody> updateImplementedRequirement(
@@ -162,7 +180,8 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     ImplementedRequirement existingImplReq = null;
     if (existingSsp.getControlImplementation() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null) {
-      existingImplReq = existingSsp.getControlImplementation().getImplementedRequirements().stream()
+      existingImplReq =
+          existingSsp.getControlImplementation().getImplementedRequirements().stream()
           .filter(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))
           .findAny()
           .orElse(null);
@@ -178,7 +197,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       }
     }
 
-    logger.debug("SSP ImplementedRequiremnt updated, saving via service");
+    logger.debug("SSP ImplementedRequirement updated, saving via service");
     oscalObjectService.save(existingSsp);
     return makeObjectResponse(incomingImplReq, oscalSspImplReqMarshaller);
   }
@@ -187,7 +206,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * Does the work of finding an existing SSP and adding the
    * new Implemented Requirement.
    *
-   * @param id the SSP UUID
+   * @param id   the SSP UUID
    * @param json the Implemented Requirement JSON
    * @return the response
    */
@@ -204,13 +223,13 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     if (existingSsp.getControlImplementation() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
-          .anyMatch(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))) {
+            .anyMatch(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))) {
       throw new OscalObjectConflictException("Implemented Requirement already exists");
     }
 
     addImplReqToList(existingSsp, incomingImplReq);
 
-    logger.debug("SSP ImplementedRequiremnt updated, saving via service");
+    logger.debug("SSP ImplementedRequirement updated, saving via service");
 
     return makeObjectResponse(oscalObjectService.save(existingSsp));
   }
@@ -219,13 +238,12 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * Defines a POST request for adding SSPs control implementation
    * implemented requirements.
    *
-   * @param id the SSP uuid
+   * @param id   the SSP uuid
    * @param json the SSP contents
    */
   @PostMapping(value = "/system-security-plans/{id}/control-implementation/"
-      + "implemented-requirements",
-      consumes = { MediaType.APPLICATION_JSON_VALUE },
-      produces = { MediaType.APPLICATION_JSON_VALUE })
+      + "implemented-requirements", consumes = {
+          MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<StreamingResponseBody> updateImplementedRequirementPost(
       @Parameter @PathVariable String id,
       @RequestBody String json) {
@@ -236,18 +254,464 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * Defines a PUT request for updating SSPs control implementation
    * implemented requirements.
    *
-   * @param id the SSP uuid
+   * @param id                       the SSP uuid
    * @param implementedRequirementId the Implemented Requirement uuid
-   * @param json the SSP contents
+   * @param json                     the SSP contents
    */
   @PutMapping(value = "/system-security-plans/{id}/control-implementation/"
-      + "implemented-requirements/{implementedRequirementId}",
-      consumes = { MediaType.APPLICATION_JSON_VALUE },
-      produces = { MediaType.APPLICATION_JSON_VALUE })
+      + "implemented-requirements/{implementedRequirementId}", consumes = {
+          MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<StreamingResponseBody> updateImplementedRequirementPut(
       @Parameter @PathVariable String id,
       @Parameter @PathVariable String implementedRequirementId,
       @RequestBody String json) {
     return updateImplementedRequirement(id, implementedRequirementId, json);
+  }
+
+  /**
+   * Helper function to add a new Statement to the list
+   * of Statement in a given Implemented Requirements of an Ssp.
+   *
+   * @param existingImplReq   the Implemented Requirement to update
+   * @param incomingStatement the new statement to add
+   *
+   */
+  private void addStatementToList(
+      ImplementedRequirement existingImplReq,
+      Statement incomingStatement) {
+    List<Statement> stmts = existingImplReq.getStatements();
+    if (stmts == null) {
+      stmts = new ArrayList<>();
+      existingImplReq.setStatements(stmts);
+    }
+
+    stmts.add(incomingStatement);
+  }
+
+  /**
+   * Similar to unmarshallAndValidateId, checks that the given id
+   * matches the UUID in the given json for a statement.
+   *
+   * @param id   the request path id
+   * @param json the request body json
+   * @return the unmarshalled object
+   * @throws OscalObjectConflictException when the path ID does not match the body
+   *                                      ID
+   */
+  protected Statement unmarshallStatementAndValidateId(String id, String json) {
+    Statement incomingOscalObject = oscalSspStatementMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    UUID incomingUuid = incomingOscalObject.getUuid();
+    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
+      throw new OscalObjectConflictException(incomingUuid.toString(), id);
+    }
+
+    return incomingOscalObject;
+  }
+
+  /**
+   * Does the work of finding an existing SSP and updating it with the
+   * given Statement.
+   *
+   * @param id                       the SSP UUID
+   * @param implementedRequirementId the Implemented Requirement UUID
+   * @param statementId              the Statement UUID
+   * @param json                     the Statement JSON
+   * @param isCreateOnly             requires no Statement with the same UUID
+   *                                 exist
+   *                                 when true
+   * @return the response
+   */
+  private ResponseEntity<StreamingResponseBody> updateStatement(
+      String id,
+      String statementId,
+      String implementedRequirementId,
+      String json) {
+    SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
+        .orElseThrow(() -> new OscalObjectNotFoundException(id));
+
+    Statement incomingStmt = unmarshallStatementAndValidateId(statementId, json);
+
+    List<ImplementedRequirement> implReqs =
+        existingSsp.getControlImplementation().getImplementedRequirements();
+    ImplementedRequirement potentialImplReq = null;
+    for (ImplementedRequirement implReq : implReqs) {
+      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
+        potentialImplReq = implReq;
+      }
+    }
+    ImplementedRequirement existingImplReq = potentialImplReq;
+
+    // Find existing Statement if exists and merge or add
+    Statement existingStmt = null;
+    if (existingSsp.getControlImplementation() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingImplReq != null
+        && existingSsp.getControlImplementation().getImplementedRequirements().stream()
+            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))) {
+      existingStmt = existingImplReq.getStatements().stream()
+          .filter(stmt -> incomingStmt.getUuid().equals(stmt.getUuid()))
+          .findAny()
+          .orElse(null);
+    }
+    if (existingStmt == null) {
+      addStatementToList(existingImplReq, incomingStmt);
+    } else {
+      try {
+        OscalDeepCopyUtils.deepCopyProperties(existingStmt, incomingStmt);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        throw new InvalidDataAccessResourceUsageException(
+            "could not deep copy object", e);
+      }
+    }
+
+    logger.debug("SSP Statement updated, saving via service");
+    oscalObjectService.save(existingSsp);
+    return makeObjectResponse(incomingStmt, oscalSspStatementMarshaller);
+  }
+
+  /**
+   * Similar to unmarshallAndValidateId, checks that the given statement id
+   * matches the UUID in the given json.
+   *
+   * @param id   the request path id
+   * @param json the request body json
+   * @return the unmarshalled object
+   * @throws OscalObjectConflictException when the path ID does not match the body
+   *                                      ID
+   */
+  protected Statement unmarshallStatement(String id, String json) {
+    Statement incomingOscalObject = oscalSspStatementMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    UUID incomingUuid = incomingOscalObject.getUuid();
+    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
+      throw new OscalObjectConflictException(incomingUuid.toString(), id);
+    }
+
+    return incomingOscalObject;
+  }
+
+  /**
+   * Does the work of finding an existing SSP and adding
+   * a statements' by-component Id.
+   *
+   * @param id                       the SSP UUID
+   * @param implementedRequirementId the Implemented Requirement uuid
+   * @param json                     the SSP contents
+   */
+  private ResponseEntity<StreamingResponseBody> addStatement(
+      String id,
+      String implementedRequirementId,
+      String json) {
+    SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
+        .orElseThrow(() -> new OscalObjectNotFoundException(id));
+
+    List<ImplementedRequirement> implReqs =
+        existingSsp.getControlImplementation().getImplementedRequirements();
+
+    ImplementedRequirement potentialImplReq = null;
+    for (ImplementedRequirement implReq : implReqs) {
+      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
+        potentialImplReq = implReq;
+      }
+    }
+    ImplementedRequirement existingImplReq = potentialImplReq;
+
+    Statement incomingStmt = oscalSspStatementMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    // Throw an exception if statement already exsists
+    if (existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements().stream()
+            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))
+        && existingImplReq.getStatements().stream().anyMatch(stmt ->
+            incomingStmt.getUuid().equals(stmt.getUuid()))) {
+      throw new OscalObjectConflictException("Implemented Statement already exists");
+    }
+
+    addStatementToList(existingImplReq, incomingStmt);
+
+    logger.debug("SSP Statement updated, saving via service");
+
+    return makeObjectResponse(oscalObjectService.save(existingSsp));
+  }
+
+  /**
+   * Defines a POST request for adding a statement Id.
+   *
+   * @param id                       the SSP uuid
+   * @param implementedRequirementId the Implemented Requirement uuid
+   * @param json                     the SSP contents
+   */
+  @PostMapping(value = "/system-security-plans/{id}/control-implementation/"
+      + "implemented-requirements/{implementedRequirementId}/statements",
+      consumes = { MediaType.APPLICATION_JSON_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> updateStatementPost(
+      @Parameter @PathVariable String id,
+      @Parameter @PathVariable String implementedRequirementId,
+      @RequestBody String json) {
+    return addStatement(id, implementedRequirementId, json);
+  }
+
+  /**
+   * Defines a PUT request for updating a statement Id.
+   *
+   * @param id                       the SSP uuid
+   * @param implementedRequirementId the Implemented Requirement uuid
+   * @param statementId              the Statement uuid
+   * @param json                     the SSP contents
+   */
+  @PutMapping(value = "/system-security-plans/{id}/control-implementation/"
+      + "implemented-requirements/{implementedRequirementId}/statements/{statementId}",
+      consumes = { MediaType.APPLICATION_JSON_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> updateStatementIdPut(
+      @Parameter @PathVariable String id,
+      @Parameter @PathVariable String implementedRequirementId,
+      @Parameter @PathVariable String statementId,
+      @RequestBody String json) {
+    return updateStatement(id, implementedRequirementId, statementId, json);
+  }
+
+  /**
+   * Helper function to add a new ByComponent to the list
+   * of ByComponents in a given Statement of an Ssp.
+   *
+   * @param existingStatement   the statement to update
+   * @param incomingByComponent the new by-component to add
+   *
+   */
+  private void addComponentToList(
+      Statement existingStatement,
+      ByComponent incomingByComponent) {
+    List<ByComponent> byComps = existingStatement.getByComponents();
+    if (byComps == null) {
+      byComps = new ArrayList<>();
+      existingStatement.setByComponents(byComps);
+    }
+
+    byComps.add(incomingByComponent);
+  }
+
+  /**
+   * Similar to unmarshallAndValidateId, checks that the given id
+   * matches the UUID in the given json for a by-component.
+   *
+   * @param id   the request path id
+   * @param json the request body json
+   * @return the unmarshalled object
+   * @throws OscalObjectConflictException when the path ID does not match the body
+   *                                      ID
+   */
+  protected ByComponent unmarshallComponentAndValidateId(String id, String json) {
+    ByComponent incomingOscalObject = oscalSspByComponentMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    UUID incomingUuid = incomingOscalObject.getUuid();
+    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
+      throw new OscalObjectConflictException(incomingUuid.toString(), id);
+    }
+
+    return incomingOscalObject;
+  }
+
+  /**
+   * Does the work of finding an existing SSP and updating it with the
+   * given Statement.
+   *
+   * @param id                       the SSP UUID
+   * @param implementedRequirementId the Implemented Requirement UUID
+   * @param statementId              the Statement UUID
+   * @param componentId              the Component UUID
+   * @param json                     the Component JSON
+   * @param isCreateOnly             requires no Component with the same UUID
+   *                                 exist
+   *                                 when true
+   * @return the response
+   */
+  private ResponseEntity<StreamingResponseBody> updateComponent(
+      String id,
+      String statementId,
+      String componentId,
+      String implementedRequirementId,
+      String json) {
+    SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
+        .orElseThrow(() -> new OscalObjectNotFoundException(id));
+
+    ByComponent incomingByComp = unmarshallComponentAndValidateId(componentId, json);
+
+    List<ImplementedRequirement> implReqs =
+        existingSsp.getControlImplementation().getImplementedRequirements();
+    ImplementedRequirement potentialImplReq = null;
+    for (ImplementedRequirement implReq : implReqs) {
+      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
+        potentialImplReq = implReq;
+      }
+    }
+    ImplementedRequirement existingImplReq = potentialImplReq;
+
+    List<Statement> stmts = existingImplReq.getStatements();
+    Statement potentialStmt = null;
+    for (Statement stmt : stmts) {
+      if (statementId.equals(stmt.getUuid().toString())) {
+        potentialStmt = stmt;
+      }
+    }
+    Statement existingStmt = potentialStmt;
+
+    // Find existing ByComponent if exists and merge or add
+    ByComponent existingByComp = null;
+    if (existingSsp.getControlImplementation() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingImplReq != null
+        && existingSsp.getControlImplementation().getImplementedRequirements().stream()
+            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))
+        && existingImplReq.getStatements().stream()
+            .anyMatch(stmt -> existingStmt.getUuid().equals(stmt.getUuid()))) {
+      existingByComp = existingStmt.getByComponents().stream()
+          .filter(byComp -> incomingByComp.getUuid().equals(byComp.getUuid()))
+          .findAny()
+          .orElse(null);
+    }
+    if (existingStmt == null) {
+      addComponentToList(existingStmt, incomingByComp);
+    } else {
+      try {
+        OscalDeepCopyUtils.deepCopyProperties(existingByComp, incomingByComp);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        throw new InvalidDataAccessResourceUsageException(
+            "could not deep copy object", e);
+      }
+    }
+
+    logger.debug("SSP Component updated, saving via service");
+    oscalObjectService.save(existingSsp);
+    return makeObjectResponse(incomingByComp, oscalSspByComponentMarshaller);
+  }
+
+  /**
+   * Similar to unmarshallAndValidateId, checks that the given by-component id
+   * matches the UUID in the given json.
+   *
+   * @param id   the request path id
+   * @param json the request body json
+   * @return the unmarshalled object
+   * @throws OscalObjectConflictException when the path ID does not match the body
+   *                                      ID
+   */
+  protected ByComponent oscalSspByComponentMarshaller(String id, String json) {
+    ByComponent incomingOscalObject = oscalSspByComponentMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    UUID incomingUuid = incomingOscalObject.getUuid();
+    if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
+      throw new OscalObjectConflictException(incomingUuid.toString(), id);
+    }
+
+    return incomingOscalObject;
+  }
+
+  /**
+   * Does the work of finding an existing SSP and adding
+   * a statements' by-component Id.
+   *
+   * @param id                       the SSP UUID
+   * @param implementedRequirementId the Implemented Requirement uuid
+   * @param statementId              the Statement uuid
+   * @param json                     the SSP contents
+   */
+  private ResponseEntity<StreamingResponseBody> addComponent(
+      String id,
+      String implementedRequirementId,
+      String statementId,
+      String json) {
+    SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
+        .orElseThrow(() -> new OscalObjectNotFoundException(id));
+
+    List<ImplementedRequirement> implReqs =
+        existingSsp.getControlImplementation().getImplementedRequirements();
+    ImplementedRequirement potentialImplReq = null;
+    for (ImplementedRequirement implReq : implReqs) {
+      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
+        potentialImplReq = implReq;
+      }
+    }
+    ImplementedRequirement existingImplReq = potentialImplReq;
+
+    List<Statement> stmts = existingImplReq.getStatements();
+    Statement potentialStmt = null;
+    for (Statement stmt : stmts) {
+      if (statementId.equals(stmt.getUuid().toString())) {
+        potentialStmt = stmt;
+      }
+    }
+    Statement existingStmt = potentialStmt;
+
+    ByComponent incomingByComp = oscalSspByComponentMarshaller.toObject(
+        new ByteArrayInputStream(json.getBytes()));
+
+    // Throw an exception if statement already exsists
+    if (existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements() != null
+        && existingSsp.getControlImplementation().getImplementedRequirements().stream()
+            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))
+        && existingImplReq.getStatements().stream().anyMatch(stmt ->
+            existingStmt.getUuid().equals(stmt.getUuid()))
+        && existingStmt.getByComponents().stream()
+            .anyMatch(byComp -> incomingByComp.getUuid().equals(byComp.getUuid()))) {
+      throw new OscalObjectConflictException("Implemented Component already exists");
+    }
+
+    addComponentToList(existingStmt, incomingByComp);
+
+    logger.debug("SSP Component updated, saving via service");
+
+    return makeObjectResponse(oscalObjectService.save(existingSsp));
+  }
+
+  /**
+   * Defines a POST request for adding a statements' by-component Id.
+   *
+   * @param id                       the SSP uuid
+   * @param implementedRequirementId the Implemented Requirement uuid
+   * @param statementId              the Statement uuid
+   * @param json                     the SSP contents
+   */
+  @PostMapping(value = "/system-security-plans/{id}/control-implementation/"
+      + "implemented-requirements/{implementedRequirementId}/statements/{statementId}/"
+      + "by-components", consumes = {
+          MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> updateComponentIdPost(
+      @Parameter @PathVariable String id,
+      @Parameter @PathVariable String implementedRequirementId,
+      @Parameter @PathVariable String statementId,
+      @RequestBody String json) {
+    return addComponent(id, implementedRequirementId, statementId, json);
+  }
+
+  /**
+   * Defines a PUT request for updating a statements' by-component Id.
+   *
+   * @param id                       the SSP uuid
+   * @param implementedRequirementId the Implemented Requirement uuid
+   * @param statementId              the Statement uuid
+   * @param componentId              the By-component uuid
+   * @param json                     the SSP contents
+   */
+  @PutMapping(value = "/system-security-plans/{id}/control-implementation/"
+      + "implemented-requirements/{implementedRequirementId}/statements/{statementId}/"
+      + "by-components/{componentId}", consumes = {
+          MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> updateComponentIdPut(
+      @Parameter @PathVariable String id,
+      @Parameter @PathVariable String implementedRequirementId,
+      @Parameter @PathVariable String statementId,
+      @Parameter @PathVariable String componentId,
+      @RequestBody String json) {
+    return updateComponent(id, implementedRequirementId, statementId, componentId, json);
   }
 }
