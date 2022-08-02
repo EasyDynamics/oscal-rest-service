@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -333,15 +334,10 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
     Statement incomingStmt = unmarshallStatementAndValidateId(statementId, json);
 
-    List<ImplementedRequirement> implReqs =
-        existingSsp.getControlImplementation().getImplementedRequirements();
-    ImplementedRequirement potentialImplReq = null;
-    for (ImplementedRequirement implReq : implReqs) {
-      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
-        potentialImplReq = implReq;
-      }
-    }
-    ImplementedRequirement existingImplReq = potentialImplReq;
+    Optional<ImplementedRequirement> existingImplReq =
+        existingSsp.getControlImplementation().getImplementedRequirements().stream()
+        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
+        .findAny();
 
     // Find existing Statement if exists and merge or add
     Statement existingStmt = null;
@@ -349,14 +345,14 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingImplReq != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
-            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))) {
-      existingStmt = existingImplReq.getStatements().stream()
+            .anyMatch(implReq -> existingImplReq.get().getUuid().equals(implReq.getUuid()))) {
+      existingStmt = existingImplReq.get().getStatements().stream()
           .filter(stmt -> incomingStmt.getUuid().equals(stmt.getUuid()))
           .findAny()
           .orElse(null);
     }
     if (existingStmt == null) {
-      addStatementToList(existingImplReq, incomingStmt);
+      addStatementToList(existingImplReq.get(), incomingStmt);
     } else {
       try {
         OscalDeepCopyUtils.deepCopyProperties(existingStmt, incomingStmt);
@@ -408,16 +404,10 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    List<ImplementedRequirement> implReqs =
-        existingSsp.getControlImplementation().getImplementedRequirements();
-
-    ImplementedRequirement potentialImplReq = null;
-    for (ImplementedRequirement implReq : implReqs) {
-      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
-        potentialImplReq = implReq;
-      }
-    }
-    ImplementedRequirement existingImplReq = potentialImplReq;
+    Optional<ImplementedRequirement> existingImplReq =
+        existingSsp.getControlImplementation().getImplementedRequirements().stream()
+        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
+        .findAny();
 
     Statement incomingStmt = oscalSspStatementMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
@@ -426,13 +416,13 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     if (existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
-            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))
-        && existingImplReq.getStatements().stream().anyMatch(stmt ->
+            .anyMatch(implReq -> existingImplReq.get().getUuid().equals(implReq.getUuid()))
+        && existingImplReq.get().getStatements().stream().anyMatch(stmt ->
             incomingStmt.getUuid().equals(stmt.getUuid()))) {
       throw new OscalObjectConflictException("Implemented Statement already exists");
     }
 
-    addStatementToList(existingImplReq, incomingStmt);
+    addStatementToList(existingImplReq.get(), incomingStmt);
 
     logger.debug("SSP Statement updated, saving via service");
 
@@ -544,24 +534,15 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
     ByComponent incomingByComp = unmarshallComponentAndValidateId(componentId, json);
 
-    List<ImplementedRequirement> implReqs =
-        existingSsp.getControlImplementation().getImplementedRequirements();
-    ImplementedRequirement potentialImplReq = null;
-    for (ImplementedRequirement implReq : implReqs) {
-      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
-        potentialImplReq = implReq;
-      }
-    }
-    ImplementedRequirement existingImplReq = potentialImplReq;
+    Optional<ImplementedRequirement> existingImplReq =
+        existingSsp.getControlImplementation().getImplementedRequirements().stream()
+        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
+        .findAny();
 
-    List<Statement> stmts = existingImplReq.getStatements();
-    Statement potentialStmt = null;
-    for (Statement stmt : stmts) {
-      if (statementId.equals(stmt.getUuid().toString())) {
-        potentialStmt = stmt;
-      }
-    }
-    Statement existingStmt = potentialStmt;
+    Optional<Statement> existingStmt =
+        existingImplReq.get().getStatements().stream()
+        .filter(stmt -> statementId.equals(stmt.getUuid().toString()))
+        .findAny();
 
     // Find existing ByComponent if exists and merge or add
     ByComponent existingByComp = null;
@@ -569,16 +550,16 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingImplReq != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
-            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))
-        && existingImplReq.getStatements().stream()
-            .anyMatch(stmt -> existingStmt.getUuid().equals(stmt.getUuid()))) {
-      existingByComp = existingStmt.getByComponents().stream()
+            .anyMatch(implReq -> existingImplReq.get().getUuid().equals(implReq.getUuid()))
+        && existingImplReq.get().getStatements().stream()
+            .anyMatch(stmt -> existingStmt.get().getUuid().equals(stmt.getUuid()))) {
+      existingByComp = existingStmt.get().getByComponents().stream()
           .filter(byComp -> incomingByComp.getUuid().equals(byComp.getUuid()))
           .findAny()
           .orElse(null);
     }
-    if (existingStmt == null) {
-      addComponentToList(existingStmt, incomingByComp);
+    if (existingByComp == null) {
+      addComponentToList(existingStmt.get(), incomingByComp);
     } else {
       try {
         OscalDeepCopyUtils.deepCopyProperties(existingByComp, incomingByComp);
@@ -632,24 +613,15 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    List<ImplementedRequirement> implReqs =
-        existingSsp.getControlImplementation().getImplementedRequirements();
-    ImplementedRequirement potentialImplReq = null;
-    for (ImplementedRequirement implReq : implReqs) {
-      if (implementedRequirementId.equals(implReq.getUuid().toString())) {
-        potentialImplReq = implReq;
-      }
-    }
-    ImplementedRequirement existingImplReq = potentialImplReq;
+    Optional<ImplementedRequirement> existingImplReq =
+        existingSsp.getControlImplementation().getImplementedRequirements().stream()
+        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
+        .findAny();
 
-    List<Statement> stmts = existingImplReq.getStatements();
-    Statement potentialStmt = null;
-    for (Statement stmt : stmts) {
-      if (statementId.equals(stmt.getUuid().toString())) {
-        potentialStmt = stmt;
-      }
-    }
-    Statement existingStmt = potentialStmt;
+    Optional<Statement> existingStmt =
+        existingImplReq.get().getStatements().stream()
+        .filter(stmt -> statementId.equals(stmt.getUuid().toString()))
+        .findAny();
 
     ByComponent incomingByComp = oscalSspByComponentMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
@@ -658,15 +630,15 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     if (existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
-            .anyMatch(implReq -> existingImplReq.getUuid().equals(implReq.getUuid()))
-        && existingImplReq.getStatements().stream().anyMatch(stmt ->
-            existingStmt.getUuid().equals(stmt.getUuid()))
-        && existingStmt.getByComponents().stream()
+            .anyMatch(implReq -> existingImplReq.get().getUuid().equals(implReq.getUuid()))
+        && existingImplReq.get().getStatements().stream().anyMatch(stmt ->
+            existingStmt.get().getUuid().equals(stmt.getUuid()))
+        && existingStmt.get().getByComponents().stream()
             .anyMatch(byComp -> incomingByComp.getUuid().equals(byComp.getUuid()))) {
       throw new OscalObjectConflictException("Implemented Component already exists");
     }
 
-    addComponentToList(existingStmt, incomingByComp);
+    addComponentToList(existingStmt.get(), incomingByComp);
 
     logger.debug("SSP Component updated, saving via service");
 
