@@ -178,23 +178,22 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         unmarshallImplReqAndValidateId(implementedRequirementId, json);
 
     // Find existing ImplementedRequirement if exists and merge or add
-    ImplementedRequirement existingImplReq = null;
+    Optional<ImplementedRequirement> existingImplReq = Optional.empty();
     if (existingSsp.getControlImplementation() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null) {
       existingImplReq =
           existingSsp.getControlImplementation().getImplementedRequirements().stream()
           .filter(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))
-          .findAny()
-          .orElse(null);
+          .findAny();
     }
-    if (existingImplReq == null) {
+    if (!existingImplReq.isPresent()) {
       addImplReqToList(existingSsp, incomingImplReq);
     } else {
       try {
-        OscalDeepCopyUtils.deepCopyProperties(existingImplReq, incomingImplReq);
+        OscalDeepCopyUtils.deepCopyProperties(existingImplReq.get(), incomingImplReq);
       } catch (IllegalAccessException | InvocationTargetException e) {
         throw new InvalidDataAccessResourceUsageException(
-            "could not deep copy object", e);
+            "Could not deep copy object", e);
       }
     }
 
@@ -340,7 +339,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         .findAny();
 
     // Find existing Statement if exists and merge or add
-    Statement existingStmt = null;
+    Optional<Statement> existingStmt = Optional.empty();
     if (existingSsp.getControlImplementation() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingImplReq != null
@@ -348,17 +347,16 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
             .anyMatch(implReq -> existingImplReq.get().getUuid().equals(implReq.getUuid()))) {
       existingStmt = existingImplReq.get().getStatements().stream()
           .filter(stmt -> incomingStmt.getUuid().equals(stmt.getUuid()))
-          .findAny()
-          .orElse(null);
+          .findAny();
     }
-    if (existingStmt == null) {
+    if (!existingStmt.isPresent()) {
       addStatementToList(existingImplReq.get(), incomingStmt);
     } else {
       try {
-        OscalDeepCopyUtils.deepCopyProperties(existingStmt, incomingStmt);
+        OscalDeepCopyUtils.deepCopyProperties(existingStmt.get(), incomingStmt);
       } catch (IllegalAccessException | InvocationTargetException e) {
         throw new InvalidDataAccessResourceUsageException(
-            "could not deep copy object", e);
+            "Could not deep copy object", e);
       }
     }
 
@@ -545,7 +543,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         .findAny();
 
     // Find existing ByComponent if exists and merge or add
-    ByComponent existingByComp = null;
+    Optional<ByComponent> existingByComp = Optional.empty();
     if (existingSsp.getControlImplementation() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingImplReq != null
@@ -555,17 +553,16 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
             .anyMatch(stmt -> existingStmt.get().getUuid().equals(stmt.getUuid()))) {
       existingByComp = existingStmt.get().getByComponents().stream()
           .filter(byComp -> incomingByComp.getUuid().equals(byComp.getUuid()))
-          .findAny()
-          .orElse(null);
+          .findAny();
     }
-    if (existingByComp == null) {
+    if (!existingByComp.isPresent()) {
       addComponentToList(existingStmt.get(), incomingByComp);
     } else {
       try {
-        OscalDeepCopyUtils.deepCopyProperties(existingByComp, incomingByComp);
+        OscalDeepCopyUtils.deepCopyProperties(existingByComp.get(), incomingByComp);
       } catch (IllegalAccessException | InvocationTargetException e) {
         throw new InvalidDataAccessResourceUsageException(
-            "could not deep copy object", e);
+            "Could not deep copy object", e);
       }
     }
 
