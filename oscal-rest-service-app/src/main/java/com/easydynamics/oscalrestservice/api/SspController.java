@@ -133,6 +133,27 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   }
 
   /**
+   * Finds an implemented requirement from an SSP based on the given uuid.
+   *
+   * @param implementedRequirementId the Implemented Requirement uuid
+   * @param statementId              the Statement uuid
+   */
+  protected Optional<ImplementedRequirement> getSspImplementedRequirement(
+      SystemSecurityPlan existingSsp,
+      String implementedRequirementId) {
+    if (existingSsp == null) {
+      throw new IllegalArgumentException("Ssp not provided.");
+    }
+    if (implementedRequirementId == null) {
+      throw new IllegalArgumentException("Implemented Requirement id not provided.");
+    }
+
+    return existingSsp.getControlImplementation().getImplementedRequirements().stream()
+        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
+        .findAny();
+  }
+
+  /**
    * Helper function to add a new Implemented Requirement to the list
    * of Implemented Requirements in a given SSP.
    *
@@ -181,10 +202,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     Optional<ImplementedRequirement> existingImplReq = Optional.empty();
     if (existingSsp.getControlImplementation() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null) {
-      existingImplReq =
-          existingSsp.getControlImplementation().getImplementedRequirements().stream()
-          .filter(implReq -> incomingImplReq.getUuid().equals(implReq.getUuid()))
-          .findAny();
+      existingImplReq = getSspImplementedRequirement(existingSsp, implementedRequirementId);
     }
     if (!existingImplReq.isPresent()) {
       addImplReqToList(existingSsp, incomingImplReq);
@@ -219,7 +237,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     ImplementedRequirement incomingImplReq = oscalSspImplReqMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
-    // Throw an exception if the Implemented Requirement alrady exists
+    // Throw an exception if the Implemented Requirement already exists
     if (existingSsp.getControlImplementation() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
@@ -311,6 +329,27 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   }
 
   /**
+   * Finds a statement from an implemented requirement based on the given uuid.
+   *
+   * @param existingImplReq the Implemented Requirement uuid
+   * @param statementId     the Statement uuid
+   */
+  protected Optional<Statement> getSspStatement(
+      ImplementedRequirement existingImplReq,
+      String statementId) {
+    if (existingImplReq == null) {
+      throw new IllegalArgumentException("Implemented Requirement not provided.");
+    }
+    if (statementId == null) {
+      throw new IllegalArgumentException("Statement id not provided.");
+    }
+
+    return existingImplReq.getStatements().stream()
+        .filter(stmt -> statementId.equals(stmt.getUuid().toString()))
+        .findAny();
+  }
+
+  /**
    * Does the work of finding an existing SSP and updating it with the
    * given Statement.
    *
@@ -333,10 +372,8 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
     Statement incomingStmt = unmarshallStatementAndValidateId(statementId, json);
 
-    Optional<ImplementedRequirement> existingImplReq =
-        existingSsp.getControlImplementation().getImplementedRequirements().stream()
-        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
-        .findAny();
+    Optional<ImplementedRequirement> existingImplReq = getSspImplementedRequirement(existingSsp,
+        implementedRequirementId);
 
     // Find existing Statement if exists and merge or add
     Optional<Statement> existingStmt = Optional.empty();
@@ -345,9 +382,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         && existingImplReq != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
             .anyMatch(implReq -> existingImplReq.get().getUuid().equals(implReq.getUuid()))) {
-      existingStmt = existingImplReq.get().getStatements().stream()
-          .filter(stmt -> incomingStmt.getUuid().equals(stmt.getUuid()))
-          .findAny();
+      existingStmt = getSspStatement(existingImplReq.get(), statementId);
     }
     if (!existingStmt.isPresent()) {
       addStatementToList(existingImplReq.get(), incomingStmt);
@@ -385,7 +420,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     }
 
     return incomingOscalObject;
-  }
+  }  
 
   /**
    * Does the work of finding an existing SSP and adding
@@ -402,15 +437,13 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    Optional<ImplementedRequirement> existingImplReq =
-        existingSsp.getControlImplementation().getImplementedRequirements().stream()
-        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
-        .findAny();
+    Optional<ImplementedRequirement> existingImplReq = getSspImplementedRequirement(existingSsp,
+        implementedRequirementId);
 
     Statement incomingStmt = oscalSspStatementMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
-    // Throw an exception if statement already exsists
+    // Throw an exception if statement already exists
     if (existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
@@ -508,8 +541,30 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   }
 
   /**
+   * Finds a by-component from an implemented requirement based on the given uuid.
+   *
+   * @param existingImplReq the Implemented Requirement uuid
+   * @param componentId     the Statement uuid
+   */
+  protected Optional<ByComponent> getSspByComponent(
+      Statement existingStmt,
+      String componentId) {
+    if (existingStmt == null) {
+      throw new IllegalArgumentException("Statement not provided.");
+    }
+    if (componentId == null) {
+      throw new IllegalArgumentException("Component id not provided.");
+    }
+
+    return existingStmt.getByComponents().stream()
+        .filter(byComp -> componentId.equals(byComp.getUuid().toString()))
+        .findAny();
+  }
+
+
+  /**
    * Does the work of finding an existing SSP and updating it with the
-   * given Statement.
+   * given by-component.
    *
    * @param id                       the SSP UUID
    * @param implementedRequirementId the Implemented Requirement UUID
@@ -532,15 +587,9 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
 
     ByComponent incomingByComp = unmarshallComponentAndValidateId(componentId, json);
 
-    Optional<ImplementedRequirement> existingImplReq =
-        existingSsp.getControlImplementation().getImplementedRequirements().stream()
-        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
-        .findAny();
-
-    Optional<Statement> existingStmt =
-        existingImplReq.get().getStatements().stream()
-        .filter(stmt -> statementId.equals(stmt.getUuid().toString()))
-        .findAny();
+    Optional<ImplementedRequirement> existingImplReq = getSspImplementedRequirement(existingSsp,
+        implementedRequirementId);
+    Optional<Statement> existingStmt = getSspStatement(existingImplReq.get(), statementId);
 
     // Find existing ByComponent if exists and merge or add
     Optional<ByComponent> existingByComp = Optional.empty();
@@ -551,9 +600,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
             .anyMatch(implReq -> existingImplReq.get().getUuid().equals(implReq.getUuid()))
         && existingImplReq.get().getStatements().stream()
             .anyMatch(stmt -> existingStmt.get().getUuid().equals(stmt.getUuid()))) {
-      existingByComp = existingStmt.get().getByComponents().stream()
-          .filter(byComp -> incomingByComp.getUuid().equals(byComp.getUuid()))
-          .findAny();
+      existingByComp = getSspByComponent(existingStmt.get(), componentId);
     }
     if (!existingByComp.isPresent()) {
       addComponentToList(existingStmt.get(), incomingByComp);
@@ -610,20 +657,14 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     SystemSecurityPlan existingSsp = oscalObjectService.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
 
-    Optional<ImplementedRequirement> existingImplReq =
-        existingSsp.getControlImplementation().getImplementedRequirements().stream()
-        .filter(implReq -> implementedRequirementId.equals(implReq.getUuid().toString()))
-        .findAny();
-
-    Optional<Statement> existingStmt =
-        existingImplReq.get().getStatements().stream()
-        .filter(stmt -> statementId.equals(stmt.getUuid().toString()))
-        .findAny();
+    Optional<ImplementedRequirement> existingImplReq = getSspImplementedRequirement(existingSsp,
+        implementedRequirementId);
+    Optional<Statement> existingStmt = getSspStatement(existingImplReq.get(), statementId);
 
     ByComponent incomingByComp = oscalSspByComponentMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
-    // Throw an exception if statement already exsists
+    // Throw an exception if statement already exists
     if (existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements().stream()
