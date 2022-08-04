@@ -591,6 +591,10 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
         implementedRequirementId);
     Optional<Statement> existingStmt = getSspStatement(existingImplReq.get(), statementId);
 
+    if (incomingByComp.getComponentUuid() != null) {
+      throw new OscalObjectConflictException("No Component Uuid provided");
+    }
+    
     // Find existing ByComponent if exists and merge or add
     Optional<ByComponent> existingByComp = Optional.empty();
     if (existingSsp.getControlImplementation() != null
@@ -664,6 +668,9 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
     ByComponent incomingByComp = oscalSspByComponentMarshaller.toObject(
         new ByteArrayInputStream(json.getBytes()));
 
+    if (incomingByComp.getComponentUuid() != null) {
+      throw new OscalObjectConflictException("No Component Uuid provided");
+    }
     // Throw an exception if statement already exists
     if (existingSsp.getControlImplementation().getImplementedRequirements() != null
         && existingSsp.getControlImplementation().getImplementedRequirements() != null
