@@ -134,7 +134,7 @@ public abstract class BaseOscalController<T> {
 
   /**
    * Marshall an iterable collection of OSCAL objects to a response object.
-   * 
+   *
    * @param oscalObjectCollection The collection of OSCAL objects
    * @return HTTP response with the objects as JSON
    */

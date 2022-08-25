@@ -15,6 +15,7 @@ import java.io.OutputStream;
 
 /**
  * OscalObjectMarshaller implementation that uses liboscal-java Serializer.
+ *
  * @param <T> the OSCAL object type
  */
 public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalObjectMarshaller<T> {
@@ -24,12 +25,13 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
 
   /**
    * Constructor for BaseOscalObjectMarshallerLiboscalImpl.
+   *
    * @param clazz the OSCAL object class
    */
   public BaseOscalObjectMarshallerLiboscalImpl(Class<T> clazz) {
     super();
     IBindingContext context = IBindingContext.newInstance();
-    IAssemblyClassBinding classBinding =
+    IAssemblyClassBinding classBinding = 
         IterableAssemblyClassBinding.createInstance(clazz, context);
     this.serializer = new IterableJsonSerializer<T>(context, classBinding);
     this.serializer.enableFeature(Feature.SERIALIZE_ROOT);
