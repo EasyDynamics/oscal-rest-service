@@ -7,6 +7,9 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
+/**
+ * Add JavaDoc comment here.
+ */
 @Controller
 public class ViewerAppController {
 
