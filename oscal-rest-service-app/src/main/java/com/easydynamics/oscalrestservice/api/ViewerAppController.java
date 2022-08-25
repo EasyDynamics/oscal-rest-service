@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
- * Add JavaDoc comment here.
+ * Serve the viewer/editor application from the REST service.
  */
 @Controller
 public class ViewerAppController {
