@@ -1,7 +1,7 @@
 package com.easydynamics.oscalrestservice.api;
 
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshallingException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -29,7 +29,7 @@ to define the OSCAL POJOs.
 
 ### Prerequisites
 
- - Java 11 or newer
+ - Java 17 or newer
  - Maven
 
 ### Building and Running
@@ -46,10 +46,12 @@ cd oscal-rest-service-app
 mvn spring-boot:run
 ```
 
-You can view the api documentation in swagger-ui by pointing to
-http://localhost:8080/swagger-ui/index.html
+You can view the API specification [on GitHub][rest-api-github] or
+[using Swagger Editor][swagger-editor].
 
-Change default port value in application.properties
+[rest-api-github]: https://github.com/EasyDynamics/oscal-rest
+[swagger-editor]: https://editor.swagger.io/?url=https://raw.githubusercontent.com/EasyDynamics/oscal-rest/develop/openapi.yaml
+
 
 ## Contributing
 

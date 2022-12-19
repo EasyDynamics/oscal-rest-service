@@ -6,7 +6,6 @@ import com.easydynamics.oscal.service.impl.OscalDeepCopyUtils;
 import gov.nist.secauto.oscal.lib.model.ControlImplementation;
 import gov.nist.secauto.oscal.lib.model.ImplementedRequirement;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
-import io.swagger.v3.oas.annotations.Parameter;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    * @return the oscal-content ssp-example hosted on github
    */
   @GetMapping("/system-security-plans/{id}")
-  public ResponseEntity<StreamingResponseBody> findById(@Parameter @PathVariable String id) {
+  public ResponseEntity<StreamingResponseBody> findById(@PathVariable String id) {
     return super.findById(id);
   }
 
@@ -72,7 +71,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
    */
   @PatchMapping("/system-security-plans/{id}")
   public ResponseEntity<StreamingResponseBody> patch(
-      @Parameter @PathVariable String id,
+      @PathVariable String id,
       @RequestBody String json) {
     return super.patch(id, json);
   }
@@ -87,7 +86,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       consumes = { MediaType.APPLICATION_JSON_VALUE },
       produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<StreamingResponseBody> put(
-      @Parameter @PathVariable String id,
+      @PathVariable String id,
       @RequestBody String json) {
     return super.put(id, json);
   }
@@ -227,7 +226,7 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       consumes = { MediaType.APPLICATION_JSON_VALUE },
       produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<StreamingResponseBody> updateImplementedRequirementPost(
-      @Parameter @PathVariable String id,
+      @PathVariable String id,
       @RequestBody String json) {
     return addImplementedRequirement(id, json);
   }
@@ -245,8 +244,8 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       consumes = { MediaType.APPLICATION_JSON_VALUE },
       produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<StreamingResponseBody> updateImplementedRequirementPut(
-      @Parameter @PathVariable String id,
-      @Parameter @PathVariable String implementedRequirementId,
+      @PathVariable String id,
+      @PathVariable String implementedRequirementId,
       @RequestBody String json) {
     return updateImplementedRequirement(id, implementedRequirementId, json);
   }

@@ -1,7 +1,6 @@
 package com.easydynamics.oscalrestservice.api;
 
 import com.easydynamics.oscal.data.repository.ResourceContentRepo;
-import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,7 +45,7 @@ public class ResourceController {
    */
   @GetMapping("/resource-content/{id}")
   public ResponseEntity<StreamingResponseBody> findById(
-      @Parameter @PathVariable String id) throws IOException {
+      @PathVariable String id) throws IOException {
     Resource resource = repository.findById(id)
         .orElseThrow(() -> new OscalObjectNotFoundException(id));
     Path resourcePath = resource.getFile().toPath();

@@ -3,7 +3,6 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalCatalogService;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +44,7 @@ public class CatalogController extends BaseOscalController<Catalog> {
    */
 
   @GetMapping("/catalogs/{id}")
-  public ResponseEntity<StreamingResponseBody> findById(@Parameter @PathVariable String id) {
+  public ResponseEntity<StreamingResponseBody> findById(@PathVariable String id) {
     return super.findById(id);
   }
 
@@ -57,7 +56,7 @@ public class CatalogController extends BaseOscalController<Catalog> {
    */
   @PatchMapping("/catalogs/{id}")
   public ResponseEntity<StreamingResponseBody> patch(
-      @Parameter @PathVariable String id,
+      @PathVariable String id,
       @RequestBody String json) {
     return super.patch(id, json);
   }
@@ -72,7 +71,7 @@ public class CatalogController extends BaseOscalController<Catalog> {
       consumes = { MediaType.APPLICATION_JSON_VALUE },
       produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<StreamingResponseBody> put(
-      @Parameter @PathVariable String id,
+      @PathVariable String id,
       @RequestBody String json) {
     return super.put(id, json);
   }

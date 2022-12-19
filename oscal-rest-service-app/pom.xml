@@ -14,7 +14,6 @@
 	<name>oscal-rest-service-app</name>
 	<description>Initial OSCAL REST API</description>
 	<properties>
-		<springfox.version>3.0.0</springfox.version>
 		<oscal-object-service.version>0.0.1-SNAPSHOT</oscal-object-service.version>
 		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
 		<maven.deploy.skip>false</maven.deploy.skip>
@@ -51,24 +50,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!--SpringFox dependencies -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-oas</artifactId>
-			<version>${springfox.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${springfox.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${springfox.version}</version>
-		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>
@@ -95,24 +76,6 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.googlecode.maven-download-plugin</groupId>
-				<artifactId>download-maven-plugin</artifactId>
-				<version>${maven-download-plugin.version}</version>
-				<executions>
-					<execution>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>https://raw.githubusercontent.com/EasyDynamics/oscal-rest/${oscal-rest.branch}/openapi.yaml</url>
-							<outputFileName>openapi.yaml</outputFileName>
-							<outputDirectory>${project.build.directory}/classes/static</outputDirectory>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
