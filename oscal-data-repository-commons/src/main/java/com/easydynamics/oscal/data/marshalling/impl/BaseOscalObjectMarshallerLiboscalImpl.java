@@ -1,5 +1,6 @@
 package com.easydynamics.oscal.data.marshalling.impl;
 
+import com.easydynamics.oscal.data.constraint.NullConstraintValidationHandler;
 import com.easydynamics.oscal.data.marshalling.IterableAssemblyClassBinding;
 import com.easydynamics.oscal.data.marshalling.IterableJsonSerializer;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
@@ -38,6 +39,7 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
     this.serializer.enableFeature(SerializationFeature.SERIALIZE_ROOT);
     this.deserializer = new DefaultJsonDeserializer<T>(context, classBinding);
     this.deserializer.enableFeature(DeserializationFeature.DESERIALIZE_JSON_ROOT_PROPERTY);
+    this.deserializer.setConstraintValidationHandler(new NullConstraintValidationHandler());
   }
 
   @Override
