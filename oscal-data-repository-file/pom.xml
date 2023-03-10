@@ -15,7 +15,7 @@
 	<properties>
 		<oscal-data-repository-commons.version>0.0.1-SNAPSHOT</oscal-data-repository-commons.version>
 		<oscal-data-repository-commons-tests.version>0.0.1-SNAPSHOT</oscal-data-repository-commons-tests.version>
-		<org.json.version>20220924</org.json.version>
+		<org.json.version>20230227</org.json.version>
 	</properties>
 
 	<dependencyManagement>
@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>${spring-test.version}</version>
+			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
