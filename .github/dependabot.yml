@@ -5,11 +5,17 @@ updates:
     directory: "/"
     schedule:
       interval: daily
+    commit-message:
+      include: scope
+      prefix: "chore(deps)"
     reviewers:
       - "EasyDynamics/oscal-editor-reviewers"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: daily
+    commit-message:
+      include: scope
+      prefix: "chore(deps)"
     reviewers:
       - "EasyDynamics/oscal-editor-reviewers"
