@@ -2,6 +2,7 @@ package com.easydynamics.oscal.data.repository.file;
 
 import com.easydynamics.oscal.data.constraint.NoopConstraintValidationHandler;
 import gov.nist.secauto.metaschema.binding.IBindingContext;
+import gov.nist.secauto.metaschema.binding.io.DeserializationFeature;
 import gov.nist.secauto.metaschema.binding.io.Format;
 import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
@@ -69,7 +70,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
         DefaultAssemblyClassBinding.createInstance(genericClass, bindingContext);
 
     this.deserializer = new DefaultJsonDeserializer<T>(bindingContext, classBinding);
-    this.deserializer.setConstraintValidationHandler(new NoopConstraintValidationHandler());
+    this.deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
     this.serializer = bindingContext.newSerializer(Format.JSON, genericClass);
     this.serializer.enableFeature(SerializationFeature.SERIALIZE_ROOT);
   }

@@ -39,7 +39,7 @@ public abstract class BaseOscalObjectMarshallerLiboscalImpl<T> implements OscalO
 
     this.serializer = new IterableJsonSerializer<T>(context, classBinding);
     this.deserializer = new DefaultJsonDeserializer<T>(context, classBinding);
-    this.deserializer.setConstraintValidationHandler(new NoopConstraintValidationHandler());
+    this.deserializer.disableFeature(DeserializationFeature.DESERIALIZE_VALIDATE_CONSTRAINTS);
   }
 
   @Override
