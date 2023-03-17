@@ -21,7 +21,7 @@ import java.util.List;
  * is taken. This allows for very quiet runs of the service against noisy documents to
  * focus on actual errors and messages from the surrounding tooling.
  */
-public class NullConstraintValidationHandler implements IConstraintValidationHandler {
+public class NoopConstraintValidationHandler implements IConstraintValidationHandler {
   @Override
   public void handleAllowedValuesViolation(List<IAllowedValuesConstraint> arg0, INodeItem arg1) {
     return;
