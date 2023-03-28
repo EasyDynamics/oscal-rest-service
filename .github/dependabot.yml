@@ -7,7 +7,7 @@ updates:
       interval: daily
     commit-message:
       include: scope
-      prefix: "chore(deps)"
+      prefix: "chore"
     reviewers:
       - "EasyDynamics/oscal-editor-reviewers"
   - package-ecosystem: github-actions
@@ -16,6 +16,6 @@ updates:
       interval: daily
     commit-message:
       include: scope
-      prefix: "chore(deps)"
+      prefix: "chore"
     reviewers:
       - "EasyDynamics/oscal-editor-reviewers"
