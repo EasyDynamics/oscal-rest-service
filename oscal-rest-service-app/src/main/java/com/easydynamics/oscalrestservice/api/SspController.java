@@ -3,6 +3,7 @@ package com.easydynamics.oscalrestservice.api;
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalSspService;
 import com.easydynamics.oscal.service.impl.OscalDeepCopyUtils;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.ControlImplementation;
 import gov.nist.secauto.oscal.lib.model.ImplementedRequirement;
 import gov.nist.secauto.oscal.lib.model.SystemSecurityPlan;
@@ -41,9 +42,10 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
   public SspController(
       OscalSspService sspService,
       OscalObjectMarshaller<SystemSecurityPlan> marshaller,
-      OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqtMarshaller
+      OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqtMarshaller,
+      OscalObjectMarshaller<Resource> resourceMarshaller
   ) {
-    super(sspService, marshaller);
+    super(sspService, marshaller, resourceMarshaller);
     this.oscalSspImplReqMarshaller = oscalSspImplReqtMarshaller;
   }
 
@@ -248,5 +250,15 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       @PathVariable String implementedRequirementId,
       @RequestBody String json) {
     return updateImplementedRequirement(id, implementedRequirementId, json);
+  }
+
+  @PatchMapping(value = "/system-security-plans/{id}/back-matter/resources/{resourceId}",
+      consumes = { MediaType.APPLICATION_JSON_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> patchBackMatterResource(
+      @PathVariable String id,
+      @PathVariable String resourceId,
+      @RequestBody String json) {
+    return super.patchBackMatterResource(id, resourceId, json); 
   }
 }

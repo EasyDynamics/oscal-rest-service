@@ -2,7 +2,9 @@ package com.easydynamics.oscalrestservice.api;
 
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalCatalogService;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +28,10 @@ public class CatalogController extends BaseOscalController<Catalog> {
   @Autowired(required = true)
   public CatalogController(
       OscalCatalogService catalogService,
-      OscalObjectMarshaller<Catalog> marshaller
+      OscalObjectMarshaller<Catalog> marshaller,
+      OscalObjectMarshaller<Resource> resourceMarshaller
   ) {
-    super(catalogService, marshaller);
+    super(catalogService, marshaller, resourceMarshaller);
   }
 
   @GetMapping("/catalogs")
@@ -74,5 +77,15 @@ public class CatalogController extends BaseOscalController<Catalog> {
       @PathVariable String id,
       @RequestBody String json) {
     return super.put(id, json);
+  }
+
+  @PatchMapping(value = "/catalogs/{id}/back-matter/resources/{resourceId}",
+      consumes = { MediaType.APPLICATION_JSON_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> patchBackMatterResource(
+      @PathVariable String id,
+      @PathVariable String resourceId,
+      @RequestBody String json) {
+    return super.patchBackMatterResource(id, resourceId, json); 
   }
 }

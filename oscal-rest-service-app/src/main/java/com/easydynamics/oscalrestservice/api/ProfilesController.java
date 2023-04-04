@@ -2,6 +2,7 @@ package com.easydynamics.oscalrestservice.api;
 
 import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalProfileService;
+import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,9 +28,10 @@ public class ProfilesController extends BaseOscalController<Profile> {
   @Autowired(required = true)
   public ProfilesController(
       OscalProfileService profileService,
-      OscalObjectMarshaller<Profile> marshaller
+      OscalObjectMarshaller<Profile> marshaller,
+      OscalObjectMarshaller<Resource> resourceMarshaller
   ) {
-    super(profileService, marshaller);
+    super(profileService, marshaller, resourceMarshaller);
   }
 
   @GetMapping("/profiles")
@@ -75,5 +77,15 @@ public class ProfilesController extends BaseOscalController<Profile> {
       @PathVariable String id,
       @RequestBody String json) {
     return super.put(id, json);
+  }
+
+  @PatchMapping(value = "/profiles/{id}/back-matter/resources/{resourceId}",
+      consumes = { MediaType.APPLICATION_JSON_VALUE },
+      produces = { MediaType.APPLICATION_JSON_VALUE })
+  public ResponseEntity<StreamingResponseBody> patchBackMatterResource(
+      @PathVariable String id,
+      @PathVariable String resourceId,
+      @RequestBody String json) {
+    return super.patchBackMatterResource(id, resourceId, json); 
   }
 }
