@@ -4,7 +4,6 @@ import com.easydynamics.oscal.data.marshalling.OscalObjectMarshaller;
 import com.easydynamics.oscal.service.OscalCatalogService;
 import gov.nist.secauto.oscal.lib.model.BackMatter.Resource;
 import gov.nist.secauto.oscal.lib.model.Catalog;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

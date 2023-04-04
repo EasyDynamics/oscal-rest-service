@@ -43,9 +43,9 @@ public class SspController extends BaseOscalController<SystemSecurityPlan> {
       OscalSspService sspService,
       OscalObjectMarshaller<SystemSecurityPlan> marshaller,
       OscalObjectMarshaller<ImplementedRequirement> oscalSspImplReqtMarshaller,
-      OscalObjectMarshaller<Resource> resourceMarshaller
+      OscalObjectMarshaller<Resource> backMatterResourceMarshaller
   ) {
-    super(sspService, marshaller, resourceMarshaller);
+    super(sspService, marshaller, backMatterResourceMarshaller);
     this.oscalSspImplReqMarshaller = oscalSspImplReqtMarshaller;
   }
 

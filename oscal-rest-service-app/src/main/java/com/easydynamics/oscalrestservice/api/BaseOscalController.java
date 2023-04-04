@@ -219,9 +219,10 @@ public abstract class BaseOscalController<T> {
    * @throws OscalObjectConflictException when the path ID does not match the body ID
    */
   protected Resource unmarshallBackMatterResource(String id, String json) {
-    Resource incomingResource = backMatterResourceMarshaller.toObject(
-      new ByteArrayInputStream(json.getBytes()));
-
+    ByteArrayInputStream jsonInputStream = new ByteArrayInputStream(json.getBytes());
+    
+    Resource incomingResource = backMatterResourceMarshaller.toObject(jsonInputStream);
+      
     UUID incomingUuid = incomingResource.getUuid();
     if (incomingUuid != null && !id.equals(incomingUuid.toString())) {
       throw new OscalObjectConflictException(incomingUuid.toString(), id);
@@ -264,10 +265,9 @@ public abstract class BaseOscalController<T> {
       String docId,
       String resourceId,
       String json) {
-    
     T document = oscalObjectService.findById(docId)
         .orElseThrow(() -> new OscalObjectNotFoundException(docId));
-
+    
     Resource incomingResource = unmarshallBackMatterResource(resourceId, json);
 
     Resource existingResource = null;
@@ -281,6 +281,7 @@ public abstract class BaseOscalController<T> {
     if (existingResource != null) {
       throw new OscalObjectNotFoundException("Resource does not exist");
     }
+
     try {
       OscalDeepCopyUtils.deepCopyProperties(existingResource, incomingResource);
     } catch (IllegalAccessException | InvocationTargetException e) {

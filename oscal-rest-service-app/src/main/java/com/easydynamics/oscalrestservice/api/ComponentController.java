@@ -29,9 +29,9 @@ public class ComponentController extends BaseOscalController<ComponentDefinition
   public ComponentController(
       OscalComponentService componentService,
       OscalObjectMarshaller<ComponentDefinition> marshaller,
-      OscalObjectMarshaller<Resource> resourceMarshaller
+      OscalObjectMarshaller<Resource> backMatterResourceMarshaller
   ) {
-    super(componentService, marshaller, resourceMarshaller);
+    super(componentService, marshaller, backMatterResourceMarshaller);
   }
 
   @GetMapping("/component-definitions")

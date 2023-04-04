@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -17,6 +19,8 @@ import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import net.minidev.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,9 +30,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import com.easydynamics.oscal.data.example.ExampleContent;
+import org.springframework.test.web.servlet.ResultMatcher;
 
-import net.minidev.json.JSONArray;
+import com.easydynamics.oscal.data.example.ExampleContent;
 
 /**
  * OscalControllerTests is an abstract class that provides methods for common tests among the
@@ -310,6 +314,29 @@ public abstract class BaseOscalControllerTests {
       + "    }\n"
       + "  }\n"
       + "}";
+  }
+
+  public static String generateBackMatterResource(String id) {
+    JSONObject resource = new JSONObject();
+    resource.put("uuid", id);
+    resource.put("title", "A new title");
+
+    System.out.println(resource.toString());
+    return resource.toString();
+  } 
+
+  protected void testPatchBackMatterResource(ResultMatcher expectedStatus, String resourceUuid)
+    throws Exception {
+
+    String path = "/oscal/v1/" + oscalObjectType.restPath + "/{id}" + "/back-matter/resources/{resourceId}";
+
+    this.mockMvc.perform(
+      patch(path, exampleContent.uuid, resourceUuid)
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .accept(MediaType.APPLICATION_JSON)
+      .characterEncoding("UTF-8")
+      .content(generateBackMatterResource(resourceUuid)))
+      .andExpect(expectedStatus);
   }
 
   class DateGreaterMatcher extends BaseMatcher<ZonedDateTime> {

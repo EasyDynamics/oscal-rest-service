@@ -29,9 +29,9 @@ public class ProfilesController extends BaseOscalController<Profile> {
   public ProfilesController(
       OscalProfileService profileService,
       OscalObjectMarshaller<Profile> marshaller,
-      OscalObjectMarshaller<Resource> resourceMarshaller
+      OscalObjectMarshaller<Resource> backMatterResourceMarshaller
   ) {
-    super(profileService, marshaller, resourceMarshaller);
+    super(profileService, marshaller, backMatterResourceMarshaller);
   }
 
   @GetMapping("/profiles")
