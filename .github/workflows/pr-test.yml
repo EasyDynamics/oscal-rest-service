@@ -18,8 +18,8 @@ jobs:
           # all LTSes can target themselves and the oldest supported LTS, and that the latest
           # stable release can target itself. We do not test against EA builds.
           - { actual: 17, target: 17 } # Latest LTS
-          - { actual: 18, target: 18 } # Latest stable release
           - { actual: 19, target: 19 } # Latest stable release
+          - { actual: 20, target: 20 } # Latest stable release
     runs-on: ubuntu-latest
     name: "Build and test on Java ${{ matrix.java.actual }} targeting ${{ matrix.java.target }}"
     steps:

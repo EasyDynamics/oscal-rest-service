@@ -1,11 +1,15 @@
 package com.easydynamics.oscal.data.repository.file;
 
+import com.easydynamics.oscal.data.constraint.NoopConstraintValidationHandler;
 import gov.nist.secauto.metaschema.binding.IBindingContext;
 import gov.nist.secauto.metaschema.binding.io.Format;
-import gov.nist.secauto.metaschema.binding.io.IBoundLoader;
+import gov.nist.secauto.metaschema.binding.io.IDeserializer;
 import gov.nist.secauto.metaschema.binding.io.ISerializer;
 import gov.nist.secauto.metaschema.binding.io.SerializationFeature;
+import gov.nist.secauto.metaschema.binding.io.json.DefaultJsonDeserializer;
+import gov.nist.secauto.metaschema.binding.model.DefaultAssemblyClassBinding;
 import gov.nist.secauto.metaschema.binding.model.annotations.MetaschemaAssembly;
+import gov.nist.secauto.oscal.lib.OscalBindingContext;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -46,8 +50,8 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
   private final Class<T> genericClass;
   private final String path;
   private final String oscalRootName;
-  private final IBoundLoader oscalLoader;
   private final ISerializer<T> serializer;
+  private final IDeserializer<T> deserializer;
 
   /**
    * Constructs an OscalRepository.
@@ -60,8 +64,12 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     this.path = path;
     this.genericClass = genericClass;
     this.oscalRootName = getOscalRootName(genericClass);
-    IBindingContext bindingContext = IBindingContext.instance();
-    this.oscalLoader = bindingContext.newBoundLoader();
+    IBindingContext bindingContext = OscalBindingContext.instance();
+    DefaultAssemblyClassBinding classBinding =
+        DefaultAssemblyClassBinding.createInstance(genericClass, bindingContext);
+
+    this.deserializer = new DefaultJsonDeserializer<T>(bindingContext, classBinding);
+    this.deserializer.setConstraintValidationHandler(new NoopConstraintValidationHandler());
     this.serializer = bindingContext.newSerializer(Format.JSON, genericClass);
     this.serializer.enableFeature(SerializationFeature.SERIALIZE_ROOT);
   }
@@ -168,7 +176,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     }
 
     try {
-      return Optional.of(oscalLoader.load(genericClass, new File(pathToOscalFile.get().toUri())));
+      return Optional.of(deserializer.deserialize(pathToOscalFile.get()));
     } catch (IOException e) {
       throw new DataRetrievalFailureException("Failure in loading Oscal object.", e);
     } catch (OutOfMemoryError e) {
@@ -215,7 +223,7 @@ public abstract class BaseOscalRepoFileImpl<T extends Object>
     for (int i = 0; i < pathContents.length; i++) {
       File filePath = pathContents[i];
       try {
-        T foundObject = oscalLoader.load(genericClass, filePath);
+        T foundObject = deserializer.deserialize(filePath);
         if (foundObject != null) {
           foundObjects.add(foundObject);
         }
