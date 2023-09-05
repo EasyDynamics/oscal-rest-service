@@ -24,7 +24,7 @@ jobs:
     name: "Build and test on Java ${{ matrix.java.actual }} targeting ${{ matrix.java.target }}"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
